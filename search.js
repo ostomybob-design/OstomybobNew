@@ -7,7 +7,7 @@
 //  - Keeps the same UI for both providers.
 
 //const API_BASE = window.__API_BASE || window.API_BASE || 'http://localhost:3000';
-const API_BASE = window.__API_BASE || window.API_BASE || 'https://ostomy-bob-web-nomad-joes-projects.vercel.app/';
+const API_BASE = window.__API_BASE || window.API_BASE || 'https://ostomy-bob-web.vercel.app';
 
 
 
