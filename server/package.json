@@ -1,15 +1,14 @@
 {
-  "name": "ostomy-local-posts",
+  "name": "ostomybob-backend",
   "version": "1.0.0",
-  "description": "Serve local instagram post index + simple search + OpenAI proxy",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^4.22.1",
-    "node-fetch": "^2.7.0"
+    "express": "^4.18.2",
+    "node-fetch": "^2.7.0",
+    "dotenv": "^16.4.5",
+    "cors": "^2.8.5"
   }
 }

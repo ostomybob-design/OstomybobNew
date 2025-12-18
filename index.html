@@ -567,7 +567,7 @@
             const availableHeight = window.innerHeight;
 
             if (availableHeight < targetHeight) {
-                const zoom = (availableHeight / targetHeight) * 0.85; // 95% safety margin
+                const zoom = (availableHeight / targetHeight) * 0.845; // 95% safety margin
                 document.body.style.zoom = zoom;
                 document.body.style.transform = `scale(${zoom})`;
                 document.body.style.transformOrigin = 'top left';
