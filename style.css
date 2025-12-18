@@ -7,33 +7,31 @@
 
 
 body {
-    /* Remove or comment these lines */
     /* background: url('images/Community.png') center center fixed; */
     /* background-size: cover; */
-    
     font-family: 'Georgia', serif;
     color: #222;
     min-height: 100vh;
-    position: static;
+    position: relative;  /* Add this */
     overflow-x: hidden;
 }
 
 body::before {
     content: '';
-   position: relative; 
+    position: absolute;  /* Change from relative to absolute */
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.68));
-    z-index: -1
+    width: 100%;  /* Add this */
+    height: 150%;  /* Add this */
+    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
+    z-index: -1;
 }
 
 header {
     background: #8B572A;
     color: #fff8e1;
     padding: 20px 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
     position: relative;
     z-index: 10
 }
@@ -470,7 +468,7 @@ h1 {
 }
 
 .overlay.active {
-    opacity: 0;
+    opacity: 1;
     visibility: visible
 }
 
