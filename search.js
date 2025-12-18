@@ -6,7 +6,11 @@
 //  - Exposes window.initFeaturedCarousel(selector, intervalMs, renderFn)
 //  - Keeps the same UI for both providers.
 
-const API_BASE = window.__API_BASE || window.API_BASE || 'http://localhost:3000';
+//const API_BASE = window.__API_BASE || window.API_BASE || 'http://localhost:3000';
+const API_BASE = window.__API_BASE || window.API_BASE || 'https://ostomybob-new.vercel.app';
+
+
+
 const LOCAL_POSTS_URL = API_BASE + '/api/posts';
 const LOCAL_SEARCH_URL = API_BASE + '/api/search';
 const POE_SEARCH_URL = API_BASE + '/api/poe-search';
