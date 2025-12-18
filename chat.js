@@ -298,182 +298,135 @@ function loadConversationList() {
                 item.innerHTML = `
                     <img src="${photo}" style="width:50px;height:50px;border-radius:50%;border:3px solid #fff8e1;object-fit:cover;">
                     <div style="flex:1;">
-                        <div style="font-weight:bold;font-size:1.1rem;">${name}</div>
-                        <small style="opacity:0.8;">Tap to message</small>
+                        <div style="font-weight:bold;font-size:1.1rem;color:#fff8e1;">${name}</div>
+                        <div style="font-size:0.9rem;color:#ffecb3;opacity:0.8;">Click to chat</div>
                     </div>
+                    <button onclick="event.stopPropagation(); viewUserProfile('${uid}')" style="background:#fff8e1;color:#8B572A;padding:8px 16px;border:none;border-radius:25px;font-size:0.9rem;font-weight:bold;">View Profile</button>
                 `;
+
                 list.appendChild(item);
             });
-        })
-        .catch(err => {
-            console.error("Error loading users:", err);
-            list.innerHTML = '<p style="text-align:center;color:#c66;">Error loading users</p>';
+        }).catch(err => {
+            console.error('loadConversationList failed', err);
+            list.innerHTML = '<p style="text-align:center;color:#c66;">Failed to load users</p>';
         });
 }
 
-function openChatInInbox(partnerId, name, photo) {
-    currentInboxPartner = partnerId;
-    const header = document.getElementById('selectedChatHeader');
-    if (header) {
-        header.innerHTML = `
-            <div style="display:flex;align-items:center;gap:15px;padding:10px;">
-                <img src="${photo}" style="width:50px;height:50px;border-radius:50%;border:3px solid #fff8e1;object-fit:cover;">
-                <div style="font-size:1.4rem;font-weight:bold;">${name}</div>
-            </div>
-        `;
-    }
-    const inputArea = document.getElementById('messageInputArea');
-    if (inputArea) inputArea.style.display = 'block';
-    loadInboxMessages(partnerId);
+// Open chat in inbox (right panel)
+function openChatInInbox(uid, name, photo) {
+    currentInboxPartner = uid;
+
+    const nameEl = document.getElementById('inboxChatName');
+    const avatarEl = document.getElementById('inboxChatAvatar');
+    const messagesEl = document.getElementById('inboxMessages');
+    const input = document.getElementById('inboxMessageInput');
+
+    if (nameEl) nameEl.textContent = name || "Friend";
+    if (avatarEl) avatarEl.src = photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${uid}`;
+    if (messagesEl) messagesEl.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;">Loading messages...</p>';
+    if (input) input.focus();
+
+    loadInboxMessages(uid);
 }
 
+// Load messages for inbox right panel
 function loadInboxMessages(partnerId) {
-    const messagesDiv = document.getElementById('selectedChatMessages');
-    if (!messagesDiv) return;
-    messagesDiv.innerHTML = '<p style="text-align:center;color:#888;margin:40px 0;">Loading messages...</p>';
+    const user = auth.currentUser;
+    if (!user) return;
 
-    const userId = auth.currentUser.uid;
-    const chatId = [userId, partnerId].sort().join('_');
+    const chatId = [user.uid, partnerId].sort().join('_');
+    const messagesDiv = document.getElementById('inboxMessages');
+    if (!messagesDiv) return;
 
     db.collection('privateChats').doc(chatId).collection('messages')
-        .orderBy('createdAt', 'asc')
-        .get()
-        .then(snapshot => {
+        .orderBy('createdAt')
+        .onSnapshot(snapshot => {
             messagesDiv.innerHTML = '';
-            if (snapshot.empty) {
-                messagesDiv.innerHTML = '<p style="text-align:center;color:#888;margin:40px 0;">No messages yet. Start the conversation!</p>';
-                return;
-            }
-
             snapshot.forEach(doc => {
                 const msg = doc.data();
-                const isMe = msg.senderId === userId;
+                const isMe = msg.senderId === user.uid;
                 const bubble = document.createElement('div');
-                bubble.style = `
-                    max-width:80%;
-                    margin:${isMe ? '10px 0 10px auto' : '10px 0 10px 10px'};
-                    padding:12px 18px;
-                    border-radius:20px;
-                    background:${isMe ? '#8B572A' : '#e9e9e9'};
-                    color:${isMe ? 'white' : '#333'};
-                    align-self:${isMe ? 'flex-end' : 'flex-start'};
-                    word-wrap:break-word;
-                `;
-                bubble.innerHTML = (msg.text || '').replace(/\n/g, '<br>');
+                bubble.style = `max-width:75%;margin:${isMe ? '10px 0 10px auto' : '10px 0 10px 0'};padding:12px 18px;border-radius:20px;background:${isMe ? '#8B572A' : '#e9e9e9'};color:${isMe ? 'white' : '#333'};align-self:${isMe ? 'flex-end' : 'flex-start'};`;
+                bubble.innerHTML = `<div style="font-weight:bold;font-size:0.9rem;margin-bottom:4px;opacity:0.8;">${msg.senderName || (isMe ? 'Me' : 'Them')}</div>${(msg.text||'').replace(/\n/g, '<br>')}`;
                 messagesDiv.appendChild(bubble);
             });
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        })
-        .catch(err => {
-            console.error("Error loading messages:", err);
-            messagesDiv.innerHTML = '<p style="text-align:center;color:#c66;">Error loading messages</p>';
+        }, err => {
+            console.error('loadInboxMessages snapshot error', err);
+            messagesDiv.innerHTML = '<p style="text-align:center;color:#c66;">Failed to load messages</p>';
         });
 }
 
-function sendMessageFromInbox() {
-    if (!currentInboxPartner) return;
+// Send message from inbox input
+function sendInboxMessage() {
     const input = document.getElementById('inboxMessageInput');
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || !currentInboxPartner) return;
 
-    const userId = auth.currentUser.uid;
-    const chatId = [userId, currentInboxPartner].sort().join('_');
+    const chatId = [auth.currentUser.uid, currentInboxPartner].sort().join('_');
 
     db.collection('privateChats').doc(chatId).collection('messages').add({
         text: text,
-        senderId: userId,
+        senderId: auth.currentUser.uid,
         senderName: currentUserProfile.displayName || "Me",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        participants: [userId, currentInboxPartner]
+        participants: [auth.currentUser.uid, currentInboxPartner]
     }).then(() => {
         input.value = '';
-        // refresh messages (get)
-        loadInboxMessages(currentInboxPartner);
+        input.focus();
     }).catch(err => {
-        console.error("Send failed:", err);
-        alert("Failed to send message");
+        console.error('sendInboxMessage failed', err);
+        alert('Failed to send message.');
     });
 }
 
-// Sync lastSeen across tabs: when notification module writes notificationLastSeen
-if (!window._chat_storageHandler) {
-    window._chat_storageHandler = function (e) {
-        if (e.key !== 'notificationLastSeen') return;
-        try {
-            lastSeenTimestamp = parseInt(e.newValue || '0', 10) || 0;
-            unreadCount = 0;
-            // If notifications module not present, update fallback badge
-            if (!(window._notif_addNotification && typeof window._notif_addNotification === 'function')) {
-                updateBadge();
-                // also clear notificationList UI if present
-                try {
-                    const list = document.getElementById('notificationList');
-                    if (list) list.innerHTML = '<p style="text-align:center;color:#888;margin:30px 0;">No new messages</p>';
-                } catch (e) {}
-            }
-        } catch (err) {
-            console.warn('storage handler error', err);
-        }
-    };
-    window.addEventListener('storage', window._chat_storageHandler);
+// Close private chat modal
+function closePrivateChatModal() {
+    document.getElementById('privateChatModal')?.classList.remove('open');
+    currentChatPartnerId = null;
+    stopMessageListener();  // Optional: stop if not needed for background notifications
 }
 
-// Start/stop listener on auth changes
-if (typeof auth !== 'undefined' && auth && typeof auth.onAuthStateChanged === 'function') {
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            // refresh lastSeen from storage
-            lastSeenTimestamp = parseInt(localStorage.getItem('notificationLastSeen') || '0', 10) || 0;
-            startMessageListener();
-            // reload inbox list if inbox modal open
-            setTimeout(() => {
-                if (document.getElementById('messagesInboxModal')?.classList.contains('open')) {
-                    loadConversationList();
-                }
-            }, 700);
-        } else {
-            stopMessageListener();
-            unreadCount = 0;
-            updateBadge();
-        }
-    });
-}
-// In chat.js (add at the end)
-
+// View user profile modal (new)
 async function viewUserProfile(userId) {
-  if (!userId) return;
+    if (!userId) return;
 
-  const userDoc = await db.collection('users').doc(userId).get();
-  const data = userDoc.data();
+    const userDoc = await db.collection('users').doc(userId).get();
+    const data = userDoc.data();
 
-  if (data) {
-    let profileContent = `
-      <img src="${data.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + userId}" alt="Avatar" style="width:100px; height:100px; border-radius:50%;">
-      <h3>${data.displayName || 'Friend'}</h3>
-    `;
+    if (data) {
+        let profileContent = `
+            <img src="${data.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + userId}" alt="Avatar" style="width:100px; height:100px; border-radius:50%;">
+            <h3>${data.displayName || 'Friend'}</h3>
+        `;
 
-    // Conditionally show fields based on visibility flags (default true if undefined)
-    if (data.showOstomyType !== false && data.ostomyType) {
-      profileContent += `<p>Ostomy Type: ${data.ostomyType}</p>`;
+        // Conditionally show fields based on visibility flags (default true if undefined)
+        if (data.showOstomyType !== false && data.ostomyType) {
+            profileContent += `<p>Ostomy Type: ${data.ostomyType}</p>`;
+        }
+        if (data.showSurgeryDate !== false && data.surgeryDate) {
+            profileContent += `<p>Surgery Date: ${new Date(data.surgeryDate).toLocaleDateString()}</p>`;
+        }
+        if (data.showBio !== false && data.bio) {
+            profileContent += `<p>Bio: ${data.bio}</p>`;
+        }
+
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                ${profileContent}
+            </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        alert('User profile not found.');
     }
-    if (data.showSurgeryDate !== false && data.surgeryDate) {
-      profileContent += `<p>Surgery Date: ${new Date(data.surgeryDate).toLocaleDateString()}</p>`;
-    }
-    if (data.showBio !== false && data.bio) {
-      profileContent += `<p>Bio: ${data.bio}</p>`;
-    }
-
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
-        ${profileContent}
-      </div>
-    `;
-    document.body.appendChild(modal);
-  } else {
-    alert('User profile not found.');
-  }
 }
 
+// Init listeners on load (if needed)
+window.addEventListener('load', () => {
+    startMessageListener();
+    // Other init if any
+});

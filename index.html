@@ -131,6 +131,7 @@
         </div>
     </div>
 
+
 <div id="profileModal" class="modal">
   <div class="modal-content">
     <h2>Edit Profile</h2>
@@ -154,19 +155,25 @@
           <option value="Ileostomy">Ileostomy</option>
           <option value="Urostomy">Urostomy</option>
         </select>
-        <label class="checkbox-label"><input type="checkbox" id="showOstomyType" checked> Show to others</label>
+        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-top: 8px;">
+          Show to others <input type="checkbox" id="showOstomyType" checked>
+        </label>
       </div>
 
       <div class="field-group">
         <label for="editSurgeryDate">Surgery Date:</label>
         <input type="date" id="editSurgeryDate">
-        <label class="checkbox-label"><input type="checkbox" id="showSurgeryDate" checked> Show to others</label>
+        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-top: 8px;">
+          Show to others <input type="checkbox" id="showSurgeryDate" checked>
+        </label>
       </div>
 
       <div class="field-group">
         <label for="editBio">Bio:</label>
         <textarea id="editBio"></textarea>
-        <label class="checkbox-label"><input type="checkbox" id="showBio" checked> Show to others</label>
+        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-top: 8px;">
+          Show to others <input type="checkbox" id="showBio" checked>
+        </label>
       </div>
 
       <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
@@ -176,8 +183,6 @@
     </form>
   </div>
 </div>
-
-
  
 </form>
   </div>
