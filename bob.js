@@ -3,7 +3,7 @@ const BOT_HANDLE = "OstomyBuddyBob"; // Your Poe bot handle
 let messages = []; // Client-side history for multi-turn context
 let thinkingMessageId = null;
 
-const API_BASE = 'http://localhost:3000/api/poe'; // Proxy to Poe (change to production URL later)
+const POE_API_BASE = 'http://localhost:3000/api/poe'; // Proxy to Poe (change to production URL later)
 
 async function sendBobMessage() {
   const input = document.getElementById("bob-user-input");
@@ -21,7 +21,7 @@ async function sendBobMessage() {
 
   try {
     // Send full history to Poe's chat completions endpoint
-    const res = await fetch(`${API_BASE}/chat/completions`, {
+    const res = await fetch(`${POE_API_BASE}/chat/completions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

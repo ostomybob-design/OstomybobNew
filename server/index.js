@@ -1,6 +1,8 @@
 // server/index.js
-// Local posts/search server + OpenAI proxy
+// Local posts/search server + OpenAI proxy + Poe proxy
 // Run with: node index.js  (after npm install)
+
+require('dotenv').config();
 
 // Existing local posts server code (keeps current functionality)
 const express = require('express');
@@ -117,27 +119,7 @@ async function forwardToOpenAI(req, res, targetPath) {
     res.status(502).json({ error: "Bad gateway" });
   }
 }
-// Proxy for Poe API (OpenAI-compatible)
-app.use('/api/poe', express.json());
-app.all('/api/poe/*', async (req, res) => {
-  const poeUrl = `https://api.poe.com/v1${req.originalUrl.replace('/api/poe', '')}`;
-  try {
-    const response = await fetch(poeUrl, {
-      method: req.method,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.POE_API_KEY}`
-      },
-      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined
-    });
 
-    const data = await response.json();
-    res.status(response.status).json(data);
-  } catch (error) {
-    console.error('Poe proxy error:', error);
-    res.status(500).json({ error: 'Failed to proxy Poe request' });
-  }
-});
 // Routes mirrored from the client usage
 app.post('/api/openai/threads', (req, res) => forwardToOpenAI(req, res, '/v1/threads'));
 app.post('/api/openai/threads/:threadId/messages', (req, res) => forwardToOpenAI(req, res, `/v1/threads/${req.params.threadId}/messages`));
@@ -151,9 +133,55 @@ app.all('/api/openai/*', (req, res) => {
   return forwardToOpenAI(req, res, targetPath);
 });
 
+// -------- Poe proxy logic --------
+const POE_API_KEY = process.env.POE_API_KEY;
+if (!POE_API_KEY) {
+  console.warn("WARNING: POE_API_KEY not set in environment. Set it before starting the server.");
+}
+
+// Proxy for Poe API (OpenAI-compatible)
+app.all('/api/poe/*', async (req, res) => {
+  if (!POE_API_KEY) {
+    return res.status(500).json({ error: "Server misconfigured: POE_API_KEY not set" });
+  }
+
+  const targetPath = req.path.replace(/^\/api\/poe/, '/v1');
+  // Build URL and include any query params from the original request
+  const url = new URL(`https://api.poe.com${targetPath}`);
+  Object.keys(req.query || {}).forEach(k => url.searchParams.append(k, req.query[k]));
+
+  try {
+    const fetchOptions = {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${POE_API_KEY}`
+      }
+    };
+
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      fetchOptions.body = JSON.stringify(req.body || {});
+    }
+
+    const fetchRes = await fetch(url.toString(), fetchOptions);
+    const text = await fetchRes.text();
+
+    // Try parse JSON, otherwise return raw text
+    try {
+      const json = JSON.parse(text);
+      res.status(fetchRes.status).json(json);
+    } catch (e) {
+      res.status(fetchRes.status).send(text);
+    }
+  } catch (error) {
+    console.error('Poe proxy error:', error);
+    res.status(500).json({ error: 'Failed to proxy Poe request' });
+  }
+});
+
 // Start
 app.listen(PORT, () => {
-  console.log(`Local posts + OpenAI proxy server listening on http://localhost:${PORT}`);
+  console.log(`Local posts + OpenAI/Poe proxy server listening on http://localhost:${PORT}`);
   console.log(`GET /api/posts    - list all posts`);
   console.log(`GET /api/search?q=skin  - tokenized search`);
 });
