@@ -117,7 +117,27 @@ async function forwardToOpenAI(req, res, targetPath) {
     res.status(502).json({ error: "Bad gateway" });
   }
 }
+// Proxy for Poe API (OpenAI-compatible)
+app.use('/api/poe', express.json());
+app.all('/api/poe/*', async (req, res) => {
+  const poeUrl = `https://api.poe.com/v1${req.originalUrl.replace('/api/poe', '')}`;
+  try {
+    const response = await fetch(poeUrl, {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.POE_API_KEY}`
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined
+    });
 
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error) {
+    console.error('Poe proxy error:', error);
+    res.status(500).json({ error: 'Failed to proxy Poe request' });
+  }
+});
 // Routes mirrored from the client usage
 app.post('/api/openai/threads', (req, res) => forwardToOpenAI(req, res, '/v1/threads'));
 app.post('/api/openai/threads/:threadId/messages', (req, res) => forwardToOpenAI(req, res, `/v1/threads/${req.params.threadId}/messages`));
