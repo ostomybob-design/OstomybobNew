@@ -1,0 +1,4 @@
+WARNING: OPENAI_API_KEY not set in environment. Set it before starting the server.
+Local posts + OpenAI proxy server listening on http://localhost:3000
+GET /api/posts    - list all posts
+GET /api/search?q=skin  - tokenized search

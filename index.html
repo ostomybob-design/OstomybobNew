@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ostomy Friends Hub</title>
+    <link rel="manifest" href="images/manifest.json">
+    <link rel="apple-touch-icon" href="images/icon-192.png">
+    <meta name="theme-color" content="#8B572A">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="featured-story.css">
+
+    <style>
+        /* ONLINE STATUS DOT */
+        .status-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .status-online {
+            background: #4ade80;
+        }
+
+        /* bright green */
+        .status-away {
+            background: #fbbf24;
+        }
+
+        /* warm yellow */
+        .status-offline {
+            background: #6b7280;
+        }
+
+        /* gray */
+        .status-typing {
+            background: #4ade80;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="expandOverlay"></div>
+    <!-- LOGIN MODAL — BIGGER & BEAUTIFUL -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-box" style="max-width:480px;padding:60px 50px;border-radius:30px;">
+            <h2 id="modalTitle" style="font-size:3.2rem;margin-bottom:20px;">Welcome to Ostomy Friends Hub!</h2>
+            <p style="font-size:1.4rem;margin-bottom:40px;color:#ffecb3;opacity:0.9;">Please sign in or create an
+                account</p>
+
+            <input type="email" id="email" placeholder="Email" required
+                style="width:100%;padding:22px;font-size:1.4rem;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;margin-bottom:20px;">
+            <input type="password" id="password" placeholder="Password" required
+                style="width:100%;padding:22px;font-size:1.4rem;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;margin-bottom:30px;">
+
+            <div id="profileFields" style="display:none;">
+                <input type="text" id="displayName" placeholder="Your Name"
+                    style="width:100%;padding:22px;font-size:1.4rem;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;margin-bottom:20px;">
+                <select id="ostomyType"
+                    style="width:100%;padding:22px;font-size:1.4rem;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;margin-bottom:20px;">
+                    <option value="">Ostomy Type (optional)</option>
+                    <option>Colostomy</option>
+                    <option>Ileostomy</option>
+                    <option>Urostomy</option>
+                </select>
+                <input type="date" id="surgeryDate"
+                    style="width:100%;padding:22px;font-size:1.4rem;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;margin-bottom:30px;">
+            </div>
+
+            <button id="authBtn"
+                style="width:100%;padding:22px;font-size:1.6rem;border-radius:50px;background:#fff8e1;color:#8B572A;border:none;font-weight:bold;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.3);">
+                Sign In
+            </button>
+
+            <p style="text-align:center;margin-top:30px;">
+                <a href="#" id="toggleLink" style="color:#fff8e1;font-size:1.4rem;text-decoration:underline;">Create an
+                    account</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- PRIVATE CHAT MODAL -->
+    <div class="privateChatModal" id="privateChatModal">
+        <div class="private-chat-box"
+            style="width:90%;max-width:520px;height:80vh;background:#fff;border-radius:25px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,0.4);">
+            <div
+                style="background:#8B572A;color:#fff8e1;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <img id="chatAvatar" src="" style="width:42px;height:42px;border-radius:50%;border:3px solid #fff;">
+                    <div>
+                        <div id="chatName" style="font-weight:bold;font-size:1.3rem;">Chat</div>
+                        <small id="chatStatus" style="opacity:0.9;">Active now</small>
+                    </div>
+                </div>
+                <button onclick="closePrivateChat()"
+                    style="background:none;border:none;color:#fff;font-size:1.8rem;cursor:pointer;">×</button>
+            </div>
+            <div id="privateMessages" style="flex:1;overflow-y:auto;padding:20px;background:#f8f8f8;"></div>
+            <div style="padding:15px;background:#fff;border-top:1px solid #ddd;">
+                <div style="display:flex;gap:10px;">
+                    <input type="text" id="privateMessageInput" placeholder="Type a message..."
+                        style="flex:1;padding:14px;border-radius:30px;border:2px solid #ddd;font-size:1.1rem;">
+                    <button onclick="sendPrivateMessage()"
+                        style="background:#8B572A;color:#fff;padding:14px 20px;border:none;border-radius:30px;font-weight:bold;cursor:pointer;">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT PROFILE MODAL -->
+    <div class="profile-modal" id="profileModal">
+        <div class="profile-box" style="max-width:460px;padding:45px;">
+            <h2 style="font-size:2.4rem;margin-bottom:25px;">Edit Profile</h2>
+            <div class="avatar-upload" style="margin:25px 0;">
+                <img src="" id="editAvatarPreview" class="avatar-big"
+                    style="width:140px;height:140px;border-radius:50%;border:6px solid #fff8e1;object-fit:cover;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.3);transition:0.3s;"
+                    onclick="document.getElementById('avatarInput').click()">
+                <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+                <br>
+                <small style="color:#ffecb3;margin-top:12px;display:block;font-weight:bold;cursor:pointer;"
+                    onclick="document.getElementById('avatarInput').click()">Change Photo</small>
+            </div>
+            <input type="text" id="editName" placeholder="Your Name"
+                style="width:100%;padding:18px;margin:15px 0;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.2rem;text-align:center;font-weight:bold;">
+            <select id="editOstomyType"
+                style="width:100%;padding:18px;margin:15px 0;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.1rem;">
+                <option value="">Ostomy Type</option>
+                <option>Colostomy</option>
+                <option>Ileostomy</option>
+                <option>Urostomy</option>
+            </select>
+            <input type="date" id="editSurgeryDate"
+                style="width:100%;padding:18px;margin:15px 0;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.1rem;">
+            <textarea id="editBio" placeholder="Write a short bio (optional)"
+                style="width:100%;height:120px;padding:18px;margin:15px 0;border-radius:25px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.1rem;resize:none;"></textarea>
+            <div style="display:flex;gap:15px;margin-top:25px;">
+                <button onclick="saveProfile()"
+                    style="flex:1;background:#fff8e1;color:#8B572A;padding:16px 20px;border:none;border-radius:50px;font-weight:bold;font-size:1.2rem;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.3);">Save
+                    Changes</button>
+                <button onclick="document.getElementById('profileModal').classList.remove('open')"
+                    style="flex:1;background:#666;color:white;padding:16px 20px;border:none;border-radius:50px;font-weight:bold;font-size:1.2rem;cursor:pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- USER PROFILE POPUP — DOT BOTTOM-RIGHT -->
+    <div class="user-profile-popup" id="userProfilePopup">
+        <div class="profile-popup-box">
+            <button onclick="document.getElementById('userProfilePopup').classList.remove('open')"
+                style="position:absolute;top:15px;right:20px;background:none;border:none;color:#ffecb3;font-size:2rem;cursor:pointer;">×</button>
+
+            <!-- Avatar with dot in bottom-right -->
+            <div style="position:relative;display:inline-block;margin:20px 0;">
+                <img src="" id="popupAvatar" class="avatar-big"
+                    style="width:130px;height:130px;border-radius:50%;border:6px solid #fff8e1;box-shadow:0 8px 25px rgba(0,0,0,0.3);">
+                <div id="popupStatusDot" class="status-dot status-offline"></div>
+            </div>
+
+            <h2 id="popupName" style="margin:15px 0;">Name</h2>
+            <p><strong>Ostomy Type:</strong> <span id="popupType">—</span></p>
+            <p><strong>Surgery Date:</strong> <span id="popupDate">—</span></p>
+            <div class="bio" id="popupBio"
+                style="margin:25px 0;padding:20px;background:rgba(255,255,255,0.12);border-radius:20px;font-style:italic;line-height:1.6;">
+                No bio yet.</div>
+        </div>
+    </div>
+
+    <!-- NEW THREAD MODAL -->
+    <div class="newThreadModal" id="newThreadModal">
+        <div class="profile-box" style="max-width:460px;padding:45px;">
+            <h2 style="font-size:2.4rem;margin-bottom:25px;">New Thread</h2>
+            <input type="text" id="threadTitle" placeholder="Thread Title"
+                style="width:100%;padding:18px;margin:15px 0;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.2rem;">
+            <select id="threadCategory"
+                style="width:100%;padding:18px;margin:15px 0;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.1rem;">
+                <option value="general">General Discussion</option>
+                <option value="new">New to Ostomy</option>
+                <option value="products">Product Reviews</option>
+                <option value="travel">Travel Tips</option>
+            </select>
+            <textarea id="threadBody" placeholder="Write your post..."
+                style="width:100%;height:160px;padding:18px;margin:15px 0;border-radius:25px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.1rem;resize:none;"></textarea>
+            <div style="display:flex;gap:15px;margin-top:25px;">
+                <button onclick="createThread()"
+                    style="flex:1;background:#fff8e1;color:#8B572A;padding:16px 20px;border:none;border-radius:50px;font-weight:bold;font-size:1.2rem;cursor:pointer;">Post
+                    Thread</button>
+                <button onclick="document.getElementById('newThreadModal').classList.remove('open')"
+                    style="flex:1;background:#666;color:white;padding:16px 20px;border:none;border-radius:50px;font-weight:bold;font-size:1.2rem;cursor:pointer;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDE MENU — CLEAN & SIMPLE (Settings moved to popup) -->
+    <div class="side-menu" id="sideMenu">
+        <button class="close-menu" onclick="closeMenu()">×</button>
+        <h2 style="color:#fff8e1;font-size:3rem;margin:40px 0;text-align:center;">Menu</h2>
+
+        <div id="loginMenu">
+            <button onclick="document.getElementById('loginModal').classList.add('open');closeMenu()"
+                style="width:90%;padding:22px;background:#fff8e1;color:#8B572A;border:none;border-radius:50px;font-weight:bold;font-size:1.7rem;margin:40px auto;display:block;">
+                Sign In / Create Account
+            </button>
+        </div>
+
+        <div id="userMenu" style="display:none;">
+            <div id="menuProfileButton" closeMenu()" style="text-align:center;margin:50px 0;cursor:pointer;">
+                <img src="" id="menuAvatar"
+                    style="width:110px;height:110px;border-radius:50%;border:6px solid #fff8e1;">
+                <p style="margin:15px 0;font-size:2rem;color:#fff8e1;" id="menuName">Loading...</p>
+                <small style="color:#ffecb3;font-size:1.3rem;cursor:pointer;">Edit Profile →</small>
+
+            </div>
+
+            <div style="margin:60px 0;">
+                <button onclick="closeMenu()"
+                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Home
+                </button>
+
+                <button onclick="closeMenu()"
+                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Resources
+                </button>
+                <button onclick="openSettings();closeMenu()"
+                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Settings
+                </button>
+
+
+                <button onclick="openMessagesInbox(); closeMenu()"
+                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">Messages</button>
+
+
+
+
+            </div>
+
+            <div style="margin-top:auto;padding-bottom:50px;text-align:center;">
+                <button onclick="auth.signOut().then(()=>location.reload())"
+                    style="background:#fff8e1;color:#8B572A;border:none;padding:22px 70px;border-radius:50px;font-weight:bold;font-size:1.8rem;">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- SETTINGS POPUP — LINK ALL COLORS WORKS + SAVES -->
+    <!-- SETTINGS MODAL — CLEAN MINIMAL STYLE (YOUR FAVORITE) -->
+    <div class="privateChatModal" id="settingsModal">
+        <div class="settings-box"
+            style="width:90%;max-width:480px;background:rgba(139,87,42,0.95);backdrop-filter:blur(15px);padding:35px;border-radius:25px;color:#fff8e1;box-shadow:0 15px 40px rgba(0,0,0,0.5);position:relative;">
+            <button onclick="document.getElementById('settingsModal').classList.remove('open')"
+                style="position:absolute;top:15px;right:20px;background:none;border:none;color:#fff8e1;font-size:2.2rem;cursor:pointer;opacity:0.8;transition:opacity 0.3s;">×</button>
+
+            <h2 style="font-size:2.5rem;text-align:center;margin-bottom:35px;color:#fff8e1;letter-spacing:0.5px;">
+                Settings</h2>
+
+            <!-- Link All Colors -->
+            <div class="settings-section"
+                style="margin:25px 0;padding:18px;background:rgba(255,248,225,0.1);border-radius:20px;border:1px solid rgba(255,248,225,0.2);">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <label for="linkColors" style="color:#fff8e1;font-size:1.3rem;font-weight:500;cursor:pointer;">Link
+                        All Colors</label>
+                    <input type="checkbox" id="linkColors" onchange="toggleLinkColors(this.checked)"
+                        style="width:28px;height:28px;cursor:pointer;accent-color:#fff8e1;">
+                </div>
+            </div>
+
+            <!-- Temperature Unit Toggle -->
+            <div class="settings-section"
+                style="background:none;padding:20px 0;margin:25px 0;border-top:1px solid rgba(255,248,225,0.2);border-bottom:1px solid rgba(255,248,225,0.2);">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px;">
+                    <label for="tempUnitToggle"
+                        style="color:#fff8e1;font-size:1.3rem;margin:0;cursor:pointer;display:flex;align-items:center;gap:25px;flex:1;">
+                        <span>Temperature Unit</span>
+                        <span style="font-size:1.1rem;opacity:0.9;">°F</span>
+
+                        <div id="tempToggleSwitch" onclick="document.getElementById('tempUnitToggle').click();"
+                            style="width:70px;height:36px;background:#ccc;border-radius:36px;position:relative;transition:background 0.3s;cursor:pointer;box-shadow:inset 0 2px 8px rgba(0,0,0,0.3);">
+                            <div id="tempToggleKnob"
+                                style="position:absolute;top:4px;left:4px;width:28px;height:28px;background:white;border-radius:50%;transition:left 0.3s;box-shadow:0 2px 6px rgba(0,0,0,0.4);">
+                            </div>
+                        </div>
+
+                        <span style="font-size:1.1rem;opacity:0.9;">°C</span>
+                    </label>
+                    <input type="checkbox" id="tempUnitToggle" style="display:none;">
+                </div>
+            </div>
+
+            <!-- Colors Section — Compact, inline color pickers -->
+            <div class="settings-section" style="margin-top:30px;">
+                <h3 style="font-size:1.6rem;margin-bottom:20px;text-align:center;opacity:0.9;">Colors</h3>
+
+                <div style="display:flex;flex-direction:column;gap:18px;">
+                    <div
+                        style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,248,225,0.1);padding:18px 22px;border-radius:20px;border:1px solid rgba(255,248,225,0.2);">
+                        <label style="color:#fff8e1;font-size:1.2rem;">Header Color</label>
+                        <input type="color" id="headerColorPicker" onchange="changeHeaderColor(this.value)"
+                            style="width:60px;height:50px;border:none;border-radius:12px;cursor:pointer;box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);">
+                    </div>
+
+                    <div
+                        style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,248,225,0.1);padding:18px 22px;border-radius:20px;border:1px solid rgba(255,248,225,0.2);">
+                        <label style="color:#fff8e1;font-size:1.2rem;">Ticker Color</label>
+                        <input type="color" id="tickerColorPicker" onchange="changeTickerColor(this.value)"
+                            style="width:60px;height:50px;border:none;border-radius:12px;cursor:pointer;box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);">
+                    </div>
+
+                    <div
+                        style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,248,225,0.1);padding:18px 22px;border-radius:20px;border:1px solid rgba(255,248,225,0.2);">
+                        <label style="color:#fff8e1;font-size:1.2rem;">Page Background Color</label>
+                        <input type="color" id="bgColor" onchange="changePageColor(this.value)"
+                            style="width:60px;height:50px;border:none;border-radius:12px;cursor:pointer;box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);">
+                    </div>
+
+                    <div
+                        style="background:rgba(255,248,225,0.1);padding:20px;border-radius:20px;border:1px solid rgba(255,248,225,0.2);text-align:center;">
+                        <label style="display:block;color:#fff8e1;font-size:1.2rem;margin-bottom:12px;">Upload
+                            Background Image</label>
+                        <input type="file" accept="image/*" onchange="uploadBackground(this.files[0])"
+                            style="width:100%;padding:12px;background:rgba(255,248,225,0.2);border:none;border-radius:12px;color:#fff8e1;font-size:1rem;cursor:pointer;">
+                    </div>
+                </div>
+
+                <button onclick="resetAllColors()"
+                    style="margin-top:30px;width:100%;background:#fff8e1;color:#8B572A;padding:16px;border:none;border-radius:50px;font-weight:bold;font-size:1.2rem;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.3);transition:0.3s;">
+                    Reset to Default
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+<!-- MESSAGES INBOX MODAL — FIXED LAYOUT -->
+<div class="privateChatModal" id="messagesInboxModal">
+    <div class="private-chat-box" style="width:90%;max-width:1000px;height:85vh;background:#fff8e1;border-radius:30px;overflow:hidden;display:flex;flex-direction:row;box-shadow:0 20px 50px rgba(0,0,0,0.6);position:relative;">
+        <!-- CLOSE BUTTON — CLEAR AND VISIBLE -->
+        <button onclick="closeMessagesInbox()" style="position:absolute;top:12px;right:12px;background:#8B572A;color:#fff8e1;font-size:2.8rem;font-weight:bold;cursor:pointer;z-index:30;width:48px;height:48px;border-radius:50%;border:none;box-shadow:0 4px 15px rgba(0,0,0,0.5);transition:0.3s;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='#A67C52'" onmouseout="this.style.background='#8B572A'">×</button>
+        
+        <!-- Left: Conversation List (wider for better readability) -->
+        <div style="width:40%;background:#8B572A;color:#fff8e1;padding:25px;overflow-y:auto;">
+            <h2 style="text-align:center;margin-bottom:25px;font-size:2rem;">Your Messages</h2>
+            <div id="conversationList" style="max-height:calc(85vh - 100px);overflow-y:auto;">
+                <p style="text-align:center;color:#ffecb3;opacity:0.8;margin:60px 0;">No conversations yet</p>
+            </div>
+        </div>
+        
+        <!-- Right: Selected Chat — FULL HEIGHT, NO OVERLAP -->
+        <div style="width:60%;display:flex;flex-direction:column;background:#fff8e1;color:#222;position:relative;">
+            <div style="padding:60px 30px 20px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.6rem;font-weight:bold;" id="selectedChatHeader">
+                Select a conversation to view messages
+            </div>
+            <div id="selectedChatMessages" style="flex:1;overflow-y:auto;padding:20px 30px;background:#f9f5f0;font-size:1.1rem;line-height:1.6;">
+                <!-- Messages load here -->
+            </div>
+            <div style="padding:20px;background:#fff;border-top:3px solid #8B572A;display:none;" id="messageInputArea">
+                <div style="display:flex;gap:12px;">
+                    <input type="text" id="inboxMessageInput" placeholder="Type a message..." style="flex:1;padding:16px;border-radius:30px;border:2px solid #8B572A;outline:none;font-size:1.1rem;">
+                    <button onclick="sendMessageFromInbox()" style="background:#8B572A;color:#fff8e1;padding:16px 28px;border:none;border-radius:30px;font-weight:bold;font-size:1.1rem;cursor:pointer;">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <header>
+        <div class="top-bar">
+            <div class="joke-block">
+                <span class="joke-header">Joke of the Day</span>
+                Why did the ostomate bring extra tape?<br>
+                <div>Just in case things got sticky!</div>
+            </div>
+            <div class="center-title">
+                <h1>Ostomy Friends Hub</h1>
+                <div class="weekly-quote-under-title">
+                    “Your bag doesn’t define you — your courage does.”<br>
+                    <em>– An ostomate warrior</em>
+                </div>
+            </div>
+            <div class="weather-block" id="weather-display">Detecting your weather...</div>
+        </div>
+    </header>
+
+    <!-- TICKER + BELL — PERFECT -->
+    <div class="ticker-container">
+        <button class="menu-btn" onclick="openMenu()"
+            style="background:none;border:none;cursor:pointer;padding:10px 14px;">
+            <svg width="44" height="52" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="2" y="3" width="20" height="5" rx="2.5" fill="#fff8e1" />
+                <rect x="2" y="11.5" width="20" height="5" rx="2.5" fill="#fff8e1" />
+                <rect x="2" y="20" width="20" height="5" rx="2.5" fill="#fff8e1" />
+            </svg>
+        </button>
+
+        <div
+            style="display:flex;align-items:center;justify-content:flex-start;width:100%;padding:0 90px 0 90px;box-sizing:border-box;position:relative;height:60px;">
+            <div class="ticker-mask"
+                style="flex:1;overflow:hidden;margin-right:80px;height:100%;display:flex;align-items:center;">
+                <div class="ticker-content">
+                    <span>New pouch covers just dropped – check them out!</span>
+                    <span>Travel tip: Always pack 2x the supplies you think you need</span>
+                    <span><a href="https://your-ebook-link.com/life—with—an—ostomy.pdf" target="_blank">Free eBook: Life
+                            with an Ostomy – click here!</a></span>
+                    <span>Welcome 47 new members this week!</span>
+                    <span>Tip of the day: M9 drops are magic for odor control</span>
+                    <span>Upcoming virtual meetup: December 5th at 7pm EST</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BELL — FAR RIGHT -->
+         
+       <!-- BELL — FAR RIGHT (removed inline onclick to let notifications.js handle the click) -->
+<button id="notificationBell"
+    style="background:#8B572A;color:#fff8e1;border:none;border-radius:50%;width:56px;height:56px;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3);position:absolute;right:20px;top:50%;transform:translateY(-50%);z-index:10000;">
+    🔔
+    <span id="notificationBadge"
+        style="position:absolute;top:6px;right:6px;width:18px;height:18px;background:#ff4444;color:white;border-radius:50%;font-size:0.75rem;font-weight:bold;display:none;align-items:center;justify-content:center;">
+        0
+    </span>
+</button>
+
+    </div>
+
+    <!-- DROPDOWN — YOUR GOOD POSITION -->
+    <div id="notificationsDropdown"
+        style="position:absolute;top:240px;right:20px;width:340px;background:#fff;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.35);display:none;flex-direction:column;z-index:9999;">
+        <div style="padding:16px 20px;background:#8B572A;color:#fff8e1;border-radius:20px 20px 0 0;font-weight:bold;">
+            Messages</div>
+        <div id="notificationList" style="padding:10px 0;max-height:60vh;overflow-y:auto;">
+            <p style="text-align:center;color:#888;margin:30px 0;">No new messages</p>
+        </div>
+    </div>
+
+
+
+
+    
+    <div class="grid-container">
+        <div class="box post-search-box">
+            <div class="fb-header">
+                <h2>Post Search</h2>
+                <input type="text" id="fb-search" placeholder="Search posts by keyword...">
+            </div>
+            <img src="images/FPost.png" alt="Post preview"
+                style="border-radius:15px;object-fit:cover;flex:1;width:100%">
+        </div>
+
+<div class="box featured-story" style="background-image: url('/images/marie-feature.jpg');">
+  <a href="https://www.facebook.com/nagae.line/posts/pfbid0qurhYsYYwM9Gs4qacs5bhA7eisWVW78oykmFsJjaRPi6kYbKfUWri6CeKyxaAxSnl"
+     class="featured-story__link"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Read Marie's story on Facebook">
+    <div class="featured-story__overlay">
+      <h3 class="featured-story__title">Marie’s Story</h3>
+      <p class="featured-story__excerpt">
+        Marie learned to manage her ostomy after a long journey of trial and error. She shares practical tips, emotional moments, and the one product that changed everything for her—helpful for anyone starting the same path. Her story covers the early recovery, adapting daily routines, and the supportive community that helped her regain confidence.
+      </p>
+      <span class="featured-story__cta">Read Marie's story</span>
+    </div>
+  </a>
+</div>
+
+        <div class="box ostomy-bob-box" id="bob-box" onclick="expandBob()">
+            <div class="bob-scroll-area">
+                <div class="bob-top">
+                    <img src="images/2.png" alt="OstomyBob">
+                    <div class="bob-greeting">
+                        <h2>Hi, I’m OstomyBob!</h2>
+                        <p>Ask me anything – I’m here 24/7.</p>
+                    </div>
+                </div>
+                <div id="bob-chat-messages"></div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="bob-user-input" placeholder="Ask OstomyBob anything..." autocomplete="off">
+                <button onclick="sendBobMessage()">Send</button>
+            </div>
+        </div>
+
+        <!-- COMMUNITYalum FORUM BOX -->
+        <div class="box full-chat-box" id="forum-box" onclick="expandForum()">
+            <h2>Community Forum</h2>
+            <div class="forum-categories">
+                <button class="category-btn active"
+                    onclick="event.stopPropagation(); loadCategory('general')">General</button>
+                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('new')">New to
+                    Ostomy</button>
+                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('products')">Product
+                    Reviews</button>
+                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('travel')">Travel
+                    Tips</button>
+            </div>
+            <div id="threadList" class="thread-list">
+                <p style="text-align:center;color:#666;margin-top:50px;">Loading threads...</p>
+            </div>
+            <button class="new-thread-btn" onclick="event.stopPropagation(); openNewThread()"
+                style="background:#fff8e1;color:#8B572A;padding:18px 40px;border:none;border-radius:50px;font-weight:bold;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.3);margin-top:20px;transition:0.3s;width:100%;">
+                + New Thread
+            </button>
+        </div>
+    </div>
+
+    <!-- LOAD THE 5 SEPARATE SCRIPT FILES — CORRECT ORDER -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    
+
+   <script src="firebase.js"></script>
+<script src="ui.js"></script>
+<script src="search.js"></script>
+<script src="auth.js"></script>
+<script src="forum.js"></script>
+<script src="notifications.js"></script>
+<script src="chat.js"></script>
+<script src="bob.js"></script>
+<script src="settings.js"></script>
+
+<!-- Set API base for search.js (must be BEFORE search.js) -->
+<script>window.__API_BASE__ = 'http://localhost:3000'</script>
+
+  
+
+<!-- <script src="backfill-add-participants.js"></script> -->
+     
+    <script>
+        // Auto-zoom so full page fits perfectly on load
+        function autoFitPage() {
+            const targetHeight = 900;  // Your design is made for ~900px height
+            const availableHeight = window.innerHeight;
+
+            if (availableHeight < targetHeight) {
+                const zoom = (availableHeight / targetHeight) * 0.85; // 95% safety margin
+                document.body.style.zoom = zoom;
+                document.body.style.transform = `scale(${zoom})`;
+                document.body.style.transformOrigin = 'top left';
+                document.body.style.width = `${100 / zoom}%`;
+                document.body.style.height = `${100 / zoom}%`;
+            }
+        }
+        // Run on load + resize
+        window.addEventListener('load', autoFitPage);
+        window.addEventListener('resize', autoFitPage);
+    </script>
+</body>
+
+</html>
