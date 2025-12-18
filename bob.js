@@ -3,7 +3,7 @@ const ASSISTANT_ID = "asst_kHnWoZoRhnwDOl90RKlmmk4R";
 let threadId = null;
 let thinkingMessageId = null;
 
-const API_BASE = 'http://localhost:3000/api/openai'; // Change to your production URL later
+//const API_BASE = 'http://localhost:3000/api/openai'; // Change to your production URL later
 
 async function createOpenAIThread() {
     const res = await fetch(`${API_BASE}/threads`, { 
