@@ -11,7 +11,11 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // Force long-polling (workaround for QUIC/HTTP3 listen channel failures)
-db.settings({ experimentalForceLongPolling: true });
-
+//db.settings({ experimentalForceLongPolling: true, merge: true });
+db.settings({
+  experimentalForceLongPolling: true,
+  experimentalAutoDetectLongPolling: false,
+  merge: true
+});
 const auth = firebase.auth();
 const storage = firebase.storage();
