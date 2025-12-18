@@ -67,7 +67,7 @@ app.get('/api/search', (req, res) => {
 });
 
 // Optional: serve static files under /server/static for debug (not necessary in prod)
-app.use('/server/static', express.static(path.join(__dirname, 'static')));
+app.use('/api/static', express.static(path.join(__dirname, 'static')));
 
 // Health check
 app.get('/_health', (req, res) => res.send('ok'));
