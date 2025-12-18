@@ -907,3 +907,129 @@ h1 {
   .weather-block { font-size: 1.2rem; }  /* Prevent overflow */
   .chat-message .bubble { max-width: 90%; }  /* More screen space */
 }
+
+
+#profileModal .modal-content {
+  max-width: 500px;  /* Widened for inline checkboxes */
+  width: 90%;  /* Responsive on mobile */
+  padding: 25px;
+  background: #e6d5b8;  /* Beige theme background */
+  border-radius: 12px;  /* Rounded corners */
+  box-shadow: 0 4px 16px rgba(139, 87, 42, 0.3);  /* Subtle earthy shadow */
+  color: #222;  /* Text color match */
+  font-family: 'Georgia', serif;  /* Font match */
+}
+#profileModal .modal-content {
+  max-width: 480px;  /* Widened to match settings, fits inline checkboxes */
+  width: 90%;  /* Responsive on mobile */
+  background: rgba(139,87,42,0.95);  /* Earthy brown theme bg */
+  backdrop-filter: blur(15px);  /* Blur effect */
+  padding: 35px;  /* Spacious padding */
+  border-radius: 25px;  /* Rounded corners */
+  color: #fff8e1;  /* Cream text */
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);  /* Deep shadow */
+  position: relative;  /* For close button */
+  text-align: center;  /* Centered content */
+}
+
+#profileModal h2 {
+  font-size: 2.4rem;  /* Large heading */
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;  /* Subtle spacing */
+}
+
+#editProfileForm {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;  /* Vertical spacing between groups */
+}
+
+#editProfileForm .field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;  /* Space within group */
+  background: rgba(255,248,225,0.1);  /* Subtle section bg like settings */
+  padding: 18px 22px;  /* Padded sections */
+  border-radius: 20px;  /* Rounded sections */
+  border: 1px solid rgba(255,248,225,0.2);  /* Subtle border */
+}
+
+#editProfileForm label:not(.checkbox-label) {
+  font-size: 1.2rem;  /* Bold labels */
+  font-weight: 500;
+  margin-bottom: 5px;  /* Space under main labels */
+}
+
+#editProfileForm input,
+#editProfileForm textarea {
+  width: 100%;  /* Full width */
+  padding: 18px;  /* Themed padding */
+  border-radius: 50px;  /* High roundness */
+  border: 3px solid #fff8e1;  /* Cream border */
+  background: rgba(255,255,255,0.25);  /* Semi-transparent bg */
+  color: white;  /* White text */
+  font-size: 1.1rem;  /* Readable size */
+  text-align: center;  /* Centered text */
+  font-weight: bold;
+}
+
+#editProfileForm textarea {
+  height: 120px;  /* For bio */
+  border-radius: 25px;  /* Slightly less round for textarea */
+  resize: none;  /* No resizing */
+}
+
+#editProfileForm button {
+  flex: 1;  /* For button row */
+  background: #fff8e1;  /* Cream button bg */
+  color: #8B572A;  /* Brown text */
+  padding: 16px 20px;  /* Padded buttons */
+  border: none;
+  border-radius: 50px;  /* High roundness */
+  font-weight: bold;
+  font-size: 1.2rem;  /* Bold text */
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);  /* Shadow */
+  transition: 0.3s;  /* Hover transition */
+}
+
+#editProfileForm button:hover {
+  background: #ffecb3;  /* Lighter hover (cream variant) */
+}
+
+/* Inline Checkbox Layout (on same line as field) */
+#editProfileForm .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;  /* Space between checkbox and text */
+  font-size: 1.1rem;  /* Smaller text */
+  font-weight: normal;
+  color: #ffecb3;  /* Lighter cream for subtlety */
+  margin: 0;
+  cursor: pointer;
+}
+
+#editProfileForm input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #fff8e1;  /* Theme checkbox color */
+  cursor: pointer;
+}
+#editProfileForm select {
+  padding: 18px;  /* Match input padding */
+  border-radius: 50px;
+  border: 3px solid #fff8e1;
+  background: rgba(255,255,255,0.25);
+  color: white;
+  font-size: 1.1rem;  /* Increased text size for readability */
+  text-align: center;
+  font-weight: bold;
+  appearance: none;  /* Remove default arrow if needed (add custom if wanted) */
+  cursor: pointer;
+}
+
+#currentAvatar {
+  display: block;
+  margin: 0 auto 15px;  /* Centered with space below */
+  object-fit: cover;  /* Ensure image fills without distortion */
+}

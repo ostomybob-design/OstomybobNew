@@ -131,42 +131,57 @@
         </div>
     </div>
 
-    <!-- EDIT PROFILE MODAL -->
-    <div class="profile-modal" id="profileModal">
-        <div class="profile-box" style="max-width:460px;padding:45px;">
-            <h2 style="font-size:2.4rem;margin-bottom:25px;">Edit Profile</h2>
-            <div class="avatar-upload" style="margin:25px 0;">
-                <img src="" id="editAvatarPreview" class="avatar-big"
-                    style="width:140px;height:140px;border-radius:50%;border:6px solid #fff8e1;object-fit:cover;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.3);transition:0.3s;"
-                    onclick="document.getElementById('avatarInput').click()">
-                <input type="file" id="avatarInput" accept="image/*" style="display:none;">
-                <br>
-                <small style="color:#ffecb3;margin-top:12px;display:block;font-weight:bold;cursor:pointer;"
-                    onclick="document.getElementById('avatarInput').click()">Change Photo</small>
-            </div>
-            <input type="text" id="editName" placeholder="Your Name"
-                style="width:100%;padding:18px;margin:15px 0;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.2rem;text-align:center;font-weight:bold;">
-            <select id="editOstomyType"
-                style="width:100%;padding:18px;margin:15px 0;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.1rem;">
-                <option value="">Ostomy Type</option>
-                <option>Colostomy</option>
-                <option>Ileostomy</option>
-                <option>Urostomy</option>
-            </select>
-            <input type="date" id="editSurgeryDate"
-                style="width:100%;padding:18px;margin:15px 0;border-radius:50px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.1rem;">
-            <textarea id="editBio" placeholder="Write a short bio (optional)"
-                style="width:100%;height:120px;padding:18px;margin:15px 0;border-radius:25px;border:3px solid #fff8e1;background:rgba(255,255,255,0.25);color:white;font-size:1.1rem;resize:none;"></textarea>
-            <div style="display:flex;gap:15px;margin-top:25px;">
-                <button onclick="saveProfile()"
-                    style="flex:1;background:#fff8e1;color:#8B572A;padding:16px 20px;border:none;border-radius:50px;font-weight:bold;font-size:1.2rem;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.3);">Save
-                    Changes</button>
-                <button onclick="document.getElementById('profileModal').classList.remove('open')"
-                    style="flex:1;background:#666;color:white;padding:16px 20px;border:none;border-radius:50px;font-weight:bold;font-size:1.2rem;cursor:pointer;">Cancel</button>
-            </div>
-        </div>
-    </div>
+<div id="profileModal" class="modal">
+  <div class="modal-content">
+    <h2>Edit Profile</h2>
+    <form id="editProfileForm">
+      <div class="field-group" style="text-align: center; margin-bottom: 20px;">
+        <img id="currentAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="Current Avatar" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #8B572A;">
+        <label for="avatarInput" style="display: block; margin-top: 10px;">Upload New Avatar:</label>
+        <input type="file" id="avatarInput" accept="image/*" style="margin: 0 auto;">
+      </div>
 
+      <div class="field-group">
+        <label for="editName">Display Name:</label>
+        <input type="text" id="editName" required>
+      </div>
+
+      <div class="field-group">
+        <label for="editOstomyType">Ostomy Type:</label>
+        <select id="editOstomyType">
+          <option value="">Select Type</option>
+          <option value="Colostomy">Colostomy</option>
+          <option value="Ileostomy">Ileostomy</option>
+          <option value="Urostomy">Urostomy</option>
+        </select>
+        <label class="checkbox-label"><input type="checkbox" id="showOstomyType" checked> Show to others</label>
+      </div>
+
+      <div class="field-group">
+        <label for="editSurgeryDate">Surgery Date:</label>
+        <input type="date" id="editSurgeryDate">
+        <label class="checkbox-label"><input type="checkbox" id="showSurgeryDate" checked> Show to others</label>
+      </div>
+
+      <div class="field-group">
+        <label for="editBio">Bio:</label>
+        <textarea id="editBio"></textarea>
+        <label class="checkbox-label"><input type="checkbox" id="showBio" checked> Show to others</label>
+      </div>
+
+      <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
+        <button type="button" onclick="saveProfile()">Save</button>
+        <button type="button" onclick="document.getElementById('profileModal').classList.remove('open')">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+ 
+</form>
+  </div>
+</div>
 
 
     <!-- USER PROFILE POPUP — DOT BOTTOM-RIGHT -->

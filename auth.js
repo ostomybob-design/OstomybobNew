@@ -83,7 +83,8 @@ function loadUserProfile(user) {
         document.getElementById('menuName').textContent = currentUserProfile.displayName;
         const avatar = currentUserProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`;
         document.getElementById('menuAvatar').src = avatar;
-        document.getElementById('editAvatarPreview').src = avatar;
+       const editAvatar = document.getElementById('currentAvatar');
+if (editAvatar) editAvatar.src = avatar;
 
         // Fixed — null check
         const tempSelect = document.getElementById('tempUnit');

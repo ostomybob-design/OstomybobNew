@@ -438,4 +438,42 @@ if (typeof auth !== 'undefined' && auth && typeof auth.onAuthStateChanged === 'f
         }
     });
 }
+// In chat.js (add at the end)
+
+async function viewUserProfile(userId) {
+  if (!userId) return;
+
+  const userDoc = await db.collection('users').doc(userId).get();
+  const data = userDoc.data();
+
+  if (data) {
+    let profileContent = `
+      <img src="${data.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + userId}" alt="Avatar" style="width:100px; height:100px; border-radius:50%;">
+      <h3>${data.displayName || 'Friend'}</h3>
+    `;
+
+    // Conditionally show fields based on visibility flags (default true if undefined)
+    if (data.showOstomyType !== false && data.ostomyType) {
+      profileContent += `<p>Ostomy Type: ${data.ostomyType}</p>`;
+    }
+    if (data.showSurgeryDate !== false && data.surgeryDate) {
+      profileContent += `<p>Surgery Date: ${new Date(data.surgeryDate).toLocaleDateString()}</p>`;
+    }
+    if (data.showBio !== false && data.bio) {
+      profileContent += `<p>Bio: ${data.bio}</p>`;
+    }
+
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+        ${profileContent}
+      </div>
+    `;
+    document.body.appendChild(modal);
+  } else {
+    alert('User profile not found.');
+  }
+}
 

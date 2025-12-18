@@ -1,4 +1,4 @@
-// settings.js — COMPLETE & FIXED (color linking, persistence, temp toggle, profile save)
+// settings.js — COMPLETE & FIXED (color linking, persistence, temp toggle, profile save with visibility checkboxes)
 
 let linkColorsEnabled = localStorage.getItem('linkColorsEnabled') === 'true';
 
@@ -149,7 +149,10 @@ function saveProfile() {
         displayName: document.getElementById('editName').value.trim() || "Friend",
         ostomyType: document.getElementById('editOstomyType').value,
         surgeryDate: document.getElementById('editSurgeryDate').value,
-        bio: document.getElementById('editBio').value.trim()
+        bio: document.getElementById('editBio').value.trim(),
+        showOstomyType: document.getElementById('showOstomyType').checked,
+        showSurgeryDate: document.getElementById('showSurgeryDate').checked,
+        showBio: document.getElementById('showBio').checked
     };
 
     const avatarInput = document.getElementById('avatarInput');
@@ -232,3 +235,35 @@ if (toggleSwitch && toggleInput) {
         observer.observe(settingsModal, { attributes: true, attributeFilter: ['class'] });
     }
 }
+
+// Load visibility checkboxes when modal opens
+function loadProfileVisibility() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  db.collection('users').doc(user.uid).get().then(doc => {
+    const data = doc.data() || {};
+    document.getElementById('editOstomyType').value = data.ostomyType || '';  // Sets dropdown to saved value
+    document.getElementById('editName').value = data.displayName || '';
+    document.getElementById('editOstomyType').value = data.ostomyType || '';
+    document.getElementById('editSurgeryDate').value = data.surgeryDate || '';
+    document.getElementById('editBio').value = data.bio || '';
+
+    document.getElementById('showOstomyType').checked = data.showOstomyType !== false;
+    document.getElementById('showSurgeryDate').checked = data.showSurgeryDate !== false;
+    document.getElementById('showBio').checked = data.showBio !== false;
+  });
+}
+
+// Call when opening the modal (add to your open trigger, e.g., if onclick="openProfileModal()")
+function openProfileModal() {
+  document.getElementById('profileModal').classList.add('open');
+  loadProfileVisibility();
+}
+
+// Call loadProfileVisibility() when modal opens (add this in your modal open code or onload)
+document.getElementById('profileModal').addEventListener('classList', () => {
+    if (document.getElementById('profileModal').classList.contains('open')) {
+        loadProfileVisibility();
+    }
+});  // Use MutationObserver if addEventListener not working
