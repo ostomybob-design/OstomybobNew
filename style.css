@@ -874,3 +874,36 @@ h1 {
     margin-bottom: 12px; /* reduce space below ticker if desired */
     height: 56px;        /* slightly smaller height if you want it tighter */
 }
+@media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: 1fr;  /* Stack columns vertically */
+    padding: 0 20px;  /* Reduce side padding */
+  }
+  .box {
+    height: auto;  /* Let content determine height */
+    padding: 20px;  /* Smaller padding */
+  }
+  .expanded {
+    height: auto;  /* Avoid fixed heights */
+  }
+  .top-bar {
+    flex-direction: column;  /* Stack elements if needed */
+    padding: 10px;  /* Adjust for smaller screens */
+  }
+  .input-area input, .input-area button {
+    font-size: 1rem;  /* Smaller text */
+  }
+  /* Fix overlay positioning for full coverage */
+  body::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+  /* Add similar rules for other elements like .ticker-container, .side-menu (make it full-width) */
+}
+
+@media (max-width: 480px) {
+  h1 { font-size: 2.5rem; }  /* Scale down headers */
+  .weather-block { font-size: 1.2rem; }  /* Prevent overflow */
+  .chat-message .bubble { max-width: 90%; }  /* More screen space */
+}
