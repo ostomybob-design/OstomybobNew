@@ -950,23 +950,29 @@ h1 {
 #editProfileForm .field-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: rgba(255,248,225,0.1); 
-  padding: 18px 22px; 
-  border-radius: 20px; 
-  border: 1px solid rgba(255,248,225,0.2); 
+  gap: 10px;  /* Space between label and input */
+  align-items: flex-start;  /* Left-align */
 }
-
-
 
 #editProfileForm label:not(.checkbox-label) {
-  font-size: 1.2rem;  /* Bold labels */
-  font-weight: 500;
-  margin-bottom: 5px;  /* Space under main labels */
+  color: #ffecb3;  /* Same color as checkbox text */
+  opacity: 0.8;  /* Subtle opacity match */
+  font-size: 1.2rem;  /* Bigger font */
+  font-weight: 500;  /* Slight bold for emphasis */
+  margin-bottom: 5px;
 }
 
+#editProfileForm .checkbox-label {
+  color: #ffecb3;  /* Ensure match (already was) */
+  opacity: 0.8;
+  font-size: 1.1rem;  /* Smaller than main labels */
+}
+
+#editProfileForm select,
 #editProfileForm input,
 #editProfileForm textarea {
+  width: 100%;  /* Full width below label */
+
   width: 100%;  /* Full width */
   padding: 18px;  /* Themed padding */
   border-radius: 50px;  /* High roundness */
@@ -1002,17 +1008,7 @@ h1 {
   background: #ffecb3;  /* Lighter hover (cream variant) */
 }
 
-/* Inline Checkbox Layout (on same line as field) */
-#editProfileForm .checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 10px;  /* Space between checkbox and text */
-  font-size: 1.1rem;  /* Smaller text */
-  font-weight: normal;
-  color: #ffecb3;  /* Lighter cream for subtlety */
-  margin: 0;
-  cursor: pointer;
-}
+
 
 #editProfileForm input[type="checkbox"] {
   width: 20px;
