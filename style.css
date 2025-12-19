@@ -147,13 +147,19 @@ h1 {
 }
 
 .ticker-mask {
-    position: absolute;
-    left: 90px;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    overflow: hidden;
-    pointer-events: none
+  position: absolute;
+  left: 90px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  /* Remove pointer-events: none; to allow clicks */
+  /* pointer-events: none; */
+}
+
+.ticker-content a {
+  pointer-events: auto;  /* Ensure links are clickable */
+  cursor: pointer;
 }
 
 .ticker-content {
