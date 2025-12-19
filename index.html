@@ -148,33 +148,38 @@
       </div>
 
       <div class="field-group">
-        <label for="editOstomyType">Ostomy Type:</label>
-        
+        <div class="header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label for="editOstomyType">Ostomy Type:</label>
+          <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="showOstomyType" checked> Show to others
+          </label>
+        </div>
         <select id="editOstomyType">
           <option value="">Select Type</option>
           <option value="Colostomy">Colostomy</option>
           <option value="Ileostomy">Ileostomy</option>
           <option value="Urostomy">Urostomy</option>
         </select>
-        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-top: 8px;">
-          Show to others <input type="checkbox" id="showOstomyType" checked>
-        </label>
       </div>
 
       <div class="field-group">
-        <label for="editSurgeryDate">Surgery Date:</label>
+        <div class="header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label for="editSurgeryDate">Surgery Date:</label>
+          <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="showSurgeryDate" checked> Show to others
+          </label>
+        </div>
         <input type="date" id="editSurgeryDate">
-        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-top: 8px;">
-          Show to others <input type="checkbox" id="showSurgeryDate" checked>
-        </label>
       </div>
 
       <div class="field-group">
-        <label for="editBio">Bio:</label>
+        <div class="header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label for="editBio">Bio:</label>
+          <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="showBio" checked> Show to others
+          </label>
+        </div>
         <textarea id="editBio"></textarea>
-        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-top: 8px;">
-          Show to others <input type="checkbox" id="showBio" checked>
-        </label>
       </div>
 
       <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
@@ -184,7 +189,7 @@
     </form>
   </div>
 </div>
- 
+
 </form>
   </div>
 </div>

@@ -953,6 +953,10 @@ h1 {
   gap: 10px;  /* Space between label and input */
   align-items: flex-start;  /* Left-align */
 }
+#editProfileForm .field-group:first-child label {
+  text-align: left;  /* Left-align the upload label */
+  margin-top: 10px;  /* Keep space above */
+}
 
 #editProfileForm label:not(.checkbox-label) {
   color: #ffecb3;  /* Same color as checkbox text */
