@@ -469,3 +469,31 @@ document.getElementById('menuProfileButton')?.addEventListener('click', function
   openProfile();
   if (typeof closeMenu === 'function') closeMenu();
 });
+function toggleFullScreen() {
+  const btn = document.getElementById('fullscreenToggle');
+  if (!btn) return;
+
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().then(() => {
+      btn.textContent = 'Exit Full Screen';
+     
+      document.body.style.zoom = '90%';
+      //document.body.style.zoom = '100%';
+       //document.body.style.zoom = '110%';
+       //autoFitPage();  // Recalculate fit after entering full screen
+     
+    }).catch(err => {
+      console.error('Fullscreen error:', err);
+    });
+  } else {
+    document.exitFullscreen().then(() => {
+      btn.textContent = 'Full Screen';
+      
+      document.body.style.zoom = '100%';
+     // autoFitPage();  // Recalculate fit after exiting full screen
+    }).catch(err => {
+      console.error('Exit fullscreen error:', err);
+    });
+  }
+}
+

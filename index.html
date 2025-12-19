@@ -243,7 +243,8 @@
     </div>
 
     <!-- SIDE MENU — CLEAN & SIMPLE (Settings moved to popup) -->
-    <div class="side-menu" id="sideMenu">
+
+<div class="side-menu" id="sideMenu">
         <button class="close-menu" onclick="closeMenu()">×</button>
         <h2 style="color:#fff8e1;font-size:3rem;margin:40px 0;text-align:center;">Menu</h2>
 
@@ -264,6 +265,11 @@
             </div>
 
             <div style="margin:60px 0;">
+                
+                <button id="fullscreenToggle" onclick="toggleFullScreen()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Full Screen
+                </button>
+                
                 <button onclick="closeMenu()"
                     style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
                     Home
@@ -282,9 +288,6 @@
                 <button onclick="openMessagesInbox(); closeMenu()"
                     style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">Messages</button>
 
-
-
-
             </div>
 
             <div style="margin-top:auto;padding-bottom:50px;text-align:center;">
@@ -295,6 +298,8 @@
             </div>
         </div>
     </div>
+
+    
     <!-- SETTINGS POPUP — LINK ALL COLORS WORKS + SAVES -->
     <!-- SETTINGS MODAL — CLEAN MINIMAL STYLE (YOUR FAVORITE) -->
     <div class="privateChatModal" id="settingsModal">
