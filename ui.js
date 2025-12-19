@@ -496,4 +496,19 @@ function toggleFullScreen() {
     });
   }
 }
+function toggleHeader() {
+  const header = document.getElementById('siteHeader');
+  const toggleBtn = document.getElementById('hideHeaderBtn');
+  const body = document.body;
+
+  if (header.style.display !== 'none') {
+    header.style.display = 'none';
+    toggleBtn.textContent = 'Show Header';
+    body.style.marginTop = '0';  /* Expand main body up */
+  } else {
+    header.style.display = 'block';  /* Restore header (or 'flex' if needed) */
+    toggleBtn.textContent = 'Hide Header';
+    body.style.marginTop = 'initial';  /* Reset to default */
+  }
+}
 

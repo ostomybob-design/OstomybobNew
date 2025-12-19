@@ -1045,3 +1045,11 @@ h1 {
   margin: 0 auto 15px;  /* Centered with space below */
   object-fit: cover;  /* Ensure image fills without distortion */
 }
+#headerToggle {
+  margin-left: auto;  /* Right-align the button */
+  transition: 0.3s;  /* Smooth icon change */
+}
+
+.top-bar {
+  transition: display 0.3s ease;  /* Smooth hide/show */
+}

@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,6 +66,7 @@
 </head>
 
 <body>
+    
     <div id="expandOverlay"></div>
     <!-- LOGIN MODAL — BIGGER & BEAUTIFUL -->
     <div class="login-modal" id="loginModal">
@@ -244,61 +247,57 @@
 
     <!-- SIDE MENU — CLEAN & SIMPLE (Settings moved to popup) -->
 
-<div class="side-menu" id="sideMenu">
-        <button class="close-menu" onclick="closeMenu()">×</button>
-        <h2 style="color:#fff8e1;font-size:3rem;margin:40px 0;text-align:center;">Menu</h2>
 
-        <div id="loginMenu">
-            <button onclick="document.getElementById('loginModal').classList.add('open');closeMenu()"
-                style="width:90%;padding:22px;background:#fff8e1;color:#8B572A;border:none;border-radius:50px;font-weight:bold;font-size:1.7rem;margin:40px auto;display:block;">
-                Sign In / Create Account
-            </button>
-        </div>
+    <div class="side-menu" id="sideMenu">
+  <button class="close-menu" onclick="closeMenu()">×</button>
+  <h2 style="color:#fff8e1;font-size:3rem;margin:40px 0;text-align:center;">Menu</h2>
 
-        <div id="userMenu" style="display:none;">
-            <div id="menuProfileButton" closeMenu()" style="text-align:center;margin:50px 0;cursor:pointer;">
-                <img src="" id="menuAvatar"
-                    style="width:110px;height:110px;border-radius:50%;border:6px solid #fff8e1;">
-                <p style="margin:15px 0;font-size:2rem;color:#fff8e1;" id="menuName">Loading...</p>
-                <small style="color:#ffecb3;font-size:1.3rem;cursor:pointer;">Edit Profile →</small>
+  <div id="loginMenu">
+    <button onclick="document.getElementById('loginModal').classList.add('open');closeMenu()"
+        style="width:90%;padding:22px;background:#fff8e1;color:#8B572A;border:none;border-radius:50px;font-weight:bold;font-size:1.7rem;margin:40px auto;display:block;">
+        Sign In / Create Account
+    </button>
+  </div>
 
-            </div>
-
-            <div style="margin:60px 0;">
-                
-                <button id="fullscreenToggle" onclick="toggleFullScreen()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-                    Full Screen
-                </button>
-                
-                <button onclick="closeMenu()"
-                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-                    Home
-                </button>
-
-                <button onclick="closeMenu()"
-                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-                    Resources
-                </button>
-                <button onclick="openSettings();closeMenu()"
-                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-                    Settings
-                </button>
-
-
-                <button onclick="openMessagesInbox(); closeMenu()"
-                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">Messages</button>
-
-            </div>
-
-            <div style="margin-top:auto;padding-bottom:50px;text-align:center;">
-                <button onclick="auth.signOut().then(()=>location.reload())"
-                    style="background:#fff8e1;color:#8B572A;border:none;padding:22px 70px;border-radius:50px;font-weight:bold;font-size:1.8rem;">
-                    Logout
-                </button>
-            </div>
-        </div>
+  <div id="userMenu" style="display:none;">
+    <div id="menuProfileButton" closeMenu()" style="text-align:center;margin:50px 0;cursor:pointer;">
+      <img src="" id="menuAvatar" style="width:110px;height:110px;border-radius:50%;border:6px solid #fff8e1;">
+      <p style="margin:15px 0;font-size:2rem;color:#fff8e1;" id="menuName">Loading...</p>
+      <small style="color:#ffecb3;font-size:1.3rem;cursor:pointer;">Edit Profile →</small>
     </div>
 
+    <div style="margin:60px 0;">
+      
+      <button id="hideHeaderBtn" onclick="toggleHeader()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+        Hide Header
+      </button>
+      
+      <button id="fullscreenToggle" onclick="toggleFullScreen()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+        Full Screen
+      </button>
+      
+      <button onclick="closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+        Home
+      </button>
+
+      <button onclick="closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+        Resources
+      </button>
+      <button onclick="openSettings();closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+        Settings
+      </button>
+
+      <button onclick="openMessagesInbox(); closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">Messages</button>
+
+    </div>
+
+    <div style="margin-top:auto;padding-bottom:50px;text-align:center;">
+      <button onclick="auth.signOut().then(()=>location.reload())" style="background:#fff8e1;color:#8B572A;border:none;padding:22px 70px;border-radius:50px;font-weight:bold;font-size:1.8rem;">
+        Logout
+      </button>
+    </div>
+  </div>
+</div>
     
     <!-- SETTINGS POPUP — LINK ALL COLORS WORKS + SAVES -->
     <!-- SETTINGS MODAL — CLEAN MINIMAL STYLE (YOUR FAVORITE) -->
@@ -428,8 +427,8 @@
     </div>
 </div>
 
-    <header>
-        <div class="top-bar">
+   <header id="siteHeader">
+  <div class="top-bar" id="headerBar">
             <div class="joke-block">
                 <span class="joke-header">Joke of the Day</span>
                 Why did the ostomate bring extra tape?<br>
