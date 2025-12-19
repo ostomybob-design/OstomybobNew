@@ -425,18 +425,19 @@ h1 {
 }
 
 .side-menu {
-    position: fixed;
-    top: 0;
-    left: -320px;
-    width: 320px;
-    height: 100vh;
-    background: rgba(139, 87, 42, 0.98);
-    backdrop-filter: blur(12px);
-    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    transition: left 0.4s ease;
-    padding: 100px 30px 40px;
-    color: #fff8e1
+position: fixed;
+top: 0;
+left: -320px;
+width: 320px;
+min-height: 100vh;  /* Changed from height to min-height to allow expansion */
+background: rgba(139, 87, 42, 0.98);  /* Brown background covers full content */
+backdrop-filter: blur(12px);
+box-shadow: 8px 0 30px rgba(0, 0, 0, 0.5);
+z-index: 1000;
+transition: left 0.4s ease;
+padding: 100px 30px 40px;
+color: #fff8e1;
+overflow-y: auto;  /* Add scroll if content exceeds screen height */
 }
 
 .side-menu.open {
