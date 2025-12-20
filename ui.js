@@ -543,3 +543,82 @@ document.addEventListener('DOMContentLoaded', () => {
 window.toggleHeader = toggleHeader;
 
 
+function toggleResources(arg) {
+  // debugging helper
+  try { console.debug('toggleResources called', arg); } catch (e) {}
+
+  // resolve button (accept element, event, or nothing)
+  let btn = null;
+  if (arg && arg.nodeType === 1) btn = arg;
+  else if (arg && arg.currentTarget) btn = arg.currentTarget;
+  else btn = document.getElementById('resourcesToggleBtn') || document.querySelector('[data-resources-toggle]');
+
+  // resolve main areas
+  const grid = document.querySelector('.grid-container') || document.getElementById('mainGrid') || document.querySelector('.main-grid');
+  const resources = document.getElementById('resourcesPage') || document.querySelector('[data-resources-page]');
+
+  if (!grid) { console.warn('toggleResources: .grid-container not found'); }
+  if (!resources) { console.warn('toggleResources: #resourcesPage not found'); }
+  if (!grid || !resources) return;
+
+  // Use a body class to track state (more reliable than inline style/read)
+  const showing = document.body.classList.toggle('show-resources');
+
+  // Apply visibility via class + inline fallback for older code
+  if (showing) {
+    document.body.classList.add('show-resources');
+    resources.style.display = 'block';
+    grid.style.display = 'none';
+    if (btn) { btn.textContent = 'Home'; btn.setAttribute('aria-pressed', 'true'); }
+  } else {
+    document.body.classList.remove('show-resources');
+    resources.style.display = 'none';
+    grid.style.display = '';
+    if (btn) { btn.textContent = 'Resources'; btn.setAttribute('aria-pressed', 'false'); }
+  }
+
+  // force layout update
+  void document.body.offsetHeight;
+  try { console.debug('toggleResources done', { showing, gridDisplay: grid.style.display, resourcesDisplay: resources.style.display }); } catch (e) {}
+}
+
+// ensure global and attach safe click handler if button exists
+
+// Debug helper: ensure Resources button is wired (safe, idempotent)
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('resourcesToggleBtn');
+    const resources = document.getElementById('resourcesPage');
+    const grid = document.querySelector('.grid-container');
+    console.debug('Debug: resourcesToggleBtn present?', !!btn, 'resources present?', !!resources, 'grid present?', !!grid);
+
+    if (!btn) return;
+
+    // attach a guaranteed handler that logs and calls the toggle
+    const handler = (ev) => {
+      ev && ev.preventDefault && ev.preventDefault();
+      console.debug('Debug: resources button clicked (handler)');
+      // call the existing function if available
+      if (typeof window.toggleResources === 'function') {
+        window.toggleResources(btn);
+      } else {
+        // fallback: toggle display directly
+        if (resources && grid) {
+          const showing = window.getComputedStyle(resources).display !== 'none';
+          resources.style.display = showing ? 'none' : 'block';
+          grid.style.display = showing ? '' : 'none';
+          btn.textContent = showing ? 'Resources' : 'Home';
+          console.debug('Debug: fallback toggle executed, showing:', !showing);
+        } else {
+          console.warn('Debug: fallback toggle failed - elements missing');
+        }
+      }
+    };
+
+    // remove previous to avoid double-binding, then attach
+    btn.removeEventListener('click', btn._resourcesDbgHandler);
+    btn._resourcesDbgHandler = handler;
+    btn.addEventListener('click', handler);
+});
+
+// expose for inline onclick usage
+window.toggleResources = toggleResources;

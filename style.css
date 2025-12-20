@@ -1053,3 +1053,7 @@ h1 {
 .top-bar {
   transition: display 0.3s ease;  /* Smooth hide/show */
 }
+/* show-resources body class — keeps layout predictable */
+body.show-resources .grid-container { display: none !important; }
+body.show-resources #resourcesPage { display: block !important; }
+#resourcesPage { display: none; } /* ensure default hidden if inline removed */
