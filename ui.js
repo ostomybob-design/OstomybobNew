@@ -543,44 +543,28 @@ document.addEventListener('DOMContentLoaded', () => {
 window.toggleHeader = toggleHeader;
 
 
-function toggleResources(arg) {
-  // debugging helper
-  try { console.debug('toggleResources called', arg); } catch (e) {}
+function toggleResources() {
+  const grid = document.querySelector('.grid-container');
+  const resources = document.getElementById('resourcesPage');
+  const btn = document.getElementById('resourcesBtn');
 
-  // resolve button (accept element, event, or nothing)
-  let btn = null;
-  if (arg && arg.nodeType === 1) btn = arg;
-  else if (arg && arg.currentTarget) btn = arg.currentTarget;
-  else btn = document.getElementById('resourcesToggleBtn') || document.querySelector('[data-resources-toggle]');
-
-  // resolve main areas
-  const grid = document.querySelector('.grid-container') || document.getElementById('mainGrid') || document.querySelector('.main-grid');
-  const resources = document.getElementById('resourcesPage') || document.querySelector('[data-resources-page]');
-
-  if (!grid) { console.warn('toggleResources: .grid-container not found'); }
-  if (!resources) { console.warn('toggleResources: #resourcesPage not found'); }
-  if (!grid || !resources) return;
-
-  // Use a body class to track state (more reliable than inline style/read)
-  const showing = document.body.classList.toggle('show-resources');
-
-  // Apply visibility via class + inline fallback for older code
-  if (showing) {
-    document.body.classList.add('show-resources');
-    resources.style.display = 'block';
-    grid.style.display = 'none';
-    if (btn) { btn.textContent = 'Home'; btn.setAttribute('aria-pressed', 'true'); }
+  if (grid && resources && btn) {
+    if (resources.style.display === 'none') {
+      resources.style.display = 'block';
+      grid.style.display = 'none';
+      btn.textContent = 'Home';
+    } else {
+      resources.style.display = 'none';
+      grid.style.display = 'grid';
+      btn.textContent = 'Resources';
+    }
   } else {
-    document.body.classList.remove('show-resources');
-    resources.style.display = 'none';
-    grid.style.display = '';
-    if (btn) { btn.textContent = 'Resources'; btn.setAttribute('aria-pressed', 'false'); }
+    console.error('toggleResources: Elements not found');
   }
-
-  // force layout update
-  void document.body.offsetHeight;
-  try { console.debug('toggleResources done', { showing, gridDisplay: grid.style.display, resourcesDisplay: resources.style.display }); } catch (e) {}
 }
+
+// Make global for onclick
+window.toggleResources = toggleResources;
 
 // ensure global and attach safe click handler if button exists
 

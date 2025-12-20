@@ -1057,3 +1057,40 @@ h1 {
 body.show-resources .grid-container { display: none !important; }
 body.show-resources #resourcesPage { display: block !important; }
 #resourcesPage { display: none; } /* ensure default hidden if inline removed */
+#resourcesPage {
+  padding: 40px;
+  background: #fff8e1;
+  color: #222;
+  border-radius: 30px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+  margin: 20px auto;
+  max-width: 1700px;
+}
+
+#resourcesPage h2 {
+  font-size: 2.2rem;  /* Larger heading */
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#resourcesPage ul {
+  list-style-type: disc;
+  padding-left: 40px;
+  margin: 0;
+}
+
+#resourcesPage li {
+  font-size: 1.4rem;  /* Bigger text */
+  line-height: 1.6;  /* Better spacing */
+  margin-bottom: 15px;
+}
+
+#resourcesPage a {
+  color: #8B572A;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+#resourcesPage a:hover {
+  color: #6D4321;
+}
