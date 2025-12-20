@@ -1094,3 +1094,17 @@ body.show-resources #resourcesPage { display: block !important; }
 #resourcesPage a:hover {
   color: #6D4321;
 }
+#siteHeader {
+  height: 150px;  /* Fixed height to prevent expansion (adjust if needed) */
+  overflow: hidden;  /* Hide any overflow if text wraps */
+}
+
+.top-bar {
+  height: 100%;  /* Fill the header */
+  align-items: center;  /* Center content vertically */
+}
+
+.joke-block {
+  max-height: 100%;  /* Prevent joke from expanding */
+  overflow: hidden;
+}

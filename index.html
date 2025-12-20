@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -62,12 +61,8 @@
                 box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
             }
         }
-
-
-
     </style>
-    
-    <style>
+      <style>
         /* ONLINE STATUS DOT */
         .status-dot {
             width: 18px;
@@ -117,119 +112,62 @@
 
     <!-- Layout fix: use flex + CSS Grid so content fills available space -->
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
 
-        /* Make the page a column flex container: header (auto) + content (flexible) */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+      /* Make the page a column flex container: header (auto) + content (flexible) */
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
 
-        /* Header stays natural size */
-        #siteHeader {
-            flex: 0 0 auto;
-        }
+      /* Header stays natural size */
+      #siteHeader {
+        flex: 0 0 auto;
+      }
 
-        /* Grid container fills remaining space and creates 2x2 equal grid (4 boxes) */
+      /* Grid container fills remaining space and creates 2x2 equal grid (4 boxes) */
+      .grid-container {
+        flex: 1 1 auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 20px;
+        padding: 20px;
+        box-sizing: border-box;
+        min-height: 0; /* allow children to scroll if needed */
+        align-items: stretch;
+      }
+
+      /* Ensure each box stretches to fill its grid cell */
+      .grid-container > .box {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* Responsive: stack on small screens */
+      @media (max-width: 900px) {
         .grid-container {
-            flex: 1 1 auto;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
-            padding: 20px;
-            box-sizing: border-box;
-            min-height: 0;
-            /* allow children to scroll if needed */
-            align-items: stretch;
+          grid-template-columns: 1fr;
+          grid-template-rows: none;
         }
+      }
 
-        /* Ensure each box stretches to fill its grid cell */
-        .grid-container>.box {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        /* Responsive: stack on small screens */
-        @media (max-width: 900px) {
-            .grid-container {
-                grid-template-columns: 1fr;
-                grid-template-rows: none;
-            }
-        }
-
-        /* When header is hidden, just remove it — grid will expand automatically */
-        .header-hidden #siteHeader {
-            display: none;
-        }
+      /* When header is hidden, just remove it — grid will expand automatically */
+      .header-hidden #siteHeader {
+        display: none;
+      }
     </style>
-    
-<style>
-  /* Make header fixed so it stays above the ticker */
-  #siteHeader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 10080; /* above ticker */
-  }
 
-  /* Place ticker below header using a CSS var that we'll set from JS */
-  .ticker-container {
-    position: fixed;
-    top: var(--header-height, 72px);
-    left: 0;
-    right: 0;
-    z-index: 10050;
-    background: transparent;
-  }
-
-  /* Position bell relative to the ticker/header stack */
-  #notificationBell {
-    position: fixed;
-    top: calc(var(--header-height, 72px) + 8px);
-    right: 20px;
-    z-index: 10090; /* above header & ticker if needed */
-  }
-
-  /* Ensure page content is pushed below header + ticker */
-  body {
-    padding-top: calc(var(--header-height, 72px) + 64px);
-  }
-
-  /* Keep resources panel below the ticker */
-  #resourcesPage {
-    position: relative;
-    z-index: 1000;
-    margin-top: 12px;
-  }
-</style>
-
-<script>
-  // set --header-height to the current header height so ticker sits below it
-  (function(){
-    function updateHeaderHeight(){
-      var header = document.getElementById('siteHeader');
-      if(!header) return;
-      var h = header.offsetHeight || 72;
-      document.documentElement.style.setProperty('--header-height', h + 'px');
-    }
-    window.addEventListener('load', updateHeaderHeight);
-    window.addEventListener('resize', updateHeaderHeight);
-    updateHeaderHeight();
-  })();
-</script>
 </head>
 
 <body>
-
+    
     <div id="expandOverlay"></div>
     <!-- LOGIN MODAL — BIGGER & BEAUTIFUL -->
     <div class="login-modal" id="loginModal">
@@ -298,73 +236,67 @@
     </div>
 
 
-    <div id="profileModal" class="modal">
-        <div class="modal-content">
-            <h2>Edit Profile</h2>
-            <form id="editProfileForm">
-                <div class="field-group" style="text-align: center; margin-bottom: 20px;">
-                    <img id="currentAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default"
-                        alt="Current Avatar"
-                        style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #8B572A;">
-                    <label for="avatarInput" style="display: block; margin-top: 10px;">Upload New Avatar:</label>
-                    <input type="file" id="avatarInput" accept="image/*" style="margin: 0 auto;">
-                </div>
+<div id="profileModal" class="modal">
+  <div class="modal-content">
+    <h2>Edit Profile</h2>
+    <form id="editProfileForm">
+      <div class="field-group" style="text-align: center; margin-bottom: 20px;">
+        <img id="currentAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="Current Avatar" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #8B572A;">
+        <label for="avatarInput" style="display: block; margin-top: 10px;">Upload New Avatar:</label>
+        <input type="file" id="avatarInput" accept="image/*" style="margin: 0 auto;">
+      </div>
 
-                <div class="field-group">
-                    <label for="editName">Display Name:</label>
-                    <input type="text" id="editName" required>
-                </div>
+      <div class="field-group">
+        <label for="editName">Display Name:</label>
+        <input type="text" id="editName" required>
+      </div>
 
-                <div class="field-group">
-                    <div class="header-row"
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <label for="editOstomyType">Ostomy Type:</label>
-                        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="showOstomyType" checked> Show to others
-                        </label>
-                    </div>
-                    <select id="editOstomyType">
-                        <option value="">Select Type</option>
-                        <option value="Colostomy">Colostomy</option>
-                        <option value="Ileostomy">Ileostomy</option>
-                        <option value="Urostomy">Urostomy</option>
-                    </select>
-                </div>
-
-                <div class="field-group">
-                    <div class="header-row"
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <label for="editSurgeryDate">Surgery Date:</label>
-                        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="showSurgeryDate" checked> Show to others
-                        </label>
-                    </div>
-                    <input type="date" id="editSurgeryDate">
-                </div>
-
-                <div class="field-group">
-                    <div class="header-row"
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <label for="editBio">Bio:</label>
-                        <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" id="showBio" checked> Show to others
-                        </label>
-                    </div>
-                    <textarea id="editBio"></textarea>
-                </div>
-
-                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
-                    <button type="button" onclick="saveProfile()">Save</button>
-                    <button type="button"
-                        onclick="document.getElementById('profileModal').classList.remove('open')">Cancel</button>
-                </div>
-            </form>
+      <div class="field-group">
+        <div class="header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label for="editOstomyType">Ostomy Type:</label>
+          <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="showOstomyType" checked> Show to others
+          </label>
         </div>
-    </div>
+        <select id="editOstomyType">
+          <option value="">Select Type</option>
+          <option value="Colostomy">Colostomy</option>
+          <option value="Ileostomy">Ileostomy</option>
+          <option value="Urostomy">Urostomy</option>
+        </select>
+      </div>
 
+      <div class="field-group">
+        <div class="header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label for="editSurgeryDate">Surgery Date:</label>
+          <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="showSurgeryDate" checked> Show to others
+          </label>
+        </div>
+        <input type="date" id="editSurgeryDate">
+      </div>
+
+      <div class="field-group">
+        <div class="header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <label for="editBio">Bio:</label>
+          <label class="checkbox-label" style="display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="showBio" checked> Show to others
+          </label>
+        </div>
+        <textarea id="editBio"></textarea>
+      </div>
+
+      <div style="display: flex; gap: 15px; justify-content: center; margin-top: 25px;">
+        <button type="button" onclick="saveProfile()">Save</button>
+        <button type="button" onclick="document.getElementById('profileModal').classList.remove('open')">Cancel</button>
+      </div>
     </form>
-    </div>
-    </div>
+  </div>
+</div>
+
+</form>
+  </div>
+</div>
 
 
     <!-- USER PROFILE POPUP — DOT BOTTOM-RIGHT -->
@@ -416,7 +348,7 @@
 
     <!-- SIDE MENU — CLEAN & SIMPLE (Settings moved to popup) -->
 
-    <div class="side-menu" id="sideMenu">
+<div class="side-menu" id="sideMenu">
         <button class="close-menu" onclick="closeMenu()">×</button>
         <h2 style="color:#fff8e1;font-size:3rem;margin:40px 0;text-align:center;">Menu</h2>
 
@@ -437,22 +369,19 @@
             </div>
 
             <div style="margin:60px 0;">
-
-                <button id="hideHeaderBtn" onclick="toggleHeader(hideHeaderBtn)"
-                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                
+                <button id="hideHeaderBtn" onclick="toggleHeader(hideHeaderBtn)" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
                     Hide Header
                 </button>
-
-                <button id="fullscreenToggle" onclick="toggleFullScreen()"
-                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                
+                <button id="fullscreenToggle" onclick="toggleFullScreen()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
                     Full Screen
                 </button>
-
-
-                <button id="resourcesBtn" onclick="toggleResources();closeMenu()"
-                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-                    Resources
-                </button>
+                
+                   
+               <button id="resourcesBtn" onclick="toggleResources();closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+  Resources
+</button>
 
                 <button onclick="openSettings();closeMenu()"
                     style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
@@ -474,7 +403,7 @@
         </div>
     </div>
 
-
+    
     <!-- SETTINGS POPUP — LINK ALL COLORS WORKS + SAVES -->
     <!-- SETTINGS MODAL — CLEAN MINIMAL STYLE (YOUR FAVORITE) -->
     <div class="privateChatModal" id="settingsModal">
@@ -571,63 +500,57 @@
 
 
 
-    <!-- MESSAGES INBOX MODAL — FIXED LAYOUT -->
-    <div class="privateChatModal" id="messagesInboxModal">
-        <div class="private-chat-box"
-            style="width:90%;max-width:1000px;height:85vh;background:#fff8e1;border-radius:30px;overflow:hidden;display:flex;flex-direction:row;box-shadow:0 20px 50px rgba(0,0,0,0.6);position:relative;">
-            <!-- CLOSE BUTTON — CLEAR AND VISIBLE */
+<!-- MESSAGES INBOX MODAL — FIXED LAYOUT -->
+<div class="privateChatModal" id="messagesInboxModal">
+    <div class="private-chat-box" style="width:90%;max-width:1000px;height:85vh;background:#fff8e1;border-radius:30px;overflow:hidden;display:flex;flex-direction:row;box-shadow:0 20px 50px rgba(0,0,0,0.6);position:relative;">
+        <!-- CLOSE BUTTON — CLEAR AND VISIBLE */
         <button onclick="closeMessagesInbox()" style="position:absolute;top:12px;right:12px;background:#8B572A;color:#fff8e1;font-size:2.8rem;font-weight:bold;cursor:pointer;z-index:30;width:48px;height:48px;border-radius:50%;border:none;box-shadow:0 4px 15px rgba(0,0,0,0.5);transition:0.3s;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='#A67C52'" onmouseout="this.style.background='#8B572A'">×</button>
         
         <!-- Left: Conversation List (wider for better readability) -->
-            <div style="width:40%;background:#8B572A;color:#fff8e1;padding:25px;overflow-y:auto;">
-                <h2 style="text-align:center;margin-bottom:25px;font-size:2rem;">Your Messages</h2>
-                <div id="conversationList" style="max-height:calc(85vh - 100px);overflow-y:auto;">
-                    <p style="text-align:center;color:#ffecb3;opacity:0.8;margin:60px 0;">No conversations yet</p>
-                </div>
+        <div style="width:40%;background:#8B572A;color:#fff8e1;padding:25px;overflow-y:auto;">
+            <h2 style="text-align:center;margin-bottom:25px;font-size:2rem;">Your Messages</h2>
+            <div id="conversationList" style="max-height:calc(85vh - 100px);overflow-y:auto;">
+                <p style="text-align:center;color:#ffecb3;opacity:0.8;margin:60px 0;">No conversations yet</p>
             </div>
-
-            <!-- Right: Selected Chat — FULL HEIGHT, NO OVERLAP -->
-            <div style="width:60%;display:flex;flex-direction:column;background:#fff8e1;color:#222;position:relative;">
-                <div style="padding:60px 30px 20px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.6rem;font-weight:bold;"
-                    id="selectedChatHeader">
-                    Select a conversation to view messages
-                </div>
-                <div id="selectedChatMessages"
-                    style="flex:1;overflow-y:auto;padding:20px 30px;background:#f9f5f0;font-size:1.1rem;line-height:1.6;">
-                    <!-- Messages load here -->
-                </div>
-                <div style="padding:20px;background:#fff;border-top:3px solid #8B572A;display:none;"
-                    id="messageInputArea">
-                    <div style="display:flex;gap:12px;">
-                        <input type="text" id="inboxMessageInput" placeholder="Type a message..."
-                            style="flex:1;padding:16px;border-radius:30px;border:2px solid #8B572A;outline:none;font-size:1.1rem;">
-                        <button onclick="sendMessageFromInbox()"
-                            style="background:#8B572A;color:#fff8e1;padding:16px 28px;border:none;border-radius:30px;font-weight:bold;font-size:1.1rem;cursor:pointer;">Send</button>
-                    </div>
+        </div>
+        
+        <!-- Right: Selected Chat — FULL HEIGHT, NO OVERLAP -->
+        <div style="width:60%;display:flex;flex-direction:column;background:#fff8e1;color:#222;position:relative;">
+            <div style="padding:60px 30px 20px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.6rem;font-weight:bold;" id="selectedChatHeader">
+                Select a conversation to view messages
+            </div>
+            <div id="selectedChatMessages" style="flex:1;overflow-y:auto;padding:20px 30px;background:#f9f5f0;font-size:1.1rem;line-height:1.6;">
+                <!-- Messages load here -->
+            </div>
+            <div style="padding:20px;background:#fff;border-top:3px solid #8B572A;display:none;" id="messageInputArea">
+                <div style="display:flex;gap:12px;">
+                    <input type="text" id="inboxMessageInput" placeholder="Type a message..." style="flex:1;padding:16px;border-radius:30px;border:2px solid #8B572A;outline:none;font-size:1.1rem;">
+                    <button onclick="sendMessageFromInbox()" style="background:#8B572A;color:#fff8e1;padding:16px 28px;border:none;border-radius:30px;font-weight:bold;font-size:1.1rem;cursor:pointer;">Send</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <header id="siteHeader">
-        <div class="top-bar" id="headerBar">
-            <div class="joke-block">
-                <span class="joke-header">Joke of the Day</span>
-                Why did the ostomate bring extra tape?<br>
-                <div>Just in case things got sticky!</div>
-            </div>
-            <div class="center-title">
-                <h1>Ostomy Friends Hub</h1>
-                <div class="weekly-quote-under-title">
-                    “Your bag doesn’t define you — your courage does.”<br>
-                    <em>– An ostomate warrior</em>
-                </div>
-            </div>
-            <div class="weather-block" id="weather-display">Detecting your weather...</div>
-
-
-        </div>
-    </header>
+  <div class="top-bar" id="headerBar">
+    <div class="joke-block">
+      <span class="joke-header">Joke of the Day</span>
+      Why did the ostomate bring extra tape?<br>
+      <div>Just in case things got sticky!</div>
+    </div>
+    <div class="center-title">
+      <h1>Ostomy Friends Hub</h1>
+      <div class="weekly-quote-under-title">
+        “Your bag doesn’t define you — your courage does.”<br>
+        <em>– An ostomate warrior</em>
+      </div>
+    </div>
+    <div class="weather-block" id="weather-display">Detecting your weather...</div>
+   
+    
+  </div>
+</header>
 
     <!-- TICKER + BELL — PERFECT -->
     <div class="ticker-container">
@@ -657,16 +580,16 @@
         </div>
 
         <!-- BELL — FAR RIGHT -->
-
-        <!-- BELL — FAR RIGHT (removed inline onclick to let notifications.js handle the click) -->
-        <button id="notificationBell"
-            style="background:#8B572A;color:#fff8e1;border:none;border-radius:50%;width:56px;height:56px;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3);position:absolute;right:20px;top:50%;transform:translateY(-50%);z-index:10000;">
-            🔔
-            <span id="notificationBadge"
-                style="position:absolute;top:6px;right:6px;width:18px;height:18px;background:#ff4444;color:white;border-radius:50%;font-size:0.75rem;font-weight:bold;display:none;align-items:center;justify-content:center;">
-                0
-            </span>
-        </button>
+         
+       <!-- BELL — FAR RIGHT (removed inline onclick to let notifications.js handle the click) -->
+<button id="notificationBell"
+    style="background:#8B572A;color:#fff8e1;border:none;border-radius:50%;width:56px;height:56px;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3);position:absolute;right:20px;top:50%;transform:translateY(-50%);z-index:10000;">
+    🔔
+    <span id="notificationBadge"
+        style="position:absolute;top:6px;right:6px;width:18px;height:18px;background:#ff4444;color:white;border-radius:50%;font-size:0.75rem;font-weight:bold;display:none;align-items:center;justify-content:center;">
+        0
+    </span>
+</button>
 
     </div>
 
@@ -683,7 +606,7 @@
 
 
 
-
+    
     <div class="grid-container">
         <div class="box post-search-box">
             <div class="fb-header">
@@ -694,22 +617,21 @@
                 style="border-radius:15px;object-fit:cover;flex:1;width:100%">
         </div>
 
-        <div class="box featured-story" style="background-image: url('/images/marie-feature.jpg');">
-            <a href="https://www.facebook.com/nagae.line/posts/pfbid0qurhYsYYwM9Gs4qacs5bhA7eisWVW78oykmFsJjaRPi6kYbKfUWri6CeKyxaAxSnl"
-                class="featured-story__link" target="_blank" rel="noopener noreferrer"
-                aria-label="Read Marie's story on Facebook">
-                <div class="featured-story__overlay">
-                    <h3 class="featured-story__title">Marie’s Story</h3>
-                    <p class="featured-story__excerpt">
-                        Marie learned to manage her ostomy after a long journey of trial and error. She shares practical
-                        tips, emotional moments, and the one product that changed everything for her—helpful for anyone
-                        starting the same path. Her story covers the early recovery, adapting daily routines, and the
-                        supportive community that helped her regain confidence.
-                    </p>
-                    <span class="featured-story__cta">Read Marie's story</span>
-                </div>
-            </a>
-        </div>
+<div class="box featured-story" style="background-image: url('/images/marie-feature.jpg');">
+  <a href="https://www.facebook.com/nagae.line/posts/pfbid0qurhYsYYwM9Gs4qacs5bhA7eisWVW78oykmFsJjaRPi6kYbKfUWri6CeKyxaAxSnl"
+     class="featured-story__link"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Read Marie's story on Facebook">
+    <div class="featured-story__overlay">
+      <h3 class="featured-story__title">Marie’s Story</h3>
+      <p class="featured-story__excerpt">
+        Marie learned to manage her ostomy after a long journey of trial and error. She shares practical tips, emotional moments, and the one product that changed everything for her—helpful for anyone starting the same path. Her story covers the early recovery, adapting daily routines, and the supportive community that helped her regain confidence.
+      </p>
+      <span class="featured-story__cta">Read Marie's story</span>
+    </div>
+  </a>
+</div>
 
         <div class="box ostomy-bob-box" id="bob-box" onclick="expandBob()">
             <div class="bob-scroll-area">
@@ -752,113 +674,45 @@
     </div>
 
     <!-- Resources page (hidden by default) -->
-        <div id="resourcesPage"
-        style="display: none; padding: 40px; background: #fff8e1; color: #222; border-radius: 30px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28); margin: 20px auto; max-width: 1700px;">
-        <h2>Ostomy Supprt Resources</h2>
-        <ul>
-            <li><Strong>The United Ostomy Associations of America (UOAA)</Strong> - offers support, advocacy, and educational information
-                for those with an ostomy or continent diversion. Visit their site at
-                <a href="https://www.ostomy.org/" target="_blank" rel="noopener noreferrer">https://www.ostomy.org/</a>
-                for discussion boards, local support groups, and living tips.</li>
-            <li><Strong>he Colorectal Cancer Alliance</Strong> - provides a list of ostomy support resources, including links to nurse
-                societies and associations. Check it out at
-                <a href="https://colorectalcancer.org/treatment/types-treatment/colostomy-and-ileostomy/ostomy-support-resources"
-                    target="_blank" rel="noopener noreferrer">https://colorectalcancer.org/treatment/types-treatment/colostomy-and-ileostomy/ostomy-support-resources</a>.
-            </li>
-            <li><Strong>Convatec's me+ program</Strong> - is a free support initiative with tools, advice, and personalized guidance for
-                living confidently with an ostomy. Access it at
-                <a href="https://www.convatec.com/ostomy-care/meplus-patient-support/" target="_blank" rel="noopener noreferrer">https://www.convatec.com/ostomy-care/meplus-patient-support/</a>.
-            </li>
-            <li><Strong>stomy 101 features</Strong> - information on colostomy, ileostomy, and urostomy, along with supplies, services,
-                and support options. Their site is at
-                <a href="https://www.ostomy101.com/" target="_blank" rel="noopener noreferrer">https://www.ostomy101.com/</a>.
-            </li>
-            <li><Strong>Hollister</Strong> - provides educational tools like videos, guides, and care tips for ostomy surgery and product
-                use. Explore them at
-                <a href="https://www.hollister.com/en/ostomycare/educationaltools" target="_blank" rel="noopener noreferrer">https://www.hollister.com/en/ostomycare/educationaltools</a>.
-            </li>
-            <li><Strong>The American Cancer Society</Strong> - has a section on getting ostomy help, information, and support, including
-                services for those without insurance. Find it at
-                <a href="https://www.cancer.org/cancer/supportive-care/ostomies/getting-help-info-and-support.html"
-                    target="_blank" rel="noopener noreferrer">https://www.cancer.org/cancer/supportive-care/ostomies/getting-help-info-and-support.html</a>.
-            </li>
-            <li><Strong>Coloplast</Strong> - offers advice, personalized support, and inspiration through their Care program for those with
-                or preparing for an ostomy. Visit
-                <a href="https://www.coloplast.us/ostomy/people-with-an-ostomy/" target="_blank" rel="noopener noreferrer">https://www.coloplast.us/ostomy/people-with-an-ostomy/</a>.
-            </li>
-            <li><Strong>Mayo Clinic</Strong> - provides in-depth articles on adapting to life after colostomy, ileostomy, or urostomy to
-                boost self-esteem and adjustment. Read more at
-                <a href="https://www.mayoclinic.org/diseases-conditions/colon-cancer/in-depth/ostomy/art-20045825"
-                    target="_blank" rel="noopener noreferrer">https://www.mayoclinic.org/diseases-conditions/colon-cancer/in-depth/ostomy/art-20045825</a>.
-            </li>
-        </ul>
+<div id="resourcesPage" style="display: none; padding: 40px; background: #fff8e1; color: #222; border-radius: 30px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28); margin: 20px auto; max-width: 1700px;">
+  <h2>Resources</h2>
+  <ul>
+    <li>The United Ostomy Associations of America (UOAA) offers support, advocacy, and educational information for those with an ostomy or continent diversion. Visit their site at <a href="https://www.ostomy.org/" target="_blank">https://www.ostomy.org/</a> for discussion boards, local support groups, and living tips.</li>
+    <li>The Colorectal Cancer Alliance provides a list of ostomy support resources, including links to nurse societies and associations. Check it out at <a href="https://colorectalcancer.org/treatment/types-treatment/colostomy-and-ileostomy/ostomy-support-resources" target="_blank">https://colorectalcancer.org/treatment/types-treatment/colostomy-and-ileostomy/ostomy-support-resources</a>.</li>
+    <li>Convatec's me+ program is a free support initiative with tools, advice, and personalized guidance for living confidently with an ostomy. Access it at <a href="https://www.convatec.com/ostomy-care/meplus-patient-support/" target="_blank">https://www.convatec.com/ostomy-care/meplus-patient-support/</a>.</li>
+    <li>Ostomy 101 features information on colostomy, ileostomy, and urostomy, along with supplies, services, and support options. Their site is at <a href="https://www.ostomy101.com/" target="_blank">https://www.ostomy101.com/</a>.</li>
+    <li>Hollister provides educational tools like videos, guides, and care tips for ostomy surgery and product use. Explore them at <a href="https://www.hollister.com/en/ostomycare/educationaltools" target="_blank">https://www.hollister.com/en/ostomycare/educationaltools</a>.</li>
+    <li>The American Cancer Society has a section on getting ostomy help, information, and support, including services for those without insurance. Find it at <a href="https://www.cancer.org/cancer/supportive-care/ostomies/getting-help-info-and-support.html" target="_blank">https://www.cancer.org/cancer/supportive-care/ostomies/getting-help-info-and-support.html</a>.</li>
+    <li>Coloplast offers advice, personalized support, and inspiration through their Care program for those with or preparing for an ostomy. Visit <a href="https://www.coloplast.us/ostomy/people-with-an-ostomy/" target="_blank">https://www.coloplast.us/ostomy/people-with-an-ostomy/</a>.</li>
+    <li>Mayo Clinic provides in-depth articles on adapting to life after colostomy, ileostomy, or urostomy to boost self-esteem and adjustment. Read more at <a href="https://www.mayoclinic.org/diseases-conditions/colon-cancer/in-depth/ostomy/art-20045825" target="_blank">https://www.mayoclinic.org/diseases-conditions/colon-cancer/in-depth/ostomy/art-20045825</a>.</li>
+  </ul>
+</div>
 
-        <h2 style="margin-top:28px;">Online Ostomy Suppliers in the US and Canada</h2>
-
-        <h3 style="margin-top:18px;">US-Based Suppliers (Many ship to Canada or have international options)</h3>
-        <ul>
-            <li><strong>Hollister</strong> — Offers a wide range of ostomy pouching systems and accessories directly through their site.
-                <br><a href="https://www.hollister.com" target="_blank" rel="noopener noreferrer">https://www.hollister.com</a>
-            </li>
-            <li><strong>Byram Healthcare</strong> — Stocks products from major brands like ConvaTec, Coloplast, and Hollister, with an extensive inventory.
-                <br><a href="https://www.byramhealthcare.com" target="_blank" rel="noopener noreferrer">https://www.byramhealthcare.com</a>
-            </li>
-            <li><strong>Parthenon Company</strong> — Provides discount ostomy supplies and wound care products from various brands, with free shipping over $100.
-                <br><a href="https://www.parthenoninc.com" target="_blank" rel="noopener noreferrer">https://www.parthenoninc.com</a>
-            </li>
-            <li><strong>ConvaTec</strong> — Sells comfortable pouches and skin barriers tailored to different ostomy types.
-                <br><a href="https://www.convatec.com" target="_blank" rel="noopener noreferrer">https://www.convatec.com</a>
-            </li>
-            <li><strong>Coloplast</strong> — Features innovative ostomy bags and accessories, with options to request free samples.
-                <br><a href="https://www.coloplast.us" target="_blank" rel="noopener noreferrer">https://www.coloplast.us</a>
-            </li>
-            <li><strong>Safe n' Simple</strong> — Focuses on high-quality ostomy and wound care items for comfort and performance.
-                <br><a href="https://sns-medical.com" target="_blank" rel="noopener noreferrer">https://sns-medical.com</a>
-            </li>
-            <li><strong>180 Medical</strong> — Supplies top-quality ostomy products alongside catheters, with customer support.
-                <br><a href="https://www.180medical.com" target="_blank" rel="noopener noreferrer">https://www.180medical.com</a>
-            </li>
-            <li><strong>Medical Monks</strong> — Offers deals on brands like Hollister, Coloplast, and ConvaTec for ostomy pouches and barriers.
-                <br><a href="https://www.medicalmonks.com" target="_blank" rel="noopener noreferrer">https://www.medicalmonks.com</a>
-            </li>
-        </ul>
-
-        <h3 style="margin-top:18px;">Canada-Based Suppliers (Many ship to the US)</h3>
-        <ul>
-            <li><strong>Ostomy Depot</strong> — A Canadian distributor with low-cost products and free delivery across Canada and the US (conditions apply).
-                <br><a href="https://ostomydepot.ca" target="_blank" rel="noopener noreferrer">https://ostomydepot.ca</a>
-            </li>
-            <li><strong>MyOstomy.ca</strong> — Provides trusted major brands at low prices, with fast, free shipping over $150.
-                <br><a href="https://myostomy.ca" target="_blank" rel="noopener noreferrer">https://myostomy.ca</a>
-            </li>
-        </ul>
-    </div>
-
-
+   
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
+    
 
+   <script src="firebase.js"></script>
+<script src="ui.js"></script>
+<script src="search.js"></script>
+<script src="auth.js"></script>
+<script src="forum.js"></script>
+<script src="notifications.js"></script>
+<script src="chat.js"></script>
+<script src="bob.js"></script>
+<script src="settings.js"></script>
 
-    <script src="firebase.js"></script>
-    <script src="ui.js"></script>
-    <script src="search.js"></script>
-    <script src="auth.js"></script>
-    <script src="forum.js"></script>
-    <script src="notifications.js"></script>
-    <script src="chat.js"></script>
-    <script src="bob.js"></script>
-    <script src="settings.js"></script>
+<!-- Set API base for search.js (must be BEFORE search.js) -->
+<script>window.__API_BASE__ = 'http://localhost:3000'</script>
 
-    <!-- Set API base for search.js (must be BEFORE search.js) -->
-    <script>window.__API_BASE__ = 'http://localhost:3000'</script>
+  
 
-
-
-    <!-- <script src="backfill-add-participants.js"></script> -->
-
+<!-- <script src="backfill-add-participants.js"></script> -->
+     
     <script>
         // Auto-zoom so full page fits perfectly on load
         function autoFitPage() {
