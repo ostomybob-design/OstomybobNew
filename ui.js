@@ -496,19 +496,50 @@ function toggleFullScreen() {
     });
   }
 }
-function toggleHeader() {
-  const header = document.getElementById('siteHeader');
-  const toggleBtn = document.getElementById('hideHeaderBtn');
-  const body = document.body;
 
-  if (header.style.display !== 'none') {
-    header.style.display = 'none';
-    toggleBtn.textContent = 'Show Header';
-    body.style.marginTop = '0';  /* Expand main body up */
-  } else {
-    header.style.display = 'block';  /* Restore header (or 'flex' if needed) */
-    toggleBtn.textContent = 'Hide Header';
-    body.style.marginTop = 'initial';  /* Reset to default */
+        // Toggle header visibility — grid is flex-based so content expands automatically
+function toggleHeader(eOrBtn) {
+  // Accept event, element, or nothing. Find the button if not provided.
+  let btn = null;
+  if (eOrBtn && eOrBtn.currentTarget) btn = eOrBtn.currentTarget;
+  else if (eOrBtn && eOrBtn.nodeType === 1) btn = eOrBtn;
+  else btn = document.getElementById('headerToggle') || document.querySelector('.header-toggle-btn');
+
+  const hidden = document.body.classList.toggle('header-hidden');
+
+  // Update button text/aria if available (store labels in data-* so we can localize)
+  if (btn) {
+    if (!btn.dataset.hideLabel) btn.dataset.hideLabel = btn.textContent || 'Hide Header';
+    if (!btn.dataset.showLabel) btn.dataset.showLabel = 'Show Header';
+    btn.textContent = hidden ? btn.dataset.showLabel : btn.dataset.hideLabel;
+    btn.setAttribute('aria-pressed', String(hidden));
   }
+
+  // Force reflow so layout updates immediately
+  void document.body.offsetHeight;
 }
+// ...existing code...
+
+
+// Initialize header toggle button on DOM ready (keeps behavior consistent with fullscreen button)
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('headerToggle') || document.querySelector('.header-toggle-btn');
+  if (!btn) return;
+
+  if (!btn.dataset.hideLabel) btn.dataset.hideLabel = btn.textContent || 'Hide Header';
+  if (!btn.dataset.showLabel) btn.dataset.showLabel = 'Show Header';
+
+  const isHidden = document.body.classList.contains('header-hidden');
+  btn.textContent = isHidden ? btn.dataset.showLabel : btn.dataset.hideLabel;
+  btn.setAttribute('aria-pressed', String(isHidden));
+
+  // attach handler (mirrors fullscreen button behavior)
+  btn.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    toggleHeader(ev);
+  });
+});
+
+window.toggleHeader = toggleHeader;
+
 

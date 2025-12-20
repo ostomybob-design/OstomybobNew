@@ -62,6 +62,107 @@
             }
         }
     </style>
+      <style>
+        /* ONLINE STATUS DOT */
+        .status-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .status-online {
+            background: #4ade80;
+        }
+
+        /* bright green */
+        .status-away {
+            background: #fbbf24;
+        }
+
+        /* warm yellow */
+        .status-offline {
+            background: #6b7280;
+        }
+
+        .status-typing {
+            background: #4ade80;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 8px rgba(74, 222, 128, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
+        }
+    </style>
+
+    <!-- Layout fix: use flex + CSS Grid so content fills available space -->
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      /* Make the page a column flex container: header (auto) + content (flexible) */
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* Header stays natural size */
+      #siteHeader {
+        flex: 0 0 auto;
+      }
+
+      /* Grid container fills remaining space and creates 2x2 equal grid (4 boxes) */
+      .grid-container {
+        flex: 1 1 auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 20px;
+        padding: 20px;
+        box-sizing: border-box;
+        min-height: 0; /* allow children to scroll if needed */
+        align-items: stretch;
+      }
+
+      /* Ensure each box stretches to fill its grid cell */
+      .grid-container > .box {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* Responsive: stack on small screens */
+      @media (max-width: 900px) {
+        .grid-container {
+          grid-template-columns: 1fr;
+          grid-template-rows: none;
+        }
+      }
+
+      /* When header is hidden, just remove it — grid will expand automatically */
+      .header-hidden #siteHeader {
+        display: none;
+      }
+    </style>
 
 </head>
 
@@ -128,7 +229,7 @@
                     <input type="text" id="privateMessageInput" placeholder="Type a message..."
                         style="flex:1;padding:14px;border-radius:30px;border:2px solid #ddd;font-size:1.1rem;">
                     <button onclick="sendPrivateMessage()"
-                        style="background:#8B572A;color:#fff;padding:14px 20px;border:none;border-radius:30px;font-weight:bold;cursor:pointer;">Send</button>
+                        style="background:#8B572A;color:#fff;padding:14px 20px;border:none;border-radius:30px;font-weight:bold;font-size:1.1rem;cursor:pointer;">Send</button>
                 </div>
             </div>
         </div>
@@ -247,63 +348,71 @@
 
     <!-- SIDE MENU — CLEAN & SIMPLE (Settings moved to popup) -->
 
+<div class="side-menu" id="sideMenu">
+        <button class="close-menu" onclick="closeMenu()">×</button>
+        <h2 style="color:#fff8e1;font-size:3rem;margin:40px 0;text-align:center;">Menu</h2>
 
-    <div class="side-menu" id="sideMenu">
-  <button class="close-menu" onclick="closeMenu()">×</button>
-  <h2 style="color:#fff8e1;font-size:3rem;margin:40px 0;text-align:center;">Menu</h2>
+        <div id="loginMenu">
+            <button onclick="document.getElementById('loginModal').classList.add('open');closeMenu()"
+                style="width:90%;padding:22px;background:#fff8e1;color:#8B572A;border:none;border-radius:50px;font-weight:bold;font-size:1.7rem;margin:40px auto;display:block;">
+                Sign In / Create Account
+            </button>
+        </div>
 
-  <div id="loginMenu">
-    <button onclick="document.getElementById('loginModal').classList.add('open');closeMenu()"
-        style="width:90%;padding:22px;background:#fff8e1;color:#8B572A;border:none;border-radius:50px;font-weight:bold;font-size:1.7rem;margin:40px auto;display:block;">
-        Sign In / Create Account
-    </button>
-  </div>
+        <div id="userMenu" style="display:none;">
+            <div id="menuProfileButton" closeMenu()" style="text-align:center;margin:50px 0;cursor:pointer;">
+                <img src="" id="menuAvatar"
+                    style="width:110px;height:110px;border-radius:50%;border:6px solid #fff8e1;">
+                <p style="margin:15px 0;font-size:2rem;color:#fff8e1;" id="menuName">Loading...</p>
+                <small style="color:#ffecb3;font-size:1.3rem;cursor:pointer;">Edit Profile →</small>
 
-  <div id="userMenu" style="display:none;">
-    <div id="menuProfileButton" closeMenu()" style="text-align:center;margin:50px 0;cursor:pointer;">
-      <img src="" id="menuAvatar" style="width:110px;height:110px;border-radius:50%;border:6px solid #fff8e1;">
-      <p style="margin:15px 0;font-size:2rem;color:#fff8e1;" id="menuName">Loading...</p>
-      <small style="color:#ffecb3;font-size:1.3rem;cursor:pointer;">Edit Profile →</small>
+            </div>
+
+            <div style="margin:60px 0;">
+                
+                <button id="hideHeaderBtn" onclick="toggleHeader(hideHeaderBtn)" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Hide Header
+                </button>
+                
+                <button id="fullscreenToggle" onclick="toggleFullScreen()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Full Screen
+                </button>
+                
+                <button onclick="closeMenu()"
+                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Home
+                </button>
+
+                <button onclick="closeMenu()"
+                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Resources
+                </button>
+                <button onclick="openSettings();closeMenu()"
+                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
+                    Settings
+                </button>
+
+
+                <button onclick="openMessagesInbox(); closeMenu()"
+                    style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">Messages</button>
+
+            </div>
+
+            <div style="margin-top:auto;padding-bottom:50px;text-align:center;">
+                <button onclick="auth.signOut().then(()=>location.reload())"
+                    style="background:#fff8e1;color:#8B572A;border:none;padding:22px 70px;border-radius:50px;font-weight:bold;font-size:1.8rem;">
+                    Logout
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div style="margin:60px 0;">
-      
-      <button id="hideHeaderBtn" onclick="toggleHeader()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-        Hide Header
-      </button>
-      
-      <button id="fullscreenToggle" onclick="toggleFullScreen()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-        Full Screen
-      </button>
-      
-      <button onclick="closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-        Home
-      </button>
-
-      <button onclick="closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-        Resources
-      </button>
-      <button onclick="openSettings();closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
-        Settings
-      </button>
-
-      <button onclick="openMessagesInbox(); closeMenu()" style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">Messages</button>
-
-    </div>
-
-    <div style="margin-top:auto;padding-bottom:50px;text-align:center;">
-      <button onclick="auth.signOut().then(()=>location.reload())" style="background:#fff8e1;color:#8B572A;border:none;padding:22px 70px;border-radius:50px;font-weight:bold;font-size:1.8rem;">
-        Logout
-      </button>
-    </div>
-  </div>
-</div>
     
     <!-- SETTINGS POPUP — LINK ALL COLORS WORKS + SAVES -->
     <!-- SETTINGS MODAL — CLEAN MINIMAL STYLE (YOUR FAVORITE) -->
     <div class="privateChatModal" id="settingsModal">
         <div class="settings-box"
-            style="width:90%;max-width:480px;background:rgba(139,87,42,0.95);backdrop-filter:blur(15px);padding:35px;border-radius:25px;color:#fff8e1;box-shadow:0 15px 40px rgba(0,0,0,0.5);position:relative;">
+            style="width:90%;max-width:480px;background:rgba(139,87,42,0.95);backdrop-filter: blur(15px);padding:35px;border-radius:25px;color:#fff8e1;box-shadow:0 15px 40px rgba(0,0,0,0.5);position:relative;">
             <button onclick="document.getElementById('settingsModal').classList.remove('open')"
                 style="position:absolute;top:15px;right:20px;background:none;border:none;color:#fff8e1;font-size:2.2rem;cursor:pointer;opacity:0.8;transition:opacity 0.3s;">×</button>
 
@@ -398,7 +507,7 @@
 <!-- MESSAGES INBOX MODAL — FIXED LAYOUT -->
 <div class="privateChatModal" id="messagesInboxModal">
     <div class="private-chat-box" style="width:90%;max-width:1000px;height:85vh;background:#fff8e1;border-radius:30px;overflow:hidden;display:flex;flex-direction:row;box-shadow:0 20px 50px rgba(0,0,0,0.6);position:relative;">
-        <!-- CLOSE BUTTON — CLEAR AND VISIBLE -->
+        <!-- CLOSE BUTTON — CLEAR AND VISIBLE */
         <button onclick="closeMessagesInbox()" style="position:absolute;top:12px;right:12px;background:#8B572A;color:#fff8e1;font-size:2.8rem;font-weight:bold;cursor:pointer;z-index:30;width:48px;height:48px;border-radius:50%;border:none;box-shadow:0 4px 15px rgba(0,0,0,0.5);transition:0.3s;display:flex;align-items:center;justify-content:center;" onmouseover="this.style.background='#A67C52'" onmouseout="this.style.background='#8B572A'">×</button>
         
         <!-- Left: Conversation List (wider for better readability) -->
@@ -427,23 +536,25 @@
     </div>
 </div>
 
-   <header id="siteHeader">
+    <header id="siteHeader">
   <div class="top-bar" id="headerBar">
-            <div class="joke-block">
-                <span class="joke-header">Joke of the Day</span>
-                Why did the ostomate bring extra tape?<br>
-                <div>Just in case things got sticky!</div>
-            </div>
-            <div class="center-title">
-                <h1>Ostomy Friends Hub</h1>
-                <div class="weekly-quote-under-title">
-                    “Your bag doesn’t define you — your courage does.”<br>
-                    <em>– An ostomate warrior</em>
-                </div>
-            </div>
-            <div class="weather-block" id="weather-display">Detecting your weather...</div>
-        </div>
-    </header>
+    <div class="joke-block">
+      <span class="joke-header">Joke of the Day</span>
+      Why did the ostomate bring extra tape?<br>
+      <div>Just in case things got sticky!</div>
+    </div>
+    <div class="center-title">
+      <h1>Ostomy Friends Hub</h1>
+      <div class="weekly-quote-under-title">
+        “Your bag doesn’t define you — your courage does.”<br>
+        <em>– An ostomate warrior</em>
+      </div>
+    </div>
+    <div class="weather-block" id="weather-display">Detecting your weather...</div>
+   
+    
+  </div>
+</header>
 
     <!-- TICKER + BELL — PERFECT -->
     <div class="ticker-container">
@@ -543,7 +654,7 @@
             </div>
         </div>
 
-        <!-- COMMUNITYalum FORUM BOX -->
+        <!-- COMMUNITY FORUM BOX -->
         <div class="box full-chat-box" id="forum-box" onclick="expandForum()">
             <h2>Community Forum</h2>
             <div class="forum-categories">
@@ -566,7 +677,7 @@
         </div>
     </div>
 
-    <!-- LOAD THE 5 SEPARATE SCRIPT FILES — CORRECT ORDER -->
+   
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
