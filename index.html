@@ -166,6 +166,10 @@
         }
     </style>
 
+    
+
+
+ 
 </head>
 
 <body>
@@ -617,7 +621,7 @@
 
 
     <div class="grid-container">
-        <div class="box post-search-box">
+        <div class="box post-search-box" id="post-search-box">
             <div class="fb-header">
                 <h2>Post Search</h2>
                 <input type="text" id="fb-search" placeholder="Search posts by keyword...">
@@ -626,7 +630,8 @@
                 style="border-radius:15px;object-fit:cover;flex:1;width:100%">
         </div>
 
-        <div class="box featured-story" style="background-image: url('/images/marie-feature.jpg');">
+     
+        <div class="box featured-story" id="featured-story-box" style="background-image: url('/images/marie-feature.jpg');">
             <a href="https://www.facebook.com/nagae.line/posts/pfbid0qurhYsYYwM9Gs4qacs5bhA7eisWVW78oykmFsJjaRPi6kYbKfUWri6CeKyxaAxSnl"
                 class="featured-story__link" target="_blank" rel="noopener noreferrer"
                 aria-label="Read Marie's story on Facebook">
@@ -797,6 +802,7 @@
         window.addEventListener('load', autoFitPage);
         window.addEventListener('resize', autoFitPage);
     </script>
+    
 </body>
 
 </html>

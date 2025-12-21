@@ -43,16 +43,19 @@ function expandForum() {
   if (!forumBox || !bobBox) return;
   bobBox.classList.remove('expanded');
   forumBox.classList.add('expanded');
-  setTimeout(() => forumBox.scrollIntoView({ behavior: 'smooth', block: 'center' }), 450);
+ 
 }
 
 function expandBob() {
   const forumBox = document.getElementById('forum-box');
   const bobBox = document.getElementById('bob-box');
+  
   if (!forumBox || !bobBox) return;
+  
   bobBox.classList.add('expanded');
+
   forumBox.classList.remove('expanded');
-  setTimeout(() => bobBox.scrollIntoView({ behavior: 'smooth', block: 'center' }), 450);
+ 
 }
 
 //
@@ -477,10 +480,10 @@ function toggleFullScreen() {
     document.documentElement.requestFullscreen().then(() => {
       btn.textContent = 'Exit Full Screen';
      
-      document.body.style.zoom = '90%';
-      //document.body.style.zoom = '100%';
-       //document.body.style.zoom = '110%';
-       //autoFitPage();  // Recalculate fit after entering full screen
+    //  document.body.style.zoom = '90%';
+    //  document.body.style.zoom = '100%';
+     //  document.body.style.zoom = '110%';
+       autoFitPage();  // Recalculate fit after entering full screen
      
     }).catch(err => {
       console.error('Fullscreen error:', err);
@@ -543,28 +546,44 @@ document.addEventListener('DOMContentLoaded', () => {
 window.toggleHeader = toggleHeader;
 
 
-function toggleResources() {
-  const grid = document.querySelector('.grid-container');
-  const resources = document.getElementById('resourcesPage');
-  const btn = document.getElementById('resourcesBtn');
+function toggleResources(arg) {
+  // debugging helper
+  try { console.debug('toggleResources called', arg); } catch (e) {}
 
-  if (grid && resources && btn) {
-    if (resources.style.display === 'none') {
-      resources.style.display = 'block';
-      grid.style.display = 'none';
-      btn.textContent = 'Home';
-    } else {
-      resources.style.display = 'none';
-      grid.style.display = 'grid';
-      btn.textContent = 'Resources';
-    }
+  // resolve button (accept element, event, or nothing)
+  let btn = null;
+  if (arg && arg.nodeType === 1) btn = arg;
+  else if (arg && arg.currentTarget) btn = arg.currentTarget;
+  else btn = document.getElementById('resourcesToggleBtn') || document.querySelector('[data-resources-toggle]');
+
+  // resolve main areas
+  const grid = document.querySelector('.grid-container') || document.getElementById('mainGrid') || document.querySelector('.main-grid');
+  const resources = document.getElementById('resourcesPage') || document.querySelector('[data-resources-page]');
+
+  if (!grid) { console.warn('toggleResources: .grid-container not found'); }
+  if (!resources) { console.warn('toggleResources: #resourcesPage not found'); }
+  if (!grid || !resources) return;
+
+  // Use a body class to track state (more reliable than inline style/read)
+  const showing = document.body.classList.toggle('show-resources');
+
+  // Apply visibility via class + inline fallback for older code
+  if (showing) {
+    document.body.classList.add('show-resources');
+    resources.style.display = 'block';
+    grid.style.display = 'none';
+    if (btn) { btn.textContent = 'Home'; btn.setAttribute('aria-pressed', 'true'); }
   } else {
-    console.error('toggleResources: Elements not found');
+    document.body.classList.remove('show-resources');
+    resources.style.display = 'none';
+    grid.style.display = '';
+    if (btn) { btn.textContent = 'Resources'; btn.setAttribute('aria-pressed', 'false'); }
   }
-}
 
-// Make global for onclick
-window.toggleResources = toggleResources;
+  // force layout update
+  void document.body.offsetHeight;
+  try { console.debug('toggleResources done', { showing, gridDisplay: grid.style.display, resourcesDisplay: resources.style.display }); } catch (e) {}
+}
 
 // ensure global and attach safe click handler if button exists
 
@@ -606,3 +625,127 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // expose for inline onclick usage
 window.toggleResources = toggleResources;
+(function(){
+  function updateCssVars(){
+    const header = document.getElementById('siteHeader');
+    const ticker = document.querySelector('.ticker-container');
+    if(header) document.documentElement.style.setProperty('--header-height', (header.offsetHeight || 150) + 'px');
+    if(ticker) document.documentElement.style.setProperty('--ticker-height', (ticker.offsetHeight || 56) + 'px');
+  }
+
+  function refreshExpandedState(){
+    const anyExpanded = !!document.querySelector('.box.expanded');
+    document.body.classList.toggle('expanded-active', anyExpanded);
+    updateCssVars();
+  }
+
+  // run on load and keep in sync
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){
+      refreshExpandedState();
+      // observe DOM for class changes on boxes
+      const mo = new MutationObserver(refreshExpandedState);
+      mo.observe(document.body, { attributes: true, subtree: true, childList: true });
+      // observe header/ticker size changes
+      if (window.ResizeObserver) {
+        const ro = new ResizeObserver(updateCssVars);
+        const header = document.getElementById('siteHeader');
+        const ticker = document.querySelector('.ticker-container');
+        if (header) ro.observe(header);
+        if (ticker) ro.observe(ticker);
+      }
+    });
+  } else {
+    refreshExpandedState();
+    const mo = new MutationObserver(refreshExpandedState);
+    mo.observe(document.body, { attributes: true, subtree: true, childList: true });
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(updateCssVars);
+      const header = document.getElementById('siteHeader');
+      const ticker = document.querySelector('.ticker-container');
+      if (header) ro.observe(header);
+      if (ticker) ro.observe(ticker);
+    }
+  }
+
+  // also update on window resize / fonts ready
+  window.addEventListener('resize', updateCssVars);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateCssVars).catch(()=>{});
+})();
+// ...existing code...
+(function(){
+  function updateCssVars(){
+    const header = document.getElementById('siteHeader');
+    const ticker = document.querySelector('.ticker-container');
+    if (header) document.documentElement.style.setProperty('--header-height', (header.offsetHeight || 150) + 'px');
+    if (ticker) document.documentElement.style.setProperty('--ticker-height', (ticker.offsetHeight || 56) + 'px');
+  }
+
+  function refreshExpandedState(){
+    const anyExpanded = !!document.querySelector('.box.expanded');
+
+    // toggle body class
+    document.body.classList.toggle('expanded-active', anyExpanded);
+
+    // ensure CSS vars reflect current header/ticker sizes
+    updateCssVars();
+
+    // If nothing is expanded, clean up any inline positioning that was applied
+    if (!anyExpanded) {
+      document.documentElement.style.removeProperty('--header-height');
+      document.documentElement.style.removeProperty('--ticker-height');
+      document.body.style.removeProperty('paddingTop');
+      document.body.style.removeProperty('overflow');
+
+      const header = document.getElementById('siteHeader');
+      const ticker = document.querySelector('.ticker-container');
+      const bell = document.getElementById('notificationBell');
+
+      if (header) {
+        header.style.removeProperty('position');
+        header.style.removeProperty('top');
+        header.style.removeProperty('left');
+        header.style.removeProperty('right');
+        header.style.removeProperty('z-index');
+      }
+      if (ticker) {
+        ticker.style.removeProperty('position');
+        ticker.style.removeProperty('top');
+        ticker.style.removeProperty('left');
+        ticker.style.removeProperty('right');
+        ticker.style.removeProperty('z-index');
+      }
+      if (bell) {
+        bell.style.removeProperty('position');
+        bell.style.removeProperty('top');
+        bell.style.removeProperty('right');
+        bell.style.removeProperty('z-index');
+      }
+    } else {
+      updateCssVars();
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function init(){
+    updateCssVars();
+    refreshExpandedState();
+
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(updateCssVars);
+      const header = document.getElementById('siteHeader');
+      const ticker = document.querySelector('.ticker-container');
+      if (header) ro.observe(header);
+      if (ticker) ro.observe(ticker);
+    }
+
+    const mo = new MutationObserver(refreshExpandedState);
+    mo.observe(document.body, { attributes: true, childList: true, subtree: true });
+
+    window.addEventListener('resize', updateCssVars);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateCssVars).catch(()=>{});
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
