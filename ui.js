@@ -546,44 +546,56 @@ document.addEventListener('DOMContentLoaded', () => {
 window.toggleHeader = toggleHeader;
 
 
+// ...existing code...
 function toggleResources(arg) {
-  // debugging helper
-  try { console.debug('toggleResources called', arg); } catch (e) {}
+  // Resolve caller/button:
+  const canonicalBtn = document.getElementById('resourcesToggleBtn') || document.querySelector('[data-resources-toggle]');
+  let btn = canonicalBtn;
 
-  // resolve button (accept element, event, or nothing)
-  let btn = null;
-  if (arg && arg.nodeType === 1) btn = arg;
-  else if (arg && arg.currentTarget) btn = arg.currentTarget;
-  else btn = document.getElementById('resourcesToggleBtn') || document.querySelector('[data-resources-toggle]');
+  if (arg) {
+    // If passed an Event, prefer currentTarget, then target
+    if (typeof Event !== 'undefined' && arg instanceof Event) {
+      btn = arg.currentTarget && arg.currentTarget.nodeType === 1 ? arg.currentTarget :
+            arg.target && arg.target.nodeType === 1 ? arg.target : btn;
+    } else if (arg.nodeType === 1) {
+      // If passed a DOM element
+      btn = arg;
+    } else if (arg.currentTarget && arg.currentTarget.nodeType === 1) {
+      btn = arg.currentTarget;
+    }
+  }
 
-  // resolve main areas
   const grid = document.querySelector('.grid-container') || document.getElementById('mainGrid') || document.querySelector('.main-grid');
   const resources = document.getElementById('resourcesPage') || document.querySelector('[data-resources-page]');
 
-  if (!grid) { console.warn('toggleResources: .grid-container not found'); }
-  if (!resources) { console.warn('toggleResources: #resourcesPage not found'); }
-  if (!grid || !resources) return;
-
-  // Use a body class to track state (more reliable than inline style/read)
-  const showing = document.body.classList.toggle('show-resources');
-
-  // Apply visibility via class + inline fallback for older code
-  if (showing) {
-    document.body.classList.add('show-resources');
-    resources.style.display = 'block';
-    grid.style.display = 'none';
-    if (btn) { btn.textContent = 'Home'; btn.setAttribute('aria-pressed', 'true'); }
-  } else {
-    document.body.classList.remove('show-resources');
-    resources.style.display = 'none';
-    grid.style.display = '';
-    if (btn) { btn.textContent = 'Resources'; btn.setAttribute('aria-pressed', 'false'); }
+  if (!grid || !resources) {
+    if (!grid) console.warn('toggleResources: .grid-container not found');
+    if (!resources) console.warn('toggleResources: #resourcesPage not found');
+    return;
   }
 
-  // force layout update
+  // Toggle once and use the result
+  const showing = document.body.classList.toggle('show-resources');
+
+  // Update visibility
+  resources.style.display = showing ? 'block' : 'none';
+  grid.style.display = showing ? 'none' : '';
+
+  // Keep all toggle controls synchronized (text + aria)
+  const toggles = Array.from(document.querySelectorAll('#resourcesToggleBtn, [data-resources-toggle], #resourcesBtn')).filter(Boolean);
+  toggles.forEach(el => {
+    el.textContent = showing ? 'Home' : 'Resources';
+    el.setAttribute('aria-pressed', String(showing));
+  });
+
+  // Ensure the canonical button has correct state too
+  if (btn) btn.setAttribute('aria-pressed', String(showing));
+
+  // Force layout update to avoid flicker
   void document.body.offsetHeight;
   try { console.debug('toggleResources done', { showing, gridDisplay: grid.style.display, resourcesDisplay: resources.style.display }); } catch (e) {}
 }
+// ...existing code...
 
 // ensure global and attach safe click handler if button exists
 
