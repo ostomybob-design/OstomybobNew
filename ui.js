@@ -55,7 +55,7 @@ function expandBob() {
   bobBox.classList.add('expanded');
 
   forumBox.classList.remove('expanded');
- 
+ window.toggleHeader = toggleHeader;
 }
 
 //

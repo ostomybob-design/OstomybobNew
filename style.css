@@ -1180,3 +1180,12 @@ body.expanded-active #notificationBell {
   position: relative;
   z-index: 12960;
 }
+/* When header is hidden while a box is expanded, pin ticker to very top */
+body.expanded-active.header-hidden .ticker-container {
+  top: 0 !important;
+}
+
+/* Keep bell aligned when header is hidden and a box is expanded */
+body.expanded-active.header-hidden #notificationBell {
+  top: 8px !important;
+}
