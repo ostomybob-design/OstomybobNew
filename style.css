@@ -1129,7 +1129,7 @@ body.show-resources #resourcesPage { display: block !important; }
   position: relative;
   z-index: 22010;
 }
-// ...existing code...
+
 /* keep header + ticker visible while a box is expanded */
 body.expanded-active {
   /* push page content below fixed header + ticker so nothing jumps under them */
@@ -1155,13 +1155,6 @@ body.expanded-active .ticker-container {
   z-index: 12800;
 }
 
-/* notification bell sits on top of the ticker */
-body.expanded-active #notificationBell {
-  position: fixed;
-  right: 20px;
-  top: calc(var(--header-height, 150px) + 8px);
-  z-index: 12900;
-}
 
 /* expanded box should sit above header/ticker stack but below modals */
 #bob-box.expanded,
@@ -1185,7 +1178,3 @@ body.expanded-active.header-hidden .ticker-container {
   top: 0 !important;
 }
 
-/* Keep bell aligned when header is hidden and a box is expanded */
-body.expanded-active.header-hidden #notificationBell {
-  top: 8px !important;
-}

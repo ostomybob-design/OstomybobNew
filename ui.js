@@ -521,7 +521,7 @@ function toggleHeader(eOrBtn) {
   // Force reflow so layout updates immediately
   void document.body.offsetHeight;
 }
-// ...existing code...
+
 
 
 // Initialize header toggle button on DOM ready (keeps behavior consistent with fullscreen button)
@@ -595,9 +595,6 @@ function toggleResources(arg) {
   void document.body.offsetHeight;
   try { console.debug('toggleResources done', { showing, gridDisplay: grid.style.display, resourcesDisplay: resources.style.display }); } catch (e) {}
 }
-// ...existing code...
-
-// ensure global and attach safe click handler if button exists
 
 // Debug helper: ensure Resources button is wired (safe, idempotent)
 document.addEventListener('DOMContentLoaded', () => {
@@ -650,10 +647,10 @@ window.toggleResources = toggleResources;
   // run on load and keep in sync
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function(){
-      refreshExpandedState();
+    //  refreshExpandedState();
       // observe DOM for class changes on boxes
-      const mo = new MutationObserver(refreshExpandedState);
-      mo.observe(document.body, { attributes: true, subtree: true, childList: true });
+     // const mo = new MutationObserver(refreshExpandedState);
+     // mo.observe(document.body, { attributes: true, subtree: true, childList: true });
       // observe header/ticker size changes
       if (window.ResizeObserver) {
         const ro = new ResizeObserver(updateCssVars);
