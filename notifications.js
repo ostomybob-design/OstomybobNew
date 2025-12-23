@@ -5,13 +5,13 @@
    - Clicking a notification opens chat and marks that message read (removes it)
    - _notif_markAsSeen(ts) still exists to mark everything seen if desired
 */
+
+(function () {
+  // DOM refs
   const bell = document.getElementById('notificationBell');
   const badge = document.getElementById('notificationBadge');
   const dropdown = document.getElementById('notificationsDropdown');
   const list = document.getElementById('notificationList');
-(function () {
-  // DOM refs
-
 
   // State
   let unsub = null;
