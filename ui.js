@@ -55,7 +55,7 @@ function expandBob() {
   bobBox.classList.add('expanded');
 
   forumBox.classList.remove('expanded');
- ///window.toggleHeader = toggleHeader;
+ window.toggleHeader = toggleHeader;
 }
 
 //
@@ -645,7 +645,11 @@ window.toggleResources = toggleResources;
     if(ticker) document.documentElement.style.setProperty('--ticker-height', (ticker.offsetHeight || 56) + 'px');
   }
 
-
+  function refreshExpandedState(){
+    const anyExpanded = !!document.querySelector('.box.expanded');
+    document.body.classList.toggle('expanded-active', anyExpanded);
+    updateCssVars();
+  }
 
   // run on load and keep in sync
   if (document.readyState === 'loading') {
