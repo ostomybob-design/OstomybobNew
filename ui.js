@@ -584,6 +584,9 @@ function toggleResources(arg) {
   void document.body.offsetHeight;
   try { console.debug('toggleResources done', { showing, gridDisplay: grid.style.display, resourcesDisplay: resources.style.display }); } catch (e) {}
 }
+// ...existing code...
+
+// ensure global and attach safe click handler if button exists
 
 // ensure global and attach safe click handler if button exists
 
