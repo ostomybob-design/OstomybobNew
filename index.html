@@ -2,11 +2,28 @@
 <html lang="en">
 
 <head>
+    <script>
+        // Prevent "messageListenerUnsubscribe is not defined" when auth.js runs
+        window.messageListenerUnsubscribe = window.messageListenerUnsubscribe || null;
+    </script>
     <style>
-  .ticker-container { position: relative; }          /* make bell's absolute coords relative to this row */
-  #notificationBell { z-index: 200 !important; }    /* ensure bell sits above menu/overlays */
-  .menu-btn { z-index: 100; position: relative; }    /* keep menu under bell */
-</style>
+        .ticker-container {
+            position: relative;
+        }
+
+        /* make bell's absolute coords relative to this row */
+        #notificationBell {
+            z-index: 200 !important;
+        }
+
+        /* ensure bell sits above menu/overlays */
+        .menu-btn {
+            z-index: 100;
+            position: relative;
+        }
+
+        /* keep menu under bell */
+    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -171,10 +188,10 @@
         }
     </style>
 
-    
 
 
- 
+
+
 </head>
 
 <body>
@@ -596,19 +613,15 @@
                 </div>
             </div>
         </div>
-
-        
-
         <!-- BELL — FAR RIGHT (removed inline onclick to let notifications.js handle the click) -->
-    <button id="notificationBell"
-    style="position:relative;margin-left:12px;align-self:center;display:flex;align-items:center;justify-content:center;background:#8B572A;color:#fff8e1;border:none;border-radius:50%;width:56px;height:56px;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:10000;">
-    🔔
-    <span id="notificationBadge"
-        style="position:absolute;top:6px;right:6px;width:18px;height:18px;background:#ff4444;color:white;border-radius:50%;font-size:0.75rem;font-weight:bold;display:none;align-items:center;justify-content:center;">
-        0
-    </span>
-</button>
-
+        <button id="notificationBell"
+            style="position:relative;margin-left:12px;align-self:center;display:flex;align-items:center;justify-content:center;background:#8B572A;color:#fff8e1;border:none;border-radius:50%;width:56px;height:56px;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:10000;">
+            🔔
+            <span id="notificationBadge"
+                style="position:absolute;top:6px;right:6px;width:18px;height:18px;background:#ff4444;color:white;border-radius:50%;font-size:0.75rem;font-weight:bold;display:none;align-items:center;justify-content:center;">
+                0
+            </span>
+        </button>
     </div>
 
     <!-- DROPDOWN — YOUR GOOD POSITION -->
@@ -635,8 +648,9 @@
                 style="border-radius:15px;object-fit:cover;flex:1;width:100%">
         </div>
 
-     
-        <div class="box featured-story" id="featured-story-box" style="background-image: url('/images/marie-feature.jpg');">
+
+        <div class="box featured-story" id="featured-story-box"
+            style="background-image: url('/images/marie-feature.jpg');">
             <a href="https://www.facebook.com/nagae.line/posts/pfbid0qurhYsYYwM9Gs4qacs5bhA7eisWVW78oykmFsJjaRPi6kYbKfUWri6CeKyxaAxSnl"
                 class="featured-story__link" target="_blank" rel="noopener noreferrer"
                 aria-label="Read Marie's story on Facebook">
@@ -760,7 +774,7 @@
 
         </ul>
 
-   
+
     </div>
 
 
@@ -807,7 +821,7 @@
         window.addEventListener('load', autoFitPage);
         window.addEventListener('resize', autoFitPage);
     </script>
-    
+
 </body>
 
 </html>
