@@ -1177,12 +1177,4 @@ body.expanded-active .ticker-container {
 body.expanded-active.header-hidden .ticker-container {
   top: 0 !important;
 }
-#notificationBell {
-  position: absolute !important;
-  right: 20px !important;
-  left: auto !important;  /* Override any left positioning */
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  z-index: 10000 !important;
-  display: block !important;  /* Ensure visible */
-}
+
