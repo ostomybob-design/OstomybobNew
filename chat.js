@@ -12,6 +12,12 @@ let unreadCount = 0;
 let lastSeenTimestamp = parseInt(localStorage.getItem('notificationLastSeen') || '0', 10) || 0;
 let currentInboxPartner = null;
 
+// Utility: Create a loading spinner
+function createLoadingSpinner(message, textColor) {
+  const color = textColor || '#888';
+  return `<div style="text-align:center;padding:40px;"><div style="display:inline-block;width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #8B572A;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:${color};margin-top:20px;">${message || 'Loading...'}</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>`;
+}
+
 // Helpers
 function normalizeTimestamp(createdAt) {
     if (!createdAt) return Date.now();
@@ -231,7 +237,7 @@ function loadPrivateMessages(partnerId) {
     }
 
     // Show loading spinner with better styling
-    messagesDiv.innerHTML = '<div style="text-align:center;padding:40px;"><div style="display:inline-block;width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #8B572A;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#888;margin-top:20px;">Loading messages...</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>';
+    messagesDiv.innerHTML = createLoadingSpinner('Loading messages...');
 
     // Detach any previous listener by reading from a unique ref? In this simple implementation we reattach each call.
     db.collection('privateChats').doc(chatId).collection('messages')
@@ -366,7 +372,7 @@ function loadInboxMessages(partnerId) {
     }
 
     // Show loading spinner
-    messagesDiv.innerHTML = '<div style="text-align:center;padding:40px;"><div style="display:inline-block;width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #8B572A;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#ffecb3;opacity:0.8;margin-top:20px;">Loading messages...</p></div>';
+    messagesDiv.innerHTML = createLoadingSpinner('Loading messages...', '#ffecb3');
 
     db.collection('privateChats').doc(chatId).collection('messages')
         .orderBy('createdAt')

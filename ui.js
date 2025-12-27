@@ -8,6 +8,14 @@
 // This file calls them when available.
 
 //
+// Utility: Create a loading spinner
+//
+function createLoadingSpinner(message, textColor) {
+  const color = textColor || '#888';
+  return `<div style="text-align:center;padding:40px;"><div style="display:inline-block;width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #8B572A;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:${color};margin-top:20px;">${message || 'Loading...'}</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>`;
+}
+
+//
 // Menu open/close (uses expandOverlay element in index.html)
 //
 function openMenu() {
@@ -188,7 +196,7 @@ async function openMessagesInbox() {
     }
 
     // Show modal and loading placeholder with spinner
-    privateMessagesEl.innerHTML = '<div style="text-align:center;padding:40px;"><div style="display:inline-block;width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #8B572A;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:#888;margin-top:20px;">Loading conversations…</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>';
+    privateMessagesEl.innerHTML = createLoadingSpinner('Loading conversations…');
     chatModal.classList.add('open');
 
     // Query recent message docs that include this user
