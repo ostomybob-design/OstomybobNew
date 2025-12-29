@@ -335,7 +335,7 @@ function loadInboxMessages(partnerId) {
     if (!user) return;
 
     const chatId = [user.uid, partnerId].sort().join('_');
-    const messagesDiv = document.getElementById('inboxMessages');
+    const messagesDiv = document.getElementById('selectedChatMessages');
     if (!messagesDiv) return;
 
     db.collection('privateChats').doc(chatId).collection('messages')
