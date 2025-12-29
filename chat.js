@@ -246,12 +246,79 @@ function loadPrivateMessages(partnerId) {
 
 // ---------- Inbox & Conversation list (left panel) ----------
 
+
 function openMessagesInbox() {
-    const modal = document.getElementById('messagesInboxModal');
-    if (modal) {
-        modal.classList.add('open');
-        loadConversationList();
+    console.log('Opening messages inbox');
+  const modal = document.getElementById('messagesInboxModal');
+  if (modal) {
+    console.log('Found messages inbox modal, opening it');
+    modal.classList.add('open');console.log('Updating browser history for inbox');
+    history.pushState({ page: 'inbox' }, 'Inbox', window.location.href);
+    console.log('Loading conversation list for inbox')
+  }
+  console.log('Calling loadConversationList');
+  loadConversationList();
+}
+
+// Fix loadConversationList to query recent messages for conversations
+async function loadConversationList() {
+    console.log('Loading conversation list');
+  const list = document.getElementById('conversationList');
+  if (!list) return;
+  console.log('Found conversation list element');
+  list.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;">Loading...</p>';
+
+  if (!auth.currentUser) {
+    console.log('User not signed in, cannot load conversations');
+    list.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;">Sign in to message others</p>';
+    return;
+  }
+
+  const uid = auth.currentUser.uid;
+
+  const snap = await db.collectionGroup('messages')
+    .where('participants', 'array-contains', uid)
+    .orderBy('createdAt', 'desc')
+    .limit(50)
+    .get();
+
+  const conversations = new Map();
+
+  snap.forEach(doc => {
+    const msg = doc.data();
+    const chatId = doc.ref.parent.parent.id;
+    if (!conversations.has(chatId)) {
+      const partnerId = msg.participants.find(p => p !== uid);
+      conversations.set(chatId, { partnerId, lastMsg: msg.text, lastTime: msg.createdAt.toDate() });
     }
+  });
+
+  list.innerHTML = '';
+
+  if (conversations.size === 0) {
+    list.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;">No conversations yet</p>';
+    return;
+  }
+
+  for (const [chatId, { partnerId, lastMsg, lastTime }] of conversations) {
+    const userDoc = await db.collection('users').doc(partnerId).get();
+    const data = userDoc.data() || {};
+    const name = data.displayName || 'Friend';
+    const photo = data.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${partnerId}`;
+
+    const item = document.createElement('div');
+    item.innerHTML = `
+      <img src="${photo}" style="width:50px;height:50px;border-radius:50%;">
+      <div>
+        <strong>${name}</strong>
+        <p>${lastMsg.slice(0, 50)}...</p>
+        <small>${lastTime.toLocaleTimeString()}</small>
+      </div>
+      <button onclick="viewUserProfile('${partnerId}')">View Profile</button>
+    `;
+    item.onclick = () => openChatInInbox(partnerId, name, photo);
+    list.appendChild(item);
+  }
 }
 
 function closeMessagesInbox() {
@@ -261,11 +328,14 @@ function closeMessagesInbox() {
 
 // Load list of all users (used for starting a new chat) — this function existed in previous version
 function loadConversationList() {
+    console.log('Loading conversation list');
     const list = document.getElementById('conversationList');
     if (!list) return;
+    console.log('Found conversation list element');
     list.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;">Loading users...</p>';
 
     if (!auth.currentUser) {
+        console.log('User not signed in, cannot load conversations');
         list.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;">Sign in to message others</p>';
         return;
     }
@@ -303,7 +373,7 @@ function loadConversationList() {
                     </div>
                     <button onclick="event.stopPropagation(); viewUserProfile('${uid}')" style="background:#fff8e1;color:#8B572A;padding:8px 16px;border:none;border-radius:25px;font-size:0.9rem;font-weight:bold;">View Profile</button>
                 `;
-
+console.log('Appending user item to conversation list');
                 list.appendChild(item);
             });
         }).catch(err => {

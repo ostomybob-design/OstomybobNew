@@ -8,6 +8,14 @@
 // This file calls them when available.
 
 //
+// Utility: Create a loading spinner
+//
+function createLoadingSpinner(message, textColor) {
+  const color = textColor || '#888';
+  return `<div style="text-align:center;padding:40px;"><div style="display:inline-block;width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #8B572A;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:${color};margin-top:20px;">${message || 'Loading...'}</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>`;
+}
+
+//
 // Menu open/close (uses expandOverlay element in index.html)
 //
 function openMenu() {
@@ -131,7 +139,10 @@ function showUserProfile(uid) {
 function closePrivateChat() {
   const modal = document.getElementById('privateChatModal');
   if (modal) modal.classList.remove('open');
-  currentChatPartnerId = null;
+  // Reset the chat partner ID to prevent stale data
+  if (typeof currentChatPartnerId !== 'undefined') {
+    currentChatPartnerId = null;
+  }
 }
 
 //
@@ -168,6 +179,7 @@ function toggleNotifications() {
 // - Shows a modal/list of recent conversations by querying privateChats/*/messages (collectionGroup)
 // - Deduplicates per chat and shows a clickable list that opens openPrivateChat(partnerId,...)
 //
+/*
 async function openMessagesInbox() {
   try {
     if (!auth || !auth.currentUser) {
@@ -184,8 +196,8 @@ async function openMessagesInbox() {
       return;
     }
 
-    // Show modal and loading placeholder
-    privateMessagesEl.innerHTML = '<p style="text-align:center;color:#888;margin:30px 0;">Loading conversations…</p>';
+    // Show modal and loading placeholder with spinner
+    privateMessagesEl.innerHTML = createLoadingSpinner('Loading conversations…');
     chatModal.classList.add('open');
 
     // Query recent message docs that include this user
@@ -214,7 +226,7 @@ async function openMessagesInbox() {
     });
 
     if (chats.size === 0) {
-      privateMessagesEl.innerHTML = '<p style="text-align:center;color:#888;margin:30px 0;">No conversations yet</p>';
+      privateMessagesEl.innerHTML = '<p style="text-align:center;color:#888;margin:30px 0;">No conversations yet. Start chatting with community members!</p>';
       return;
     }
 
@@ -311,7 +323,7 @@ async function openMessagesInbox() {
           }
         }).catch(err => {
           console.warn('failed to load partner profile', err);
-          if (typeof openPrivateChat === 'function') openPrivateChat(partnerId);
+          alert('Failed to load conversation. Please try again.');
         });
       }
 
@@ -328,10 +340,15 @@ async function openMessagesInbox() {
 
   } catch (err) {
     console.error('openMessagesInbox error', err);
-    alert('Failed to load messages.');
+    const privateMessagesEl = document.getElementById('privateMessages');
+    if (privateMessagesEl) {
+      privateMessagesEl.innerHTML = '<p style="text-align:center;color:#c66;margin:30px 0;">Failed to load messages. Please try again later.</p>';
+    } else {
+      alert('Failed to load messages. Please try again later.');
+    }
   }
 }
-
+*/
 //
 // Global click handlers (delegated) — keep them idempotent and avoid duplicates
 //
