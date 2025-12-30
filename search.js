@@ -387,7 +387,7 @@ function initSupabase() {
     }
   }
 
-  function rotateFeaturedImage() {
+ function rotateFeaturedImage() {
   if (featuredPosts.length === 0) return;
   const img = document.getElementById('featuredImage');
   const link = document.getElementById('featuredLink');
@@ -395,7 +395,7 @@ function initSupabase() {
     img.src = featuredPosts[currentIndex].image || 'images/FPost.png';
     link.href = featuredPosts[currentIndex].link || '#';
   }
-  currentIndex = (currentIndex + 1) % featuredPosts.length;  // Increment after setting current
+  currentIndex = (currentIndex + 1) % featuredPosts.length;  // Increment after setting
 }
 
   // Load posts and start rotation
