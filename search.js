@@ -345,43 +345,54 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
   };
 
 })();
-const { createClient } = supabase;  // Destructure from the global supabase (loaded by CDN)
-const sbClient = createClient('https://pkakexlbwkqfxamervub.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrYWtleGxid2txZnhhbWVydnViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDgwOTIsImV4cCI6MjA4MDI4NDA5Mn0.jfCVyDqu9Xv6vN5gbPjBC5Gj8iCKwe_FWsUXxPJkww0');
 
-
-
-
-
-
-let featuredPosts = [];  // Loaded from Supabase
-let currentIndex = 0;
-
-// Fetch posts from Supabase
-async function loadFeaturedPosts() {
-  try {
-    const { data, error } = await sbClient
-      .from('search_results')  // Your table name
-      .select('main_image_url, url');
-
-    if (error) throw error;
-
-    featuredPosts = data.map(post => ({ image: post.image_url, link: post.post_link }));
-    if (featuredPosts.length > 0) rotateFeaturedImage();
-  } catch (err) {
-    console.error('Supabase load error:', err);
+// Wait for supabase to load from CDN
+function initSupabase() {
+  if (typeof supabase === 'undefined') {
+    console.error('Supabase CDN not loaded yet');
+    setTimeout(initSupabase, 100);  // Retry
+    return;
   }
+
+  const { createClient } = supabase;
+  const sbClient = createClient('https://pkakexlbwkqfxamervub.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrYWtleGxid2txZnhhbWVydnViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDgwOTIsImV4cCI6MjA4MDI4NDA5Mn0.jfCVyDqu9Xv6vN5gbPjBC5Gj8iCKwe_FWsUXxPJkww0');
+
+  // Your existing loadFeaturedPosts() and rotateFeaturedImage() using sbClient
+  let featuredPosts = [];
+  let currentIndex = 0;
+
+  async function loadFeaturedPosts() {
+    try {
+      const { data, error } = await sbClient
+        .from('search_results')
+        .select('main_image_url, url');
+
+      if (error) throw error;
+
+      featuredPosts = data.map(post => ({ image: post.imain_mage_url, link: post.url }));
+      if (featuredPosts.length > 0) rotateFeaturedImage();
+    } catch (err) {
+      console.error('Supabase load error:', err);
+    }
+  }
+
+  function rotateFeaturedImage() {
+    if (featuredPosts.length === 0) return;
+    currentIndex = (currentIndex + 1) % featuredPosts.length;
+    const img = document.getElementById('featuredImage');
+    const link = document.getElementById('featuredLink');
+    if (img && link) {
+      img.src = featuredPosts[currentIndex].image;
+      link.href = featuredPosts[currentIndex].link;
+    }
+  }
+
+  loadFeaturedPosts();
+  setInterval(rotateFeaturedImage, 30000);
 }
 
-function rotateFeaturedImage() {
-  if (featuredPosts.length === 0) return;
-  currentIndex = (currentIndex + 1) % featuredPosts.length;
-  const img = document.getElementById('featuredImage');
-  const link = document.getElementById('featuredLink');
-  if (img && link) {
-    img.src = featuredPosts[currentIndex].image;
-    link.href = featuredPosts[currentIndex].link;
-  }
-}
+window.addEventListener('load', initSupabase);
+
 
 // Start rotation on load
 window.addEventListener('load', () => {
