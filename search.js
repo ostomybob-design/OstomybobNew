@@ -375,29 +375,28 @@ function initSupabase() {
 
       console.log('Loaded featured posts:', featuredPosts);
 
-      // Show the first image immediately after data loads
-    if (featuredPosts.length > 0) {
-      currentIndex = -1;  // Start at -1 so first increment sets to 0
-      rotateFeaturedImage();  // Immediate first image
-    }
+      if (featuredPosts.length > 0) {
+        currentIndex = 0;  // Start at first post
+        rotateFeaturedImage();  // Show first image immediately
+      }
     } catch (err) {
       console.error('Supabase load error:', err);
-      // Fallback
       featuredPosts = [{ image: 'images/FPost.png', link: '#' }];
-      rotateFeaturedImage();  // Immediate fallback
+      currentIndex = 0;
+      rotateFeaturedImage();  // Fallback immediate
     }
   }
 
   function rotateFeaturedImage() {
-    if (featuredPosts.length === 0) return;
-    currentIndex = (currentIndex + 1) % featuredPosts.length;
-    const img = document.getElementById('featuredImage');
-    const link = document.getElementById('featuredLink');
-    if (img && link) {
-      img.src = featuredPosts[currentIndex].image;
-      link.href = featuredPosts[currentIndex].link;
-    }
+  if (featuredPosts.length === 0) return;
+  const img = document.getElementById('featuredImage');
+  const link = document.getElementById('featuredLink');
+  if (img && link) {
+    img.src = featuredPosts[currentIndex].image || 'images/FPost.png';
+    link.href = featuredPosts[currentIndex].link || '#';
   }
+  currentIndex = (currentIndex + 1) % featuredPosts.length;  // Increment after setting current
+}
 
   // Load posts and start rotation
   loadFeaturedPosts();
