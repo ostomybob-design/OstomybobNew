@@ -8,7 +8,7 @@
 
 //const API_BASE = window.__API_BASE || window.API_BASE || 'http://localhost:3000';
 const API_BASE = window.__API_BASE || window.API_BASE || 'https://ostomy-bob-web.vercel.app';
-
+// Initialize Supabase client
 
 
 const LOCAL_POSTS_URL = API_BASE + '/api/posts';
@@ -345,3 +345,42 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
   };
 
 })();
+
+const sbClient = Supabase.createClient('https://pkakexlbwkqfxamervub.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrYWtleGxid2txZnhhbWVydnViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDgwOTIsImV4cCI6MjA4MDI4NDA5Mn0.jfCVyDqu9Xv6vN5gbPjBC5Gj8iCKwe_FWsUXxPJkww0');
+
+
+let featuredPosts = [];  // Loaded from Supabase
+let currentIndex = 0;
+
+// Fetch posts from Supabase
+async function loadFeaturedPosts() {
+  try {
+    const { data, error } = await sbClient
+      .from('search_results')  // Replace with your table name
+      .select('main_image_url, url');
+
+    if (error) throw error;
+
+    featuredPosts = data.map(post => ({ image: post.image_url, link: post.post_link }));
+    if (featuredPosts.length > 0) rotateFeaturedImage();
+  } catch (err) {
+    console.error('Failed to load posts from Supabase:', err);
+  }
+}
+
+function rotateFeaturedImage() {
+  if (featuredPosts.length === 0) return;
+  currentIndex = (currentIndex + 1) % featuredPosts.length;
+  const img = document.getElementById('featuredImage');
+  const link = document.getElementById('featuredLink');
+  if (img && link) {
+    img.src = featuredPosts[currentIndex].image;
+    link.href = featuredPosts[currentIndex].link;
+  }
+}
+
+// Start rotation on load
+window.addEventListener('load', () => {
+  loadFeaturedPosts();
+  setInterval(rotateFeaturedImage, 30000);  // Every 30 seconds
+});

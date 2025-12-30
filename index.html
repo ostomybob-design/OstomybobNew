@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -615,14 +616,16 @@
 
 
     <div class="grid-container">
-        <div class="box post-search-box" id="post-search-box">
-            <div class="fb-header">
-                <h2>Post Search</h2>
-                <input type="text" id="fb-search" placeholder="Search posts by keyword...">
-            </div>
-            <img src="images/FPost.png" alt="Post preview"
-                style="border-radius:15px;object-fit:cover;flex:1;width:100%">
-        </div>
+        <div class="box" id="post-search-box">
+  <div class="fb-header">
+    <h2>Post Search</h2>
+    <input type="text" id="fb-search" placeholder="Search posts..." oninput="performSearch(this.value)">
+  </div>
+  <a id="featuredLink" href="#" target="_blank">
+    <img id="featuredImage" src="placeholder.jpg" alt="Featured Post" style="width:100%; border-radius:15px;">
+  </a>
+  <div id="fb-results"></div>
+</div>
 
      
         <div class="box featured-story" id="featured-story-box" style="background-image: url('/images/marie-feature.jpg');">
