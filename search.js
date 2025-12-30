@@ -369,10 +369,16 @@ function initSupabase() {
 
       if (error) throw error;
 
-      featuredPosts = data.map(post => ({ image: post.imain_mage_url, link: post.url }));
+featuredPosts = data.map(post => ({
+        image: post.main_image_url || 'images/FPost.png',
+        link: post.url || '#'
+      }));
+      console.log('Loaded featured posts:', featuredPosts);
       if (featuredPosts.length > 0) rotateFeaturedImage();
     } catch (err) {
       console.error('Supabase load error:', err);
+      featuredPosts = [{ image: 'images/FPost.png', link: '#' }];
+      rotateFeaturedImage();
     }
   }
 
@@ -394,8 +400,3 @@ function initSupabase() {
 window.addEventListener('load', initSupabase);
 
 
-// Start rotation on load
-window.addEventListener('load', () => {
-  loadFeaturedPosts();
-  setInterval(rotateFeaturedImage, 30000);  // Every 30 seconds
-});
