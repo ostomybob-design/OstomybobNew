@@ -200,7 +200,7 @@ h1 {
 }
 
 .grid-container {
-    max-width: 1700px;
+    max-width: 2000px;
     margin: 20px auto 40px;
     padding: 0 40px;
     display: grid;

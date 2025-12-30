@@ -376,10 +376,10 @@ function initSupabase() {
       console.log('Loaded featured posts:', featuredPosts);
 
       // Show the first image immediately after data loads
-      if (featuredPosts.length > 0) {
-        currentIndex = 0;
-        rotateFeaturedImage();  // Immediate first image
-      }
+    if (featuredPosts.length > 0) {
+      currentIndex = -1;  // Start at -1 so first increment sets to 0
+      rotateFeaturedImage();  // Immediate first image
+    }
     } catch (err) {
       console.error('Supabase load error:', err);
       // Fallback
