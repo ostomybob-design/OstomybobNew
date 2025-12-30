@@ -357,7 +357,6 @@ function initSupabase() {
   const { createClient } = supabase;
   const sbClient = createClient('https://pkakexlbwkqfxamervub.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrYWtleGxid2txZnhhbWVydnViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDgwOTIsImV4cCI6MjA4MDI4NDA5Mn0.jfCVyDqu9Xv6vN5gbPjBC5Gj8iCKwe_FWsUXxPJkww0');
 
-  // Your existing loadFeaturedPosts() and rotateFeaturedImage() using sbClient
   let featuredPosts = [];
   let currentIndex = 0;
 
@@ -369,16 +368,23 @@ function initSupabase() {
 
       if (error) throw error;
 
-featuredPosts = data.map(post => ({
+      featuredPosts = data.map(post => ({
         image: post.main_image_url || 'images/FPost.png',
         link: post.url || '#'
       }));
+
       console.log('Loaded featured posts:', featuredPosts);
-      if (featuredPosts.length > 0) rotateFeaturedImage();
+
+      // Show the first image immediately after data loads
+      if (featuredPosts.length > 0) {
+        currentIndex = 0;
+        rotateFeaturedImage();  // Immediate first image
+      }
     } catch (err) {
       console.error('Supabase load error:', err);
+      // Fallback
       featuredPosts = [{ image: 'images/FPost.png', link: '#' }];
-      rotateFeaturedImage();
+      rotateFeaturedImage();  // Immediate fallback
     }
   }
 
@@ -393,10 +399,10 @@ featuredPosts = data.map(post => ({
     }
   }
 
+  // Load posts and start rotation
   loadFeaturedPosts();
-  setInterval(rotateFeaturedImage, 30000);
+  setInterval(rotateFeaturedImage, 10000);  // Every 10 seconds
 }
 
+// Start on load
 window.addEventListener('load', initSupabase);
-
-
