@@ -345,8 +345,12 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
   };
 
 })();
+const { createClient } = supabase;  // Destructure from the global supabase (loaded by CDN)
+const sbClient = createClient('https://pkakexlbwkqfxamervub.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrYWtleGxid2txZnhhbWVydnViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDgwOTIsImV4cCI6MjA4MDI4NDA5Mn0.jfCVyDqu9Xv6vN5gbPjBC5Gj8iCKwe_FWsUXxPJkww0');
 
-const sbClient = Supabase.createClient('https://pkakexlbwkqfxamervub.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrYWtleGxid2txZnhhbWVydnViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDgwOTIsImV4cCI6MjA4MDI4NDA5Mn0.jfCVyDqu9Xv6vN5gbPjBC5Gj8iCKwe_FWsUXxPJkww0');
+
+
+
 
 
 let featuredPosts = [];  // Loaded from Supabase
@@ -356,7 +360,7 @@ let currentIndex = 0;
 async function loadFeaturedPosts() {
   try {
     const { data, error } = await sbClient
-      .from('search_results')  // Replace with your table name
+      .from('search_results')  // Your table name
       .select('main_image_url, url');
 
     if (error) throw error;
@@ -364,7 +368,7 @@ async function loadFeaturedPosts() {
     featuredPosts = data.map(post => ({ image: post.image_url, link: post.post_link }));
     if (featuredPosts.length > 0) rotateFeaturedImage();
   } catch (err) {
-    console.error('Failed to load posts from Supabase:', err);
+    console.error('Supabase load error:', err);
   }
 }
 
