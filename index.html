@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-   
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="featured-story.css">
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
     <style>
@@ -171,10 +171,10 @@
         }
     </style>
 
-    
 
 
- 
+
+
 </head>
 
 <body>
@@ -513,36 +513,42 @@
 
 
     <!-- MESSAGES INBOX MODAL — FIXED LAYOUT -->
-<div class="privateChatModal" id="messagesInboxModal">
-  <div class="private-chat-box" style="width:90%;max-width:1000px;height:85vh;background:#fff8e1;border-radius:30px;overflow:hidden;display:flex;flex-direction:row;box-shadow:0 20px 50px rgba(0,0,0,0.6);position:relative;">
-    <!-- Close button -->
-    <button onclick="closeMessagesInbox()" style="position:absolute;top:12px;right:12px;background:#8B572A;color:#fff8e1;font-size:2.8rem;font-weight:bold;cursor:pointer;z-index:30;width:48px;height:48px;border-radius:50%;border:none;box-shadow:0 4px 15px rgba(0,0,0,0.5);">×</button>
-    
-    <!-- Left: Conversation List -->
-    <div style="width:40%;background:#8B572A;color:#fff8e1;padding:25px;overflow-y:auto;">
-      <h2 style="text-align:center;margin-bottom:25px;font-size:2rem;">Your Messages</h2>
-      <div id="conversationList" style="max-height:calc(85vh - 100px);overflow-y:auto;">
-        <p style="text-align:center;color:#ffecb3;opacity:0.8;margin:60px 0;">No conversations yet</p>
-      </div>
-    </div>
-    
-    <!-- Right: Selected Chat -->
-    <div style="width:60%;display:flex;flex-direction:column;background:#fff8e1;color:#222;position:relative;">
-      <div style="padding:60px 30px 20px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.6rem;font-weight:bold;" id="selectedChatHeader">
-        Select a conversation to view messages
-      </div>
-      <div id="inboxMessages" style="flex:1;overflow-y:auto;padding:20px 30px;background:#f9f5f0;font-size:1.1rem;line-height:1.6;">
-        <!-- Messages load here -->
-      </div>
-      <div id="inboxInputArea" style="padding:20px;background:#fff;border-top:3px solid #8B572A;">
-        <div style="display:flex;gap:12px;">
-          <input type="text" id="inboxMessageInput" placeholder="Type a message..." style="flex:1;padding:16px;border-radius:30px;border:2px solid #8B572A;outline:none;font-size:1.1rem;">
-          <button onclick="sendInboxMessage()" style="background:#8B572A;color:#fff8e1;padding:16px 28px;border:none;border-radius:30px;font-weight:bold;font-size:1.1rem;cursor:pointer;">Send</button>
+    <div class="privateChatModal" id="messagesInboxModal">
+        <div class="private-chat-box"
+            style="width:90%;max-width:1000px;height:85vh;background:#fff8e1;border-radius:30px;overflow:hidden;display:flex;flex-direction:row;box-shadow:0 20px 50px rgba(0,0,0,0.6);position:relative;">
+            <!-- Close button -->
+            <button onclick="closeMessagesInbox()"
+                style="position:absolute;top:12px;right:12px;background:#8B572A;color:#fff8e1;font-size:2.8rem;font-weight:bold;cursor:pointer;z-index:30;width:48px;height:48px;border-radius:50%;border:none;box-shadow:0 4px 15px rgba(0,0,0,0.5);">×</button>
+
+            <!-- Left: Conversation List -->
+            <div style="width:40%;background:#8B572A;color:#fff8e1;padding:25px;overflow-y:auto;">
+                <h2 style="text-align:center;margin-bottom:25px;font-size:2rem;">Your Messages</h2>
+                <div id="conversationList" style="max-height:calc(85vh - 100px);overflow-y:auto;">
+                    <p style="text-align:center;color:#ffecb3;opacity:0.8;margin:60px 0;">No conversations yet</p>
+                </div>
+            </div>
+
+            <!-- Right: Selected Chat -->
+            <div style="width:60%;display:flex;flex-direction:column;background:#fff8e1;color:#222;position:relative;">
+                <div style="padding:60px 30px 20px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.6rem;font-weight:bold;"
+                    id="selectedChatHeader">
+                    Select a conversation to view messages
+                </div>
+                <div id="inboxMessages"
+                    style="flex:1;overflow-y:auto;padding:20px 30px;background:#f9f5f0;font-size:1.1rem;line-height:1.6;">
+                    <!-- Messages load here -->
+                </div>
+                <div id="inboxInputArea" style="padding:20px;background:#fff;border-top:3px solid #8B572A;">
+                    <div style="display:flex;gap:12px;">
+                        <input type="text" id="inboxMessageInput" placeholder="Type a message..."
+                            style="flex:1;padding:16px;border-radius:30px;border:2px solid #8B572A;outline:none;font-size:1.1rem;">
+                        <button onclick="sendInboxMessage()"
+                            style="background:#8B572A;color:#fff8e1;padding:16px 28px;border:none;border-radius:30px;font-weight:bold;font-size:1.1rem;cursor:pointer;">Send</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
 
     <header id="siteHeader">
         <div class="top-bar" id="headerBar">
@@ -620,19 +626,21 @@
 
 
     <div class="grid-container">
-        <div class="box" id="post-search-box">
+
+<div class="box post-search-box">
   <div class="fb-header">
     <h2>Post Search</h2>
     <input type="text" id="fb-search" placeholder="Search posts..." oninput="performSearch(this.value)">
   </div>
   <a id="featuredLink" href="#" target="_blank">
-   <img id="featuredImage" src="" alt="Featured Post" style="width:100%; border-radius:15px;">
+    <img id="featuredImage" src="" alt="Featured Post" style="width:100%; border-radius:15px;">
   </a>
   <div id="fb-results"></div>
 </div>
 
-     
-        <div class="box featured-story" id="featured-story-box" style="background-image: url('/images/marie-feature.jpg');">
+
+        <div class="box featured-story" id="featured-story-box"
+            style="background-image: url('/images/marie-feature.jpg');">
             <a href="https://www.facebook.com/nagae.line/posts/pfbid0qurhYsYYwM9Gs4qacs5bhA7eisWVW78oykmFsJjaRPi6kYbKfUWri6CeKyxaAxSnl"
                 class="featured-story__link" target="_blank" rel="noopener noreferrer"
                 aria-label="Read Marie's story on Facebook">
@@ -756,7 +764,7 @@
 
         </ul>
 
-   
+
     </div>
 
 
@@ -803,7 +811,7 @@
         window.addEventListener('load', autoFitPage);
         window.addEventListener('resize', autoFitPage);
     </script>
-    
+
 </body>
 
 </html>
