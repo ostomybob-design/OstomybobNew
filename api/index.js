@@ -49,8 +49,17 @@ function searchPosts(query) {
   });
 }
 
-// Allow your local frontend origin (adjust as needed)
-app.use(cors({ origin: ['http://127.0.0.1:5500', 'http://localhost:5500'] }));
+// Allow your local frontend origin + deployed frontend origin (adjust as needed)
+app.use(cors({
+  origin: [
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    'https://ostomybob-new.vercel.app'   // <-- add your deployed frontend origin
+  ],
+  methods: ['GET','POST','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization']
+}));
+
 app.use(express.json());
 
 // Simple API endpoints (existing)
@@ -179,9 +188,13 @@ app.all('/api/poe/*', async (req, res) => {
   }
 });
 
-// Start
+// Start (for local use)
 app.listen(PORT, () => {
   console.log(`Local posts + OpenAI/Poe proxy server listening on http://localhost:${PORT}`);
   console.log(`GET /api/posts    - list all posts`);
   console.log(`GET /api/search?q=skin  - tokenized search`);
 });
+
+// If you intend to run this as a Vercel serverless function, instead of listening here,
+// export the express app handler. Uncomment the following line for Vercel:
+// module.exports = app;
