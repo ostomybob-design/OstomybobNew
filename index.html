@@ -791,26 +791,30 @@
 
 
     <!-- <script src="backfill-add-participants.js"></script> -->
+<script>
+  function autoFitPage() {
+    if (document.fullscreenElement || document.body.classList.contains('header-hidden') || document.querySelector('.box.expanded')) return;  // Skip to avoid cutoff
 
-    <script>
-        // Auto-zoom so full page fits perfectly on load
-        function autoFitPage() {
-            const targetHeight = 900;  // Your design is made for ~900px height
-            const availableHeight = window.innerHeight;
+    const targetHeight = 900;
+    const availableHeight = window.innerHeight;
 
-            if (availableHeight < targetHeight) {
-                const zoom = (availableHeight / targetHeight) * 0.845; // 95% safety margin
-                document.body.style.zoom = zoom;
-                document.body.style.transform = `scale(${zoom})`;
-                document.body.style.transformOrigin = 'top left';
-                document.body.style.width = `${100 / zoom}%`;
-                document.body.style.height = `${100 / zoom}%`;
-            }
-        }
-        // Run on load + resize
-        window.addEventListener('load', autoFitPage);
-        window.addEventListener('resize', autoFitPage);
-    </script>
+    if (availableHeight < targetHeight) {
+      const zoom = (availableHeight / targetHeight) * 0.845;
+      document.body.style.zoom = zoom;
+      document.body.style.transform = `scale(${zoom})`;
+      document.body.style.transformOrigin = 'top left';
+      document.body.style.width = `${100 / zoom}%`;
+      document.body.style.height = `${100 / zoom}%`;
+    } else {
+      document.body.style.zoom = '100%';
+      document.body.style.transform = 'none';
+      document.body.style.width = '100%';
+      document.body.style.height = '100%';
+    }
+  }
+  window.addEventListener('load', autoFitPage);
+  window.addEventListener('resize', autoFitPage);
+</script>
 
 </body>
 

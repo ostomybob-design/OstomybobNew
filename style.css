@@ -1202,3 +1202,17 @@ body.expanded-active.header-hidden #notificationBell {
   z-index: 10000 !important;
   display: block !important;  /* Ensure visible */
 }
+.ticker-container {
+  height: 70px !important;  /* Increase from 60px to avoid cutoff */
+  overflow: visible !important;  /* Allow content to show if slightly overflow */
+}
+
+.ticker-mask {
+  left: 100px !important;  /* Increase from 90px to give more space on left */
+  overflow: visible !important;  /* Prevent mask clipping */
+}
+
+.ticker-content {
+  top: 50% !important;
+  transform: translateY(-50%);
+}
