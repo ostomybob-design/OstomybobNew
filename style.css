@@ -1133,7 +1133,7 @@ body.show-resources #resourcesPage { display: block !important; }
   position: relative;
   z-index: 22010;
 }
-// ...existing code...
+
 /* keep header + ticker visible while a box is expanded */
 body.expanded-active {
   /* push page content below fixed header + ticker so nothing jumps under them */
