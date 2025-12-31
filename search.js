@@ -392,7 +392,7 @@ function initSupabase() {
   const img = document.getElementById('featuredImage');
   const link = document.getElementById('featuredLink');
   if (img && link) {
-    img.src = featuredPosts[currentIndex].image || 'images/FPost.png';
+   img.src = featuredPosts[currentIndex].image.replace(/^http:/, 'https:') || 'images/FPost.png';
     link.href = featuredPosts[currentIndex].link || '#';
   }
   currentIndex = (currentIndex + 1) % featuredPosts.length;  // Increment after setting
