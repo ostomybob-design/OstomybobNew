@@ -1251,10 +1251,11 @@ body.expanded-active.header-hidden #notificationBell {
   position: fixed !important;
   inset: 140px 0 0 0;  /* Top offset for header + ticker, full width/height below */
   margin: auto;  /* Center horizontally and vertically in the remaining space */
-  width: 95vw !important;  /* Slightly less than full for breathing room */
-  max-width: 1700px;  /* Match your grid max-width */
-  height: auto !important;
-  max-height: calc(100vh - 140px);
+  width: 100vw !important;  /* Slightly less than full for breathing room */
+  max-width: 2500px;  /* Match your grid max-width */
+  height: 70% !important;
+  z-index: 10000;
+ 
   z-index: 10000;
   padding: 40px;
   border-radius: 20px;  /* Keep rounded corners */
