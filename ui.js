@@ -752,3 +752,19 @@ window.toggleResources = toggleResources;
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
+function toggleMaximize(boxId) {
+  const box = document.getElementById(boxId);
+  if (!box) return;
+
+  if (box.classList.contains('maximized')) {
+    box.classList.remove('maximized');
+  } else {
+    // Remove maximized from any other box
+    document.querySelectorAll('.box.maximized').forEach(b => b.classList.remove('maximized'));
+    box.classList.add('maximized');
+  }
+}
+
+// Make it global for inline onclick
+window.toggleMaximize = toggleMaximize;

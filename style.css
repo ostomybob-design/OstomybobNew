@@ -1133,13 +1133,10 @@ body.show-resources #resourcesPage { display: block !important; }
   position: relative;
   z-index: 22010;
 }
-// ...existing code...
-/* keep header + ticker visible while a box is expanded */
-body.expanded-active {
-  /* push page content below fixed header + ticker so nothing jumps under them */
-  padding-top: calc(150px + 56px); /* fallback values; JS will update CSS vars if available */
-  overflow-y: auto;
-}
+
+
+
+
 
 /* fixed header above everything */
 body.expanded-active #siteHeader {
@@ -1221,4 +1218,61 @@ body.expanded-active.header-hidden #notificationBell {
 .ticker-content {
   top: 50% !important;
   transform: translateY(-50%);
+}
+
+
+
+/* Maximize button in top right of OstomyBob and Forum boxes */
+.maximize-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(139, 87, 42, 0.8);
+  color: #fff8e1;
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.maximize-btn:hover {
+  background: #A67C52;
+}
+
+/* Expanded box to cover full grid area (4 boxes space) */
+.box.maximized {
+  position: fixed !important;
+  inset: 140px 0 0 0;  /* Top offset for header + ticker, full width/height below */
+  margin: auto;  /* Center horizontally and vertically in the remaining space */
+  width: 95vw !important;  /* Slightly less than full for breathing room */
+  max-width: 1700px;  /* Match your grid max-width */
+  height: auto !important;
+  max-height: calc(100vh - 140px);
+  z-index: 10000;
+  padding: 40px;
+  border-radius: 20px;  /* Keep rounded corners */
+  overflow: auto;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+}
+/* Hide other boxes when one is maximized */
+.grid-container:has(.maximized) .box:not(.maximized) {
+  display: none !important;
+}
+
+.maximize-btn {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  z-index: 100000 !important;  /* Very high to stay on top */
+  background: rgba(139, 87, 42, 0.9);
+  pointer-events: auto !important;  /* Ensure clickable */
 }
