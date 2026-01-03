@@ -199,19 +199,7 @@ h1 {
     animation-play-state: paused
 }
 
-.grid-container {
-    min-width: 2000px;
-    max-width: 2000px;
-    margin: 20px auto 20px;
-margin-top: 0px;
-    display: grid;
-    padding-top: 0;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    position: relative;
-    z-index: 1
-    
-}
+
 
 .box {
     background: rgba(255, 255, 255, 0.36);
@@ -1432,4 +1420,17 @@ body.expanded-active.header-hidden #notificationBell {
   margin-bottom: 0px;
   height: 56px;
   overflow: visible;
+}
+.grid-container {
+    min-width: 2300px;
+    max-width: 2300px;
+    margin: 20px auto 20px;
+margin-top: 0px;
+    display: grid;
+    padding-top: 0;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    position: relative;
+    z-index: 1
+    
 }
