@@ -202,12 +202,13 @@ h1 {
 .grid-container {
     min-width: 2000px;
     max-width: 2000px;
-    margin: 20px auto 40px;
-    padding: 0 40px;
+    margin: 20px auto 20px;
+margin-top: 0px;
     display: grid;
+    padding-top: 0;
+    padding-bottom: 0;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
-    gap: 30px;
+    gap: 15px;
     position: relative;
     z-index: 1
     
@@ -882,7 +883,7 @@ h1 {
 /* pull the ticker up a bit closer to the header */
 .ticker-container {
     margin-top: 6px;     /* bring ticker nearer the header */
-    margin-bottom: 12px; /* reduce space below ticker if desired */
+    margin-bottom: 8px; /* reduce space below ticker if desired */
     height: 56px;        /* slightly smaller height if you want it tighter */
 }
 @media (max-width: 768px) {
