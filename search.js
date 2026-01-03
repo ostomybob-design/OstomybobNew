@@ -1,19 +1,13 @@
-// search.js — unified frontend for local /api/search and remote /api/poe-search
-// Behavior:
-//  - Probe for local API (/api/posts and /api/search). If available, use it.
-//  - Otherwise fallback to /api/poe-search (your Poe proxy).
-//  - Renders results into #localSearchResults (creates it if missing).
-//  - Exposes window.initFeaturedCarousel(selector, intervalMs, renderFn)
-//  - Keeps the same UI for both providers.
+// search.js — unified frontend for local /api/search and remote /api/poe-search + Supabase featured rotation
 
-//const API_BASE = window.__API_BASE || window.API_BASE || 'http://localhost:3000';
 const API_BASE = window.__API_BASE || window.API_BASE || 'https://ostomy-bob-web.vercel.app';
-// Initialize Supabase client
-
 
 const LOCAL_POSTS_URL = API_BASE + '/api/posts';
 const LOCAL_SEARCH_URL = API_BASE + '/api/search';
 const POE_SEARCH_URL = API_BASE + '/api/poe-search';
+// Wait for supabase to load from CDN
+let featuredPosts = [];
+let currentIndex = 0;
 
 (function () {
   // DOM: uses the existing search input (id="fb-search")
@@ -37,7 +31,6 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
     resultsWrap = document.createElement('div');
     resultsWrap.id = 'localSearchResults';
 
-    // make it look like a popup and position absolute over the image
     resultsWrap.style.position = 'absolute';
     resultsWrap.style.left = '12px';
     resultsWrap.style.right = '12px';
@@ -48,16 +41,14 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
     resultsWrap.style.maxHeight = '420px';
     resultsWrap.style.overflowY = 'auto';
     resultsWrap.style.boxShadow = '0 6px 18px rgba(0,0,0,0.12)';
-    resultsWrap.style.display = 'none'; // hidden until search results / loading
+    resultsWrap.style.display = 'none';
     resultsWrap.style.zIndex = '1000';
 
-    // Close button (top-right)
     const closeBtn = document.createElement('button');
     closeBtn.type = 'button';
     closeBtn.id = 'localSearchClose';
     closeBtn.innerHTML = '✕';
     closeBtn.title = 'Close';
-    // style
     closeBtn.style.position = 'absolute';
     closeBtn.style.top = '8px';
     closeBtn.style.right = '8px';
@@ -76,23 +67,18 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
     closeBtn.style.padding = '0';
     closeBtn.style.zIndex = '1010';
 
-    // Click handler (will persist because we won't recreate this node)
     closeBtn.addEventListener('click', () => {
       hideResults();
     });
 
-    // Content container — all dynamic HTML goes here so we don't touch closeBtn
     resultsContent = document.createElement('div');
     resultsContent.id = 'localSearchResultsContent';
-    // add some top padding so close button doesn't overlap content
     resultsContent.style.paddingTop = '6px';
 
-    // append close button and content container to DOM (attach to container)
     resultsWrap.appendChild(closeBtn);
     resultsWrap.appendChild(resultsContent);
     container.appendChild(resultsWrap);
   } else {
-    // If it already exists in DOM, ensure we have a reference to resultsContent
     resultsContent = document.getElementById('localSearchResultsContent');
     if (!resultsContent) {
       resultsContent = document.createElement('div');
@@ -101,25 +87,20 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
     }
   }
 
-  // Helper to position the results directly under the header/input inside the container
   function positionResults() {
     try {
       const containerRect = container.getBoundingClientRect();
       const headerRect = input.parentNode.getBoundingClientRect();
-      // Compute top relative to container
       const topPx = Math.max(8, headerRect.bottom - containerRect.top + 6);
       resultsWrap.style.top = topPx + 'px';
-      // Align left edge with container padding; keep small margin
       resultsWrap.style.left = '12px';
       resultsWrap.style.right = '12px';
-      // If container is narrow, allow full width
       resultsWrap.style.maxWidth = 'calc(100% - 24px)';
     } catch (e) {
-      // ignore positioning errors
+      // ignore
     }
   }
 
-  // Helper show/hide functions
   function showResults() {
     positionResults();
     resultsWrap.style.display = 'block';
@@ -128,7 +109,6 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
     resultsWrap.style.display = 'none';
   }
 
-  // Reposition on resize/scroll so overlay stays correctly placed
   window.addEventListener('resize', () => {
     if (resultsWrap.style.display !== 'none') positionResults();
   });
@@ -136,14 +116,12 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
     if (resultsWrap.style.display !== 'none') positionResults();
   }, true);
 
-  // allow ESC to close the popup
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       hideResults();
     }
   });
 
-  // optional: clicking outside closes the popup
   document.addEventListener('click', function (e) {
     if (!resultsWrap || resultsWrap.style.display === 'none') return;
     if (!resultsWrap.contains(e.target) && e.target !== input) {
@@ -152,7 +130,6 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
   });
 
   function renderResults(items) {
-    // clear previous results inside resultsContent (keep closeBtn intact)
     resultsContent.innerHTML = '';
 
     if (!items || items.length === 0) {
@@ -196,15 +173,12 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
   }
 
   function setLoading(on) {
-    // manipulate only resultsContent so closeBtn stays intact
     resultsContent.innerHTML = on ? '<p style="text-align:center;color:#888;margin:20px 0;">Searching…</p>' : '';
     if (on) showResults();
   }
 
-  // Probe for local API availability
-  let apiMode = null; // 'local' or 'poe'
+  let apiMode = null;
   async function probeApis() {
-    // try local posts endpoint first
     try {
       const r = await fetch(LOCAL_POSTS_URL, { method: 'GET' });
       if (r.ok) {
@@ -213,7 +187,6 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
       }
     } catch (e) { /* ignore */ }
 
-    // try poe proxy
     try {
       const r2 = await fetch(POE_SEARCH_URL + '?q=healthcheck', { method: 'GET' });
       if (r2.ok) {
@@ -222,11 +195,9 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
       }
     } catch (e) { /* ignore */ }
 
-    // default to local (graceful) if neither responds
     apiMode = 'local';
   }
 
-  // Perform search using selected backend
   async function performSearch(q) {
     if (!q || q.trim().length === 0) {
       renderResults([]);
@@ -246,7 +217,6 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
         return;
       }
 
-      // poe fallback
       if (apiMode === 'poe') {
         const url = POE_SEARCH_URL + '?q=' + encodeURIComponent(q.trim());
         const r = await fetch(url);
@@ -257,7 +227,6 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
         return;
       }
 
-      // If not determined, try local first
       const r = await fetch(LOCAL_SEARCH_URL + '?q=' + encodeURIComponent(q.trim()));
       const data = await r.json();
       setLoading(false);
@@ -270,7 +239,6 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
     }
   }
 
-  // Enter key triggers search
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -278,19 +246,10 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
     }
   });
 
-  // Optional live debounce (uncomment to enable)
-  // let timer;
-  // input.addEventListener('input', function () {
-  //   clearTimeout(timer);
-  //   timer = setTimeout(() => performSearch(input.value), 400);
-  // });
-
-  // Featured carousel (uses LOCAL_POSTS_URL if available, otherwise does nothing)
   window.initFeaturedCarousel = async function (selector, intervalMs = 5000, renderFn) {
     const el = document.querySelector(selector);
     if (!el) return;
     try {
-      // ensure apiMode is probed
       if (!apiMode) await probeApis();
       let items = [];
       if (apiMode === 'local') {
@@ -300,7 +259,6 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
           items = data.items || [];
         }
       } else {
-        // If using Poe only, we don't have a posts list — no carousel
         console.warn('initFeaturedCarousel: local posts not available, carousel disabled');
         return;
       }
@@ -346,19 +304,45 @@ const POE_SEARCH_URL = API_BASE + '/api/poe-search';
 
 })();
 
+
+
+// Global functions (outside initSupabase)
+function rotateFeaturedImage() {
+  if (featuredPosts.length === 0) return;
+  const img = document.getElementById('featuredImage');
+  const link = document.getElementById('featuredLink');
+  if (img && link) {
+    img.src = featuredPosts[currentIndex].image.replace(/^http:/, 'https:') || 'images/FPost.png';
+    link.href = featuredPosts[currentIndex].link || '#';
+  }
+}
+
+function manualRotate(direction) {
+  console.log('Manual rotate:', direction);
+  console.log('Before index:', currentIndex);
+  console.log('Featured posts length:', featuredPosts.length);
+  if (featuredPosts.length === 0) {
+console.log('No featured posts yet, cannot rotate');
+    // Retry after short delay if data not loaded yet
+    setTimeout(() => manualRotate(direction), 200);
+    return;
+  }
+  console.log('Current index before addition :', currentIndex);
+  currentIndex = (currentIndex + direction + featuredPosts.length) % featuredPosts.length;
+  console.log('Current index after addition :', currentIndex);
+  rotateFeaturedImage();
+}
+
 // Wait for supabase to load from CDN
 function initSupabase() {
   if (typeof supabase === 'undefined') {
     console.error('Supabase CDN not loaded yet');
-    setTimeout(initSupabase, 100);  // Retry
+    setTimeout(initSupabase, 100);
     return;
   }
 
   const { createClient } = supabase;
   const sbClient = createClient('https://pkakexlbwkqfxamervub.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBrYWtleGxid2txZnhhbWVydnViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3MDgwOTIsImV4cCI6MjA4MDI4NDA5Mn0.jfCVyDqu9Xv6vN5gbPjBC5Gj8iCKwe_FWsUXxPJkww0');
-
-  let featuredPosts = [];
-  let currentIndex = 0;
 
   async function loadFeaturedPosts() {
     try {
@@ -376,32 +360,31 @@ function initSupabase() {
       console.log('Loaded featured posts:', featuredPosts);
 
       if (featuredPosts.length > 0) {
-        currentIndex = 0;  // Start at first post
-        rotateFeaturedImage();  // Show first image immediately
+        currentIndex = 0;
+        rotateFeaturedImage();  // Immediate first image
       }
     } catch (err) {
       console.error('Supabase load error:', err);
       featuredPosts = [{ image: 'images/FPost.png', link: '#' }];
       currentIndex = 0;
-      rotateFeaturedImage();  // Fallback immediate
+      rotateFeaturedImage();
     }
   }
 
- function rotateFeaturedImage() {
-  if (featuredPosts.length === 0) return;
-  const img = document.getElementById('featuredImage');
-  const link = document.getElementById('featuredLink');
-  if (img && link) {
-   img.src = featuredPosts[currentIndex].image.replace(/^http:/, 'https:') || 'images/FPost.png';
-    link.href = featuredPosts[currentIndex].link || '#';
-  }
-  currentIndex = (currentIndex + 1) % featuredPosts.length;  // Increment after setting
+  // Attach arrow clicks (now functions are global)
+  document.addEventListener('DOMContentLoaded', () => {
+    //document.getElementById('featuredPrev')?.addEventListener('click', () => manualRotate(-1));
+   // document.getElementById('featuredNext')?.addEventListener('click', () => manualRotate(1));
+  });
+
+  loadFeaturedPosts();
+  console.log('Starting featured image rotation interval');
+ setInterval(() => {
+  manualRotate(1);  // Use manualRotate for consistent increment
+}, 10000);
 }
 
-  // Load posts and start rotation
-  loadFeaturedPosts();
-  setInterval(rotateFeaturedImage, 10000);  // Every 10 seconds
-}
+
 
 // Start on load
 window.addEventListener('load', initSupabase);
