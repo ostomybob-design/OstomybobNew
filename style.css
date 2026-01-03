@@ -206,7 +206,6 @@ h1 {
 margin-top: 0px;
     display: grid;
     padding-top: 0;
-    padding-bottom: 0;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     position: relative;
@@ -1394,4 +1393,43 @@ body.expanded-active.header-hidden #notificationBell {
   height: auto;
   display: block;
   border-radius: 30px;  /* Full box roundness */
+}
+/* Thread view header title color to match Community Forum */
+#threadView h2,  /* or the element with the thread title */
+.full-chat-box h2  /* fallback if title is in h2 */
+{
+  color: #8B572A !important;
+}
+
+/* Replace rigid grid width with responsive layout and stable sizing */
+.grid-container {
+  width: 100%;
+  max-width: 1700px;    /* sensible max instead of fixed 2000px */
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 0px;
+  padding-bottom: 0;
+  box-sizing: border-box;
+  position: relative;
+  min-height: 0; /* important so children can scroll correctly */
+  z-index: 1;
+}
+
+/* Use min-height for header so measured height is stable across renders */
+#siteHeader {
+  min-height: 150px; /* allow header to expand slightly while keeping baseline */
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Ensure ticker is not clipped; keep it positioned relative by default.
+   JS can change its layout if/when a box becomes expanded. */
+.ticker-container {
+  position: relative;
+  margin-top: 6px;
+  margin-bottom: 0px;
+  height: 56px;
+  overflow: visible;
 }

@@ -168,7 +168,7 @@ function openThread(threadId, threadData) {
     document.getElementById('forum-box').innerHTML = `
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
             <button onclick="loadCategory('${threadData.category}')" 
-                    style="background:none;border:none;color:#fff8e1;font-size:1.3rem;cursor:pointer;padding:10px 0;">
+                    style="background:none;border:none;color: #8B572A;font-size:1.3rem;cursor:pointer;padding:10px 0;">
                 ← Back
             </button>
             <h2 style="color:#fff8e1;font-size:2.2rem;margin:0;text-align:center;flex:1;">
