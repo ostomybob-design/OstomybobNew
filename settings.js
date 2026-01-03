@@ -1,4 +1,4 @@
-// settings.js — COMPLETE & FIXED (color linking, persistence, temp toggle, profile save with visibility checkboxes)
+// settings.js — COMPLETE & FIXED (color linking, persistence, temp toggle, profile save with visibility checkboxes, background opacity)
 
 let linkColorsEnabled = localStorage.getItem('linkColorsEnabled') === 'true';
 
@@ -69,9 +69,52 @@ function uploadBackground(file) {
             document.body.style.backgroundSize = 'cover';
             localStorage.setItem('pageBackgroundImage', url);
             localStorage.removeItem('pageBackgroundColor');
+            applyBgOpacity(localStorage.getItem('bgOpacity') || '100');  // Re-apply opacity
         });
     }).catch(err => alert("Upload failed: " + err.message));
 }
+
+// Background opacity control
+function applyBgOpacity(opacityPercent) {
+    const opacity = opacityPercent / 100;
+    // Use a pseudo-element overlay for fade (keeps content readable)
+    let overlay = document.getElementById('bgOpacityOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'bgOpacityOverlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.background = 'white';
+        overlay.style.pointerEvents = 'none';
+        overlay.style.zIndex = '-1';
+        document.body.appendChild(overlay);
+    }
+    overlay.style.opacity = 1 - opacity;
+}
+
+// Load saved opacity and apply
+(function loadBgOpacity() {
+    const saved = localStorage.getItem('bgOpacity') || '100';
+    applyBgOpacity(saved);
+
+    const slider = document.getElementById('bgOpacitySlider');
+    const value = document.getElementById('bgOpacityValue');
+    if (slider && value) {
+        slider.value = saved;
+        value.textContent = saved + '%';
+    }
+})();
+
+// Slider handler
+document.getElementById('bgOpacitySlider')?.addEventListener('input', (e) => {
+    const value = e.target.value;
+    document.getElementById('bgOpacityValue').textContent = value + '%';
+    localStorage.setItem('bgOpacity', value);
+    applyBgOpacity(value);
+});
 
 function resetAllColors() {
     const defaultColor = '#8B572A';
@@ -81,6 +124,10 @@ function resetAllColors() {
     document.body.style.background = "url('images/Community.png') center center fixed";
     document.body.style.backgroundSize = 'cover';
 
+    // Remove overlay
+    const overlay = document.getElementById('bgOpacityOverlay');
+    if (overlay) overlay.remove();
+
     const headerPicker = document.getElementById('headerColorPicker');
     const tickerPicker = document.getElementById('tickerColorPicker');
     const bgPicker = document.getElementById('bgColor');
@@ -88,18 +135,27 @@ function resetAllColors() {
     if (tickerPicker) tickerPicker.value = defaultColor;
     if (bgPicker) bgPicker.value = defaultColor;
 
-    // Clear all saved values
+    // Clear saved values
     localStorage.removeItem('headerColor');
     localStorage.removeItem('tickerColor');
     localStorage.removeItem('pageBackgroundColor');
     localStorage.removeItem('pageBackgroundImage');
     localStorage.removeItem('linkColorsEnabled');
+    localStorage.removeItem('bgOpacity');
 
     linkColorsEnabled = false;
     const checkbox = document.getElementById('linkColors');
     if (checkbox) checkbox.checked = false;
-}
 
+    // Reset slider
+    const slider = document.getElementById('bgOpacitySlider');
+    const value = document.getElementById('bgOpacityValue');
+    if (slider && value) {
+        slider.value = 100;
+        value.textContent = '100%';
+    }
+    applyBgOpacity(100);
+}
 
 // Load saved colors and background on page load
 window.addEventListener('load', () => {
@@ -129,7 +185,6 @@ window.addEventListener('load', () => {
         const picker = document.getElementById('bgColor');
         if (picker) picker.value = savedPageColor;
     } else {
-        // NOTHING SAVED — APPLY DEFAULT IMAGE
         document.body.style.background = "url('images/Community.png') center center fixed";
         document.body.style.backgroundSize = 'cover';
     }
@@ -137,9 +192,10 @@ window.addEventListener('load', () => {
     linkColorsEnabled = localStorage.getItem('linkColorsEnabled') === 'true';
     const checkbox = document.getElementById('linkColors');
     if (checkbox) checkbox.checked = linkColorsEnabled;
+
+    // Apply saved opacity
+    loadBgOpacity();
 });
-
-
 
 function saveProfile() {
     const user = auth.currentUser;
@@ -243,9 +299,8 @@ function loadProfileVisibility() {
 
   db.collection('users').doc(user.uid).get().then(doc => {
     const data = doc.data() || {};
-    document.getElementById('editOstomyType').value = data.ostomyType || '';  // Sets dropdown to saved value
-    document.getElementById('editName').value = data.displayName || '';
     document.getElementById('editOstomyType').value = data.ostomyType || '';
+    document.getElementById('editName').value = data.displayName || '';
     document.getElementById('editSurgeryDate').value = data.surgeryDate || '';
     document.getElementById('editBio').value = data.bio || '';
 
@@ -255,15 +310,8 @@ function loadProfileVisibility() {
   });
 }
 
-// Call when opening the modal (add to your open trigger, e.g., if onclick="openProfileModal()")
+// Call when opening the modal
 function openProfileModal() {
   document.getElementById('profileModal').classList.add('open');
   loadProfileVisibility();
 }
-
-// Call loadProfileVisibility() when modal opens (add this in your modal open code or onload)
-document.getElementById('profileModal').addEventListener('classList', () => {
-    if (document.getElementById('profileModal').classList.contains('open')) {
-        loadProfileVisibility();
-    }
-});  // Use MutationObserver if addEventListener not working
