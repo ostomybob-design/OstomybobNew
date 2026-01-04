@@ -1391,18 +1391,62 @@ body.expanded-active.header-hidden #notificationBell {
 
 /* Replace rigid grid width with responsive layout and stable sizing */
 .grid-container {
-  width: 100%;
-  max-width: 1700px;    /* sensible max instead of fixed 2000px */
-
+  /* fill available viewport under header/ticker, but leave small page padding */
+  height: calc(100vh - var(--header-height, 150px) - var(--ticker-height, 56px) - 40px);
+  width: calc(100vw - 40px);
+  max-width: 1700px;        /* optional sensible cap for very large screens */
+  margin: 20px auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  padding: 0px;
-  padding-bottom: 0;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr 1fr; /* force two equal rows */
+  gap: 20px;
   box-sizing: border-box;
+  align-items: stretch;     /* ensure children stretch to row height */
   position: relative;
-  min-height: 0; /* important so children can scroll correctly */
-  z-index: 1;
+  min-height: 0;            /* important so children can scroll correctly */
+  overflow: visible;
+}
+
+/* Each .box uses flex layout and is allowed to shrink so grid rows stay equal */
+.grid-container > .box {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;            /* critical for correct flex+overflow behavior */
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Make scrollable inner areas scroll rather than expanding the box */
+.grid-container .box .bob-scroll-area,
+.grid-container .box #threadList,
+.grid-container .box #fb-results {
+  overflow: auto;
+  min-height: 0;
+}
+
+/* Ensure media and images do not cause horizontal overflow */
+.grid-container img,
+.grid-container video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+/* On narrow screens fall back to single column with auto rows */
+@media (max-width: 900px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    height: auto;
+    width: calc(100vw - 24px);
+  }
+}
+
+/* Optional: small visual polish so very wide screens don't feel stretched */
+@media (min-width: 1800px) {
+  .grid-container { gap: 28px; max-width: 1900px; }
 }
 
 /* Use min-height for header so measured height is stable across renders */
@@ -1422,7 +1466,7 @@ body.expanded-active.header-hidden #notificationBell {
   overflow: visible;
 }
 .grid-container {
-    min-width: 2300px;
+    min-width: 1700px;
     max-width: 2300px;
     margin: 20px auto 20px;
 margin-top: 0px;
