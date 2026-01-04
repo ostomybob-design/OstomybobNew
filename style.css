@@ -1466,15 +1466,29 @@ body.expanded-active.header-hidden #notificationBell {
   overflow: visible;
 }
 .grid-container {
-    min-width: 1700px;
-    max-width: 2300px;
-    margin: 20px auto 20px;
-margin-top: 0px;
-    display: grid;
-    padding-top: 0;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    position: relative;
-    z-index: 1
-    
+  width: 95%;  /* Full width minus 2.5% margin on each side */
+  max-width: none;  /* Remove fixed 1700px limit */
+  margin: 20px auto 40px;  /* Center with top/bottom margin */
+  padding: 0 20px;  /* Side padding for inner margin (adjust for smaller screens) */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);  /* Two columns */
+  grid-template-rows: auto auto;
+  gap: 30px;
+  box-sizing: border-box;
+}
+
+/* Responsive: Stack on small screens (mobile) */
+@media (max-width: 900px) {
+  .grid-container {
+    width: 100%;  /* Full width on mobile */
+    padding: 0 10px;  /* Smaller side margin */
+    grid-template-columns: 1fr;  /* Single column */
+  }
+}
+
+/* Ensure boxes fill grid cells */
+.box {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
