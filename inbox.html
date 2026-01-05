@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inbox — Mobile Mockup</title>
+<style>
+  :root{--brown:#8B572A;--cream:#fff8e1;font-family:Georgia, serif}
+  body{margin:0;background:#f6f3ef}
+  header{background:var(--brown);color:var(--cream);display:flex;padding:10px;align-items:center}
+  .back{color:var(--cream);margin-right:8px}
+  .title{flex:1;text-align:center;font-weight:700}
+  .list{padding:12px}
+  .item{background:rgba(255,255,255,0.9);padding:12px;border-radius:10px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+  .item .meta{font-size:0.9rem;color:#666}
+  .compose{position:fixed;left:12px;right:12px;bottom:14px;display:flex;gap:8px}
+  .compose input{flex:1;padding:12px;border-radius:28px;border:3px solid var(--brown);background:white}
+  .compose button{background:var(--brown);color:var(--cream);padding:12px;border-radius:28px;border:none}
+</style>
+</head>
+<body>
+<header><div class="back">←</div><div class="title">Messages</div></header>
+<div class="list">
+  <div class="item"><div><strong>Alice</strong><div class="meta">Hey — about your question</div></div><div class="meta">2h</div></div>
+  <div class="item"><div><strong>Support</strong><div class="meta">New: Product tips</div></div><div class="meta">1d</div></div>
+  <div class="item"><div><strong>Marie</strong><div class="meta">Thanks for sharing</div></div><div class="meta">3d</div></div>
+</div>
+
+<div class="compose">
+  <input placeholder="Write a message..." /><button>Send</button>
+</div>
+</body>
+</html>

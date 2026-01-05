@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ostomy Hub — Mobile Mockups</title>
+<style>
+  :root{
+    --brown:#8B572A; --cream:#fff8e1; --bg:#f6f3ef; --card-bg:rgba(255,255,255,0.85);
+    font-family: Georgia, serif;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);-webkit-font-smoothing:antialiased}
+  /* header + controls */
+  header{background:var(--brown);color:var(--cream);padding:10px;display:flex;align-items:center;gap:8px;position:relative}
+  .menu{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.06);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .title{flex:1;text-align:center;font-size:1.05rem;font-weight:700}
+  .bell{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.06);display:inline-flex;align-items:center;justify-content:center}
+  .ticker{background:rgba(139,87,42,0.12);color:var(--brown);padding:8px 12px;font-weight:700;white-space:nowrap;overflow:hidden}
+  .ticker .inner{display:inline-block;animation:scroll 18s linear infinite}
+  @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* collapsed list - one column of thin buttons */
+  .stack{padding:12px}
+  .collapsed{
+    height:18px;              /* ~1/4" on many phones */
+    width:100%;
+    background:var(--card-bg);
+    border-radius:8px;
+    margin-bottom:10px;
+    display:flex;align-items:center;padding:0 12px;cursor:pointer;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    color:var(--brown);font-weight:700;font-size:0.95rem;
+  }
+
+  /* when a box is open, the content area fills below header+ticker */
+  .panel{
+    position:fixed;left:0;right:0;top:75px;bottom:0;background:var(--bg);z-index:50;
+    display:flex;flex-direction:column;padding:18px;box-sizing:border-box;
+  }
+  .card{background:var(--card-bg);border-radius:16px;padding:18px;flex:1;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,0.12)}
+  .controls{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-bottom:12px}
+  .btn{background:var(--brown);color:var(--cream);border:none;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+  .link{color:var(--brown);text-decoration:underline;cursor:pointer}
+
+  /* settings modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center}
+  .modal.open{display:flex}
+  .modal .sheet{background:var(--cream);padding:18px;border-radius:14px;width:92%;max-width:420px;color:#222}
+
+  /* helper for small header height on phones */
+  @media (min-width:420px){ header{padding:12px 14px} .title{font-size:1.2rem} }
+</style>
+</head>
+<body>
+<header>
+  <div class="menu" aria-label="menu">≡</div>
+  <div class="title">Ostomy Friends Hub</div>
+  <div class="bell" aria-label="notifications">🔔</div>
+</header>
+
+<div class="ticker">
+  <div class="inner">New: Marie’s Story • Support Group Tonight 7pm • Product Review: Soft-Seal • — repeat —</div>
+</div>
+
+<div class="stack" id="stack">
+  <div class="collapsed" data-box="search">Post Search</div>
+  <div class="collapsed" data-box="featured">Featured Story</div>
+  <div class="collapsed" data-box="bob">OstomyBob</div>
+  <div class="collapsed" data-box="forum">Community Forum</div>
+</div>
+
+<!-- dynamic panel -->
+<div id="panel" class="panel" style="display:none" aria-hidden="true">
+  <div class="controls">
+    <button id="back" class="btn" style="background:transparent;color:var(--brown);font-weight:700">Close</button>
+    <button id="settingsBtn" class="btn">Settings</button>
+  </div>
+  <div id="content" class="card"></div>
+</div>
+
+<!-- settings modal -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <h3 id="modalTitle">Settings</h3>
+    <div id="modalBody">
+      <!-- populated by JS -->
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+      <button id="closeModal" class="btn" style="background:#666;color:#fff">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const stack = document.getElementById('stack');
+  const panel = document.getElementById('panel');
+  const content = document.getElementById('content');
+  const modal = document.getElementById('modal');
+  const modalBody = document.getElementById('modalBody');
+  const modalTitle = document.getElementById('modalTitle');
+
+  function renderBox(name){
+    let html = '';
+    if(name==='search'){
+      html = '<h2>Post Search</h2><p>Search posts, filter by tag, and open posts.</p><div style="margin-top:18px"><input style="width:100%;padding:12px;border-radius:12px;border:2px solid #8B572A" placeholder="Search..."></div>';
+    } else if(name==='featured'){
+      html = '<h2>Featured Story</h2><p>Image, excerpt and link to full story.</p><div style="height:260px;background:#ddd;border-radius:12px;margin-top:12px;display:flex;align-items:center;justify-content:center">Image</div>';
+    } else if(name==='bob'){
+      html = '<h2>OstomyBob</h2><p>Chat with OstomyBob 24/7.</p><div style="margin-top:12px"> <div style="height:260px;background:#fafafa;border-radius:12px;padding:12px;overflow:auto">Conversation view (mock)</div></div>';
+    } else {
+      html = '<h2>Community Forum</h2><p>Threads and categories. Tap new thread to start.</p><div style="height:200px;background:#fff;border-radius:12px;margin-top:12px;padding:12px;overflow:auto">Threads list</div>';
+    }
+    content.innerHTML = html;
+  }
+
+  stack.addEventListener('click', (e)=>{
+    const card = e.target.closest('.collapsed');
+    if(!card) return;
+    const name = card.dataset.box;
+    renderBox(name);
+    panel.style.display = 'flex';
+    panel.setAttribute('aria-hidden','false');
+    currentOpen = name;
+    // hide the stack to emulate single-panel app
+    stack.style.display = 'none';
+  });
+
+  document.getElementById('back').addEventListener('click', ()=>{
+    panel.style.display = 'none';
+    panel.setAttribute('aria-hidden','true');
+    stack.style.display = '';
+  });
+
+  let currentOpen = null;
+  document.getElementById('settingsBtn').addEventListener('click', ()=>{
+    modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+    modalTitle.textContent = (currentOpen || 'General') + ' settings';
+    // simple box-specific options
+    if(currentOpen==='search'){
+      modalBody.innerHTML = '<label style="display:block;margin:8px 0"><input type="checkbox"> Show snippet previews</label><label style="display:block;margin:8px 0"><input type="checkbox"> Include archived</label>';
+    } else if(currentOpen==='bob'){
+      modalBody.innerHTML = '<label style="display:block;margin:8px 0"><input type="checkbox"> Enable proactive tips</label><label style="display:block;margin:8px 0"><input type="checkbox"> Short replies</label>';
+    } else if(currentOpen==='forum'){
+      modalBody.innerHTML = '<label style="display:block;margin:8px 0"><input type="checkbox"> Show pinned first</label><label style="display:block;margin:8px 0"><input type="checkbox"> Hide read threads</label>';
+    } else if(currentOpen==='featured'){
+      modalBody.innerHTML = '<label style="display:block;margin:8px 0"><input type="checkbox"> Auto-rotate stories</label><label style="display:block;margin:8px 0"><input type="checkbox"> High-res images</label>';
+    } else {
+      modalBody.innerHTML = '<p>General app settings</p>';
+    }
+  });
+  document.getElementById('closeModal').addEventListener('click', ()=>{ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); });
+</script>
+</body>
+</html>

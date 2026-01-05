@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Settings — Ostomy Friends Hub (Mock)</title>
+<style>
+  :root{
+    --brown:#8B572A;
+    --cream:#fff8e1;
+    --bg:#f6f3ef;
+    --card:#ffffff;
+    font-family: Georgia, serif;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);-webkit-font-smoothing:antialiased}
+  header{background:var(--brown);color:var(--cream);display:flex;align-items:center;gap:12px;padding:12px 14px;box-sizing:border-box}
+  .menu{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .title{flex:1;text-align:center;font-weight:700}
+  .save{background:transparent;border:none;color:var(--cream);font-weight:700;cursor:pointer}
+
+  .container{padding:14px}
+  .section{background:var(--card);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 12px 32px rgba(0,0,0,0.06)}
+  .section h3{margin:0 0 8px 0;color:var(--brown)}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #f0eee9}
+  .row:first-of-type{border-top:0}
+  .label{font-weight:600;color:#222}
+  .hint{color:#666;font-size:0.92rem;margin-top:6px}
+
+  .toggle{width:46px;height:28px;border-radius:16px;background:#eee;position:relative;cursor:pointer;flex:0 0 46px}
+  .toggle .knob{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.12);transition:left 160ms ease}
+  .toggle.on{background:var(--brown)}
+  .toggle.on .knob{left:21px}
+
+  .footer-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+  .btn{background:var(--brown);color:var(--cream);border:none;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
+  .btn.ghost{background:transparent;border:2px solid var(--brown);color:var(--brown)}
+
+  /* small-screen niceties */
+  @media (min-width:480px){ .container{max-width:420px;margin:18px auto} }
+</style>
+</head>
+<body>
+<header>
+  <div class="menu" aria-hidden="true">≡</div>
+  <div class="title">Settings</div>
+  <button class="save" id="saveBtn">Save</button>
+</header>
+
+<main class="container" role="main">
+  <section class="section" aria-labelledby="generalTitle">
+    <h3 id="generalTitle">General</h3>
+    <div class="row">
+      <div>
+        <div class="label">Dark mode (preview)</div>
+        <div class="hint">Try dark UI for low-light reading (mock)</div>
+      </div>
+      <div class="toggle" data-key="darkMode" role="switch" aria-checked="false"><div class="knob"></div></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="label">Reduce motion</div>
+        <div class="hint">Turn off non-essential animations</div>
+      </div>
+      <div class="toggle" data-key="reduceMotion" role="switch" aria-checked="false"><div class="knob"></div></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="inboxTitle">
+    <h3 id="inboxTitle">Inbox</h3>
+    <div class="row">
+      <div>
+        <div class="label">Show message previews</div>
+        <div class="hint">Include snippets in conversation list</div>
+      </div>
+      <div class="toggle" data-key="msgPreview" role="switch" aria-checked="true"><div class="knob"></div></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="label">Notifications (sound)</div>
+        <div class="hint">Play a tone for new messages</div>
+      </div>
+      <div class="toggle" data-key="msgSound" role="switch" aria-checked="true"><div class="knob"></div></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="bobTitle">
+    <h3 id="bobTitle">OstomyBob</h3>
+    <div class="row">
+      <div>
+        <div class="label">Concise replies</div>
+        <div class="hint">Shorter responses from OstomyBob</div>
+      </div>
+      <div class="toggle" data-key="bobShort" role="switch" aria-checked="false"><div class="knob"></div></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="label">Proactive tips</div>
+        <div class="hint">Receive helpful tips during chat</div>
+      </div>
+      <div class="toggle" data-key="bobTips" role="switch" aria-checked="true"><div class="knob"></div></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="resourcesTitle">
+    <h3 id="resourcesTitle">Resources</h3>
+    <div class="row">
+      <div>
+        <div class="label">Auto-open recommended</div>
+        <div class="hint">Show suggested resources on start</div>
+      </div>
+      <div class="toggle" data-key="resourcesAuto" role="switch" aria-checked="true"><div class="knob"></div></div>
+    </div>
+  </section>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+    <div style="color:#666;font-size:0.9rem">Account: demo_user</div>
+    <div class="footer-actions">
+      <button class="btn ghost" id="resetBtn">Reset</button>
+      <button class="btn" id="applyBtn">Apply</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Lightweight toggle wiring (mock behavior only)
+  document.querySelectorAll('.toggle').forEach(t=>{
+    const key = t.dataset.key;
+    const isOn = t.getAttribute('aria-checked') === 'true';
+    if(isOn) t.classList.add('on');
+    t.addEventListener('click', ()=>{
+      const now = t.classList.toggle('on');
+      t.setAttribute('aria-checked', String(now));
+    });
+  });
+
+  document.getElementById('applyBtn').addEventListener('click', ()=>{
+    const settings = {};
+    document.querySelectorAll('.toggle').forEach(t=>{
+      settings[t.dataset.key] = t.classList.contains('on');
+    });
+    // mock save: show console and brief toast
+    console.log('Saved settings:', settings);
+    const el = document.createElement('div');
+    el.textContent = 'Settings saved';
+    el.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:var(--brown);color:var(--cream);padding:10px 14px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.12);';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1500);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    document.querySelectorAll('.toggle').forEach(t=>{ t.classList.remove('on'); t.setAttribute('aria-checked','false'); });
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', ()=>document.getElementById('applyBtn').click());
+</script>
+</body>
+</html>
+```<!-- filepath: /Users/websites/OstomyBobNew/settings.html -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Settings — Ostomy Friends Hub (Mock)</title>
+<style>
+  :root{
+    --brown:#8B572A;
+    --cream:#fff8e1;
+    --bg:#f6f3ef;
+    --card:#ffffff;
+    font-family: Georgia, serif;
+  }
+  html,body{height:100%;margin:0;background:var(--bg);-webkit-font-smoothing:antialiased}
+  header{background:var(--brown);color:var(--cream);display:flex;align-items:center;gap:12px;padding:12px 14px;box-sizing:border-box}
+  .menu{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .title{flex:1;text-align:center;font-weight:700}
+  .save{background:transparent;border:none;color:var(--cream);font-weight:700;cursor:pointer}
+
+  .container{padding:14px}
+  .section{background:var(--card);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 12px 32px rgba(0,0,0,0.06)}
+  .section h3{margin:0 0 8px 0;color:var(--brown)}
+  .row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #f0eee9}
+  .row:first-of-type{border-top:0}
+  .label{font-weight:600;color:#222}
+  .hint{color:#666;font-size:0.92rem;margin-top:6px}
+
+  .toggle{width:46px;height:28px;border-radius:16px;background:#eee;position:relative;cursor:pointer;flex:0 0 46px}
+  .toggle .knob{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,0.12);transition:left 160ms ease}
+  .toggle.on{background:var(--brown)}
+  .toggle.on .knob{left:21px}
+
+  .footer-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+  .btn{background:var(--brown);color:var(--cream);border:none;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
+  .btn.ghost{background:transparent;border:2px solid var(--brown);color:var(--brown)}
+
+  /* small-screen niceties */
+  @media (min-width:480px){ .container{max-width:420px;margin:18px auto} }
+</style>
+</head>
+<body>
+<header>
+  <div class="menu" aria-hidden="true">≡</div>
+  <div class="title">Settings</div>
+  <button class="save" id="saveBtn">Save</button>
+</header>
+
+<main class="container" role="main">
+  <section class="section" aria-labelledby="generalTitle">
+    <h3 id="generalTitle">General</h3>
+    <div class="row">
+      <div>
+        <div class="label">Dark mode (preview)</div>
+        <div class="hint">Try dark UI for low-light reading (mock)</div>
+      </div>
+      <div class="toggle" data-key="darkMode" role="switch" aria-checked="false"><div class="knob"></div></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="label">Reduce motion</div>
+        <div class="hint">Turn off non-essential animations</div>
+      </div>
+      <div class="toggle" data-key="reduceMotion" role="switch" aria-checked="false"><div class="knob"></div></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="inboxTitle">
+    <h3 id="inboxTitle">Inbox</h3>
+    <div class="row">
+      <div>
+        <div class="label">Show message previews</div>
+        <div class="hint">Include snippets in conversation list</div>
+      </div>
+      <div class="toggle" data-key="msgPreview" role="switch" aria-checked="true"><div class="knob"></div></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="label">Notifications (sound)</div>
+        <div class="hint">Play a tone for new messages</div>
+      </div>
+      <div class="toggle" data-key="msgSound" role="switch" aria-checked="true"><div class="knob"></div></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="bobTitle">
+    <h3 id="bobTitle">OstomyBob</h3>
+    <div class="row">
+      <div>
+        <div class="label">Concise replies</div>
+        <div class="hint">Shorter responses from OstomyBob</div>
+      </div>
+      <div class="toggle" data-key="bobShort" role="switch" aria-checked="false"><div class="knob"></div></div>
+    </div>
+
+    <div class="row">
+      <div>
+        <div class="label">Proactive tips</div>
+        <div class="hint">Receive helpful tips during chat</div>
+      </div>
+      <div class="toggle" data-key="bobTips" role="switch" aria-checked="true"><div class="knob"></div></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="resourcesTitle">
+    <h3 id="resourcesTitle">Resources</h3>
+    <div class="row">
+      <div>
+        <div class="label">Auto-open recommended</div>
+        <div class="hint">Show suggested resources on start</div>
+      </div>
+      <div class="toggle" data-key="resourcesAuto" role="switch" aria-checked="true"><div class="knob"></div></div>
+    </div>
+  </section>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+    <div style="color:#666;font-size:0.9rem">Account: demo_user</div>
+    <div class="footer-actions">
+      <button class="btn ghost" id="resetBtn">Reset</button>
+      <button class="btn" id="applyBtn">Apply</button>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Lightweight toggle wiring (mock behavior only)
+  document.querySelectorAll('.toggle').forEach(t=>{
+    const key = t.dataset.key;
+    const isOn = t.getAttribute('aria-checked') === 'true';
+    if(isOn) t.classList.add('on');
+    t.addEventListener('click', ()=>{
+      const now = t.classList.toggle('on');
+      t.setAttribute('aria-checked', String(now));
+    });
+  });
+
+  document.getElementById('applyBtn').addEventListener('click', ()=>{
+    const settings = {};
+    document.querySelectorAll('.toggle').forEach(t=>{
+      settings[t.dataset.key] = t.classList.contains('on');
+    });
+    // mock save: show console and brief toast
+    console.log('Saved settings:', settings);
+    const el = document.createElement('div');
+    el.textContent = 'Settings saved';
+    el.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:var(--brown);color:var(--cream);padding:10px 14px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.12);';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1500);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    document.querySelectorAll('.toggle').forEach(t=>{ t.classList.remove('on'); t.setAttribute('aria-checked','false'); });
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', ()=>document.getElementById('applyBtn').click());
+</script>
+</body>
+</html>
