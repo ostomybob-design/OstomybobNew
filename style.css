@@ -316,11 +316,32 @@ h1 {
     background: #A67C52
 }
 
+
+
 .ostomy-bob-box .bob-scroll-area {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 10px
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 115%;  /* Full width */
+  padding: 0 10px;  /* Small side padding for margins */
+  box-sizing: border-box;
 }
+
+#bob-chat-messages {
+  flex: 1;
+  width: 100%;  /* Full width of scroll area */
+  min-width: 100%;
+  padding: 10px 15px;  /* Inner padding for messages */
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Individual messages (optional: full width bubbles) */
+.chat-message .bubble {
+  max-width: 95%;  /* Almost full, small margin */
+}
+
+
 
 .bob-top {
     display: flex;
