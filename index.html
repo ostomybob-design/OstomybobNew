@@ -640,6 +640,8 @@
         <div class="box post-search-box">
             <div class="fb-header">
                 <h2>Post Search</h2>
+
+                
                 <input type="text" id="fb-search" placeholder="Search posts..." oninput="performSearch(this.value)">
             </div>
             <div class="featured-wrapper" style="position: relative;">
@@ -673,19 +675,19 @@
             </a>
         </div>
 
-    <div class="box ostomy-bob-box" id="bob-box" onclick="expandBob()">
+   <div class="box ostomy-bob-box" id="bob-box" onclick="expandBob()">
     <div class="bob-scroll-area">
         <div class="bob-top">
             <img src="images/2.png" alt="OstomyBob">
             <div class="bob-greeting">
                 <h2>Hi, I'm OstomyBob!</h2>
-                <div style="display:flex;flex-direction:row;gap:6px;position:absolute;top:12px;right:12px;">
-                    <button class="font-btn" onclick="event.stopPropagation(); adjustFontSize('bob-box', -1)" title="Decrease font size">A−</button>
-                    <button class="font-btn" onclick="event.stopPropagation(); adjustFontSize('bob-box', 1)" title="Increase font size">A+</button>
-                    <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('bob-box')" title="Maximize">
-                        <i class="fas fa-expand"></i>
-                    </button>
-                </div>
+              <div style="display:flex;gap:6px;position:absolute;top:12px;right:12px;">
+        <button class="font-btn1" onclick="event.stopPropagation(); adjustFontSize('bob-box', -1)" title="Decrease font size">A−</button>
+        <button class="font-btn2" onclick="event.stopPropagation(); adjustFontSize('bob-box', 1)" title="Increase font size">A+</button>
+        <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('forum-box')" title="Maximize">
+            <i class="fas fa-expand"></i>
+        </button>
+    </div>
                 <p>Ask me anything – I'm here 24/7.</p>
             </div>
         </div>
@@ -702,8 +704,8 @@
   <div class="box full-chat-box" id="forum-box" onclick="expandForum()">
     <h2>Community Forum</h2>
     <div style="display:flex;gap:6px;position:absolute;top:12px;right:12px;">
-        <button class="font-btn" onclick="event.stopPropagation(); adjustFontSize('forum-box', -1)" title="Decrease font size">A−</button>
-        <button class="font-btn" onclick="event.stopPropagation(); adjustFontSize('forum-box', 1)" title="Increase font size">A+</button>
+        <button class="font-btn1" onclick="event.stopPropagation(); adjustFontSize('forum-box', -1)" title="Decrease font size">A−</button>
+        <button class="font-btn2" onclick="event.stopPropagation(); adjustFontSize('forum-box', 1)" title="Increase font size">A+</button>
         <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('forum-box')" title="Maximize">
             <i class="fas fa-expand"></i>
         </button>

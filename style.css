@@ -1492,27 +1492,56 @@ body.expanded-active.header-hidden #notificationBell {
   max-width: 100%;
   box-sizing: border-box;
 }
-/* Font size control buttons */
-.font-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+.box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  position: relative;
+}
+
+.font-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.font-btn1 {
+  background: rgba(139, 87, 42, 0.8);
+  color: #fff8e1;
   border: none;
-  background: rgba(255,255,255,0.96);
-  color: #222;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  font-size: 1.4rem;
   cursor: pointer;
-  display: inline-flex;
+  position: absolute !important;
+  top: 10px !important;
+  right: 120px !important;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  font-size: 14px;
-  font-weight: 600;
-  flex-shrink: 0;
 }
-.font-btn:hover {
-  background: rgba(255,255,255,1);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+.font-btn2 {
+  background: rgba(139, 87, 42, 0.8);
+  color: #fff8e1;
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  font-size: 1.4rem;
+  cursor: pointer;
+  position: absolute !important;
+  top: 10px !important;
+  right: 80px !important;
+  align-items: center;
+  justify-content: center;
 }
-.font-btn:focus {
-  outline: 2px solid #8B572A;
+.maximize-btn {
+  background: rgba(139, 87, 42, 0.8);
+  color: #fff8e1;
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
