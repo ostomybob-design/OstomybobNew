@@ -230,38 +230,32 @@ h1 {
 }
 
 .input-area {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    padding: 18px 0 0 0
+  display: flex;
+  gap: 12px;  /* Space between input and button */
+  padding: 10px 20px;  /* Side padding for margins */
+  align-items: center;
 }
 
 .input-area input {
-    flex: 1;
-    padding: 20px;
-    border-radius: 35px;
-    border: 4px solid #8B572A;
-    background: white;
-    font-size: 1.3rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: border-color 0.3s
-}
-
-.input-area input:focus {
-    outline: none;
-    border-color: #A67C52;
-    box-shadow: 0 0 20px rgba(166, 124, 82, 0.4)
+  flex: 1;  /* Input takes all available space */
+  min-width: 0;  /* Allow shrinking on small screens */
+  padding: 16px;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  border: 3px solid #8B572A;
+  background: white;
 }
 
 .input-area button {
-    padding: 20px 30px;
-    background: #8B572A;
-    color: white;
-    border: none;
-    border-radius: 35px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1.1rem
+  flex-shrink: 0;  /* Button keeps fixed size */
+  padding: 16px 32px;
+  background: #8B572A;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  cursor: pointer;
 }
 
 .post-search-box .fb-header {
@@ -1544,4 +1538,39 @@ body.expanded-active.header-hidden #notificationBell {
   height: 36px;
   font-size: 1.2rem;
   cursor: pointer;
+}
+
+
+/* Font size control buttons - match maximize button style */
+.font-btn,
+.font-btn1,
+.font-btn2 {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(139, 87, 42, 0.8);
+  color: #fff8e1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  font-size: 1.2rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  z-index: 100;
+  position: relative;
+}
+
+.font-btn:hover,
+.font-btn1:hover,
+.font-btn2:hover {
+  background: #A67C52;
+}
+
+.font-btn:focus,
+.font-btn1:focus,
+.font-btn2:focus {
+  outline: 2px solid #fff8e1;
 }

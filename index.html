@@ -641,7 +641,7 @@
             <div class="fb-header">
                 <h2>Post Search</h2>
 
-                
+
                 <input type="text" id="fb-search" placeholder="Search posts..." oninput="performSearch(this.value)">
             </div>
             <div class="featured-wrapper" style="position: relative;">
@@ -675,55 +675,67 @@
             </a>
         </div>
 
-   <div class="box ostomy-bob-box" id="bob-box" onclick="expandBob()">
-    <div class="bob-scroll-area">
-        <div class="bob-top">
-            <img src="images/2.png" alt="OstomyBob">
-            <div class="bob-greeting">
-                <h2>Hi, I'm OstomyBob!</h2>
-              <div style="display:flex;gap:6px;position:absolute;top:12px;right:12px;">
-        <button class="font-btn1" onclick="event.stopPropagation(); adjustFontSize('bob-box', -1)" title="Decrease font size">A−</button>
-        <button class="font-btn2" onclick="event.stopPropagation(); adjustFontSize('bob-box', 1)" title="Increase font size">A+</button>
-        <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('forum-box')" title="Maximize">
-            <i class="fas fa-expand"></i>
-        </button>
-    </div>
-                <p>Ask me anything – I'm here 24/7.</p>
+        <div class="box ostomy-bob-box" id="bob-box" onclick="expandBob()">
+            <div class="bob-scroll-area">
+                <div class="bob-top">
+                    <img src="images/2.png" alt="OstomyBob">
+                    <div class="bob-greeting">
+                        <h2>Hi, I'm OstomyBob!</h2>
+                        <div style="display:flex;gap:6px;position:absolute;top:12px;right:12px;">
+                            <button class="font-btn1" onclick="event.stopPropagation(); adjustFontSize('bob-box', -1)"
+                                title="Decrease font size">A−</button>
+                            <button class="font-btn2" onclick="event.stopPropagation(); adjustFontSize('bob-box', 1)"
+                                title="Increase font size">A+</button>
+                            <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('forum-box')"
+                                title="Maximize">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <p>Ask me anything – I'm here 24/7.</p>
+                    </div>
+                </div>
+                <div id="bob-chat-messages"></div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="bob-user-input" placeholder="Ask OstomyBob anything..." autocomplete="off">
+                <button onclick="sendBobMessage()">Send</button>
             </div>
         </div>
-        <div id="bob-chat-messages"></div>
-    </div>
-    <div class="input-area">
-        <input type="text" id="bob-user-input" placeholder="Ask OstomyBob anything..." autocomplete="off">
-        <button onclick="sendBobMessage()">Send</button>
-    </div>
-</div>
 
 
         <!-- COMMUNITY FORUM BOX -->
-  <div class="box full-chat-box" id="forum-box" onclick="expandForum()">
-    <h2>Community Forum</h2>
-    <div style="display:flex;gap:6px;position:absolute;top:12px;right:12px;">
-        <button class="font-btn1" onclick="event.stopPropagation(); adjustFontSize('forum-box', -1)" title="Decrease font size">A−</button>
-        <button class="font-btn2" onclick="event.stopPropagation(); adjustFontSize('forum-box', 1)" title="Increase font size">A+</button>
-        <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('forum-box')" title="Maximize">
-            <i class="fas fa-expand"></i>
-        </button>
-    </div>
-    <div class="forum-categories">
-        <button class="category-btn active" onclick="event.stopPropagation(); loadCategory('general')">General</button>
-        <button class="category-btn" onclick="event.stopPropagation(); loadCategory('new')">New to Ostomy</button>
-        <button class="category-btn" onclick="event.stopPropagation(); loadCategory('products')">Product Reviews</button>
-        <button class="category-btn" onclick="event.stopPropagation(); loadCategory('travel')">Travel Tips</button>
-    </div>
-    <div id="threadList" class="thread-list">
-        <p style="text-align:center;color:#666;margin-top:50px;">Loading threads...</p>
-    </div>
-    <button class="new-thread-btn" onclick="event.stopPropagation(); openNewThread()"
-        style="background:#fff8e1;color:#8B572A;padding:18px 40px;border:none;border-radius:50px;font-weight:bold;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.3);margin-top:20px;transition:0.3s;width:100%;">
-        + New Thread
-    </button>
-</div>
+        <div class="box full-chat-box" id="forum-box" onclick="expandForum()">
+            <h2>Community Forum</h2>
+            <div style="display:flex;gap:6px;position:absolute;top:12px;right:12px;">
+                <button class="font-btn1" onclick="event.stopPropagation(); adjustFontSize('forum-box', -1)"
+                    title="Decrease font size">A−</button>
+                <button class="font-btn2" onclick="event.stopPropagation(); adjustFontSize('forum-box', 1)"
+                    title="Increase font size">A+</button>
+                <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('forum-box')"
+                    title="Maximize">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+
+            
+            <div class="forum-categories">
+                <button class="category-btn active"
+                    onclick="event.stopPropagation(); loadCategory('general')">General</button>
+                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('new')">New to
+                    Ostomy</button>
+                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('products')">Product
+                    Reviews</button>
+                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('travel')">Travel
+                    Tips</button>
+            </div>
+            <div id="threadList" class="thread-list">
+                <p style="text-align:center;color:#666;margin-top:50px;">Loading threads...</p>
+            </div>
+            <button class="new-thread-btn" onclick="event.stopPropagation(); openNewThread()"
+                style="background:#fff8e1;color:#8B572A;padding:18px 40px;border:none;border-radius:50px;font-weight:bold;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.3);margin-top:20px;transition:0.3s;width:100%;">
+                + New Thread
+            </button>
+        </div>
     </div>
 
     <!-- Resources page (hidden by default) -->
@@ -844,39 +856,78 @@
         window.addEventListener('load', autoFitPage);
         window.addEventListener('resize', autoFitPage);
     </script>
-    <script>
-// Font size adjustment helper
-function adjustFontSize(boxId, delta) {
-  const box = document.getElementById(boxId);
-  if (!box) return;
-  
-  const contentArea = boxId === 'bob-box' 
-    ? box.querySelector('#bob-chat-messages')
-    : box.querySelector('#threadList');
-  
-  if (!contentArea) return;
-  
-  const currentSize = parseFloat(window.getComputedStyle(contentArea).fontSize) || 16;
-  const newSize = Math.max(12, Math.min(24, currentSize + delta));
-  contentArea.style.fontSize = newSize + 'px';
-  
-  // Save preference
-  localStorage.setItem(`${boxId}-fontSize`, newSize);
-}
+<script>
+    // Font size adjustment helper
+    function adjustFontSize(boxId, delta) {
+        const box = document.getElementById(boxId);
+        if (!box) {
+            console.error('Box not found:', boxId);
+            return;
+        }
 
-// Restore saved font sizes on load
-document.addEventListener('DOMContentLoaded', () => {
-  ['bob-box', 'forum-box'].forEach(boxId => {
-    const saved = localStorage.getItem(`${boxId}-fontSize`);
-    if (saved) {
-      const box = document.getElementById(boxId);
-      const contentArea = boxId === 'bob-box' 
-        ? box?.querySelector('#bob-chat-messages')
-        : box?.querySelector('#threadList');
-      if (contentArea) contentArea.style.fontSize = saved + 'px';
+        // Target the scrollable content area for each box
+        let contentArea;
+        if (boxId === 'bob-box') {
+            contentArea = box.querySelector('#bob-chat-messages');
+        } else if (boxId === 'forum-box') {
+            // Check if we're in thread view or category view
+            contentArea = box.querySelector('#repliesList') || box.querySelector('#threadList');
+        }
+
+        if (!contentArea) {
+            console.error('Content area not found in', boxId);
+            return;
+        }
+
+        // Get current font size
+        const currentSize = parseFloat(window.getComputedStyle(contentArea).fontSize) || 16;
+        const newSize = Math.max(12, Math.min(32, currentSize + delta));
+        
+        console.log(`${boxId}: ${currentSize}px → ${newSize}px`);
+        
+        contentArea.style.fontSize = newSize + 'px';
+
+        // Save preference
+        localStorage.setItem(`${boxId}-fontSize`, newSize);
     }
-  });
-});
+
+    // Restore saved font sizes on load and after forum view changes
+    function restoreFontSize(boxId) {
+        const saved = localStorage.getItem(`${boxId}-fontSize`);
+        if (saved) {
+            const box = document.getElementById(boxId);
+            let contentArea;
+            if (boxId === 'bob-box') {
+                contentArea = box?.querySelector('#bob-chat-messages');
+            } else if (boxId === 'forum-box') {
+                contentArea = box?.querySelector('#repliesList') || box?.querySelector('#threadList');
+            }
+            if (contentArea) {
+                contentArea.style.fontSize = saved + 'px';
+                console.log(`Restored ${boxId} font to ${saved}px`);
+            }
+        }
+    }
+
+    // Initial restore on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            ['bob-box', 'forum-box'].forEach(restoreFontSize);
+        }, 500);
+    });
+
+    // Watch for forum content changes and restore font size
+    const observer = new MutationObserver(() => {
+        restoreFontSize('forum-box');
+    });
+
+    // Start observing forum box for changes
+    setTimeout(() => {
+        const forumBox = document.getElementById('forum-box');
+        if (forumBox) {
+            observer.observe(forumBox, { childList: true, subtree: true });
+        }
+    }, 1000);
 </script>
 
 </body>

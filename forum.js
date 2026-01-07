@@ -3,13 +3,23 @@
 let currentCategory = 'general';
 let currentThreadId = null;
 
+// Helper function to get buttons HTML before replacing innerHTML
+function getButtonsHTML() {
+    const forumBox = document.getElementById('forum-box');
+    const buttonContainer = forumBox.querySelector('[style*="position:absolute"][style*="top:12px"]');
+    return buttonContainer ? buttonContainer.outerHTML : '';
+}
+
 // Load a category — creates threadList element first
 function loadCategory(category) {
     currentCategory = category;
     document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
     if (event?.target) event.target.classList.add('active');
 
+    const buttonsHTML = getButtonsHTML();
+
     document.getElementById('forum-box').innerHTML = `
+        ${buttonsHTML}
         <h2>Community Forum</h2>
         <div class="forum-categories">
             <button class="category-btn ${category==='general'?'active':''}" onclick="loadCategory('general')">General</button>
@@ -165,7 +175,11 @@ function createThread() {
 function openThread(threadId, threadData) {
     
     currentThreadId = threadId;
+    
+    const buttonsHTML = getButtonsHTML();
+    
     document.getElementById('forum-box').innerHTML = `
+        ${buttonsHTML}
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
             <button onclick="loadCategory('${threadData.category}')" 
                     style="background:none;border:none;color: #8B572A;font-size:1.3rem;cursor:pointer;padding:10px 0;">
@@ -274,9 +288,6 @@ function loadReplies() {
             repliesList.scrollTop = repliesList.scrollHeight;
         });
 }
-
-
-
 
 function postReply() {
     const user = auth.currentUser;
