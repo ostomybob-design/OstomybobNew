@@ -237,22 +237,22 @@ h1 {
 }
 
 .input-area input {
-  flex: 1;  /* Input takes all available space */
-  min-width: 0;  /* Allow shrinking on small screens */
+  flex: 1;
+  min-width: 0;
   padding: 16px;
   font-size: 1.2rem;
-  border-radius: 10px;
+  border-radius: 50px;  /* Changed from 10px to 50px for rounded corners like post search */
   border: 3px solid #8B572A;
   background: white;
 }
 
 .input-area button {
-  flex-shrink: 0;  /* Button keeps fixed size */
+  flex-shrink: 0;
   padding: 16px 32px;
   background: #8B572A;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 50px;  /* Changed from 10px to 50px to match input */
   font-weight: bold;
   font-size: 1.1rem;
   cursor: pointer;
@@ -1330,17 +1330,17 @@ body.expanded-active.header-hidden #notificationBell {
 .post-search-box .fb-header {
   position: absolute;
   bottom: 10px;
-  left: 0;
-  right: 0;
+  left: 50%;  /* Center horizontally */
+  transform: translateX(-50%);  /* Offset by half its width */
   z-index: 10;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.75);
   padding: 10px 20px;
-  display: inline-flex;
+  display: inline-flex;  /* Shrink-wrap content */
   align-items: center;
-  justify-content: center;  /* Changed from flex-start to center */
+  justify-content: center;
   gap: 20px;
   border-radius: 30px;
-  width: auto;
+  width: auto;  /* Let content determine width */
 }
 /* Post Search header text color to match other box titles */
 .post-search-box h2 {
@@ -1351,14 +1351,14 @@ body.expanded-active.header-hidden #notificationBell {
 
 /* Input box outline in the same color */
 #fb-search {
-  flex: 1;  /* Input takes remaining space */
-  min-width: 0;  /* Allow shrinking on small screens */
+  flex: 1;
+  min-width: 700px;  /* Changed from 350px to 700px (doubled) */
+  max-width: 1000px;  /* Changed from 500px to 1000px (doubled) */
   padding: 12px 16px;
   font-size: 1.1rem;
   border-radius: 50px;
-  border: 4px solid #8B572A;
-  background: rgba(255, 255, 255, 0.3);
-  max-width: 50%;  /* Make input 25% narrower */
+  border: 4px solid #8B572A !important;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 /* Optional: Focus state outline */
