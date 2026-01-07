@@ -1511,7 +1511,7 @@ body.expanded-active.header-hidden #notificationBell {
   border-radius: 8px;
   width: 36px;
   height: 36px;
-  font-size: 1.4rem;
+  font-size: 1rem;
   cursor: pointer;
   position: absolute !important;
   top: 10px !important;
@@ -1546,7 +1546,7 @@ body.expanded-active.header-hidden #notificationBell {
 }
 
 
-/* Font size control buttons - match maximize button style */
+/* Font size control buttons - match maximize button style 
 .font-btn,
 .font-btn1,
 .font-btn2 {
@@ -1567,6 +1567,7 @@ body.expanded-active.header-hidden #notificationBell {
   z-index: 100;
   position: relative;
 }
+*/
 
 .font-btn:hover,
 .font-btn1:hover,
