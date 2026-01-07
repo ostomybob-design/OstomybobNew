@@ -502,13 +502,16 @@
                             style="width:100%;padding:12px;background:rgba(255,248,225,0.2);border:none;border-radius:12px;color:#fff8e1;font-size:1rem;cursor:pointer;">
                     </div>
                     <div class="settings-section" style="margin-top:30px;">
-  <h3 style="font-size:1.6rem;margin-bottom:20px;text-align:center;opacity:0.9;">Background Opacity</h3>
-  <div style="display:flex;align-items:center;justify-content:center;gap:20px;">
-    <label style="color:#fff8e1;font-size:1.2rem;">Opacity:</label>
-    <input type="range" id="bgOpacitySlider" min="0" max="100" value="100" step="5" style="width:200px;">
-    <span id="bgOpacityValue" style="color:#fff8e1;font-size:1.2rem;width:40px;text-align:right;">100%</span>
-  </div>
-</div>
+                        <h3 style="font-size:1.6rem;margin-bottom:20px;text-align:center;opacity:0.9;">Background
+                            Opacity</h3>
+                        <div style="display:flex;align-items:center;justify-content:center;gap:20px;">
+                            <label style="color:#fff8e1;font-size:1.2rem;">Opacity:</label>
+                            <input type="range" id="bgOpacitySlider" min="0" max="100" value="100" step="5"
+                                style="width:200px;">
+                            <span id="bgOpacityValue"
+                                style="color:#fff8e1;font-size:1.2rem;width:40px;text-align:right;">100%</span>
+                        </div>
+                    </div>
                 </div>
 
                 <button onclick="resetAllColors()"
@@ -583,7 +586,7 @@
         <button class="menu-btn" onclick="openMenu()"
             style="background:#8B572A;color:#fff8e1;border:none;cursor:pointer;padding:10px 14px;">
             <svg width="44" height="52" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="3" width="20" height="5" rx="2.5" fill="#fff8e1"  />
+                <rect x="2" y="3" width="20" height="5" rx="2.5" fill="#fff8e1" />
                 <rect x="2" y="11.5" width="20" height="5" rx="2.5" fill="#fff8e1" />
                 <rect x="2" y="20" width="20" height="5" rx="2.5" fill="#fff8e1" />
             </svg>
@@ -634,22 +637,22 @@
 
 
     <div class="grid-container">
-<div class="box post-search-box">
-  <div class="fb-header">
-    <h2>Post Search</h2>
-    <input type="text" id="fb-search" placeholder="Search posts..." oninput="performSearch(this.value)">
-  </div>
-  <div class="featured-wrapper" style="position: relative;">
-    <button id="featuredPrev" class="featured-arrow featured-prev" onclick="manualRotate(-1)">◄</button>
-    <button id="featuredNext" class="featured-arrow featured-next" onclick="manualRotate(1)">►</button>
-    <div class="featured-content">
-      <a id="featuredLink" href="#" target="_blank">
-        <img id="featuredImage" src="" alt="Featured Post" style="width:100%; border-radius:15px;">
-      </a>
-    </div>
-  </div>
-  <div id="fb-results"></div>
-</div>
+        <div class="box post-search-box">
+            <div class="fb-header">
+                <h2>Post Search</h2>
+                <input type="text" id="fb-search" placeholder="Search posts..." oninput="performSearch(this.value)">
+            </div>
+            <div class="featured-wrapper" style="position: relative;">
+                <button id="featuredPrev" class="featured-arrow featured-prev" onclick="manualRotate(-1)">◄</button>
+                <button id="featuredNext" class="featured-arrow featured-next" onclick="manualRotate(1)">►</button>
+                <div class="featured-content">
+                    <a id="featuredLink" href="#" target="_blank">
+                        <img id="featuredImage" src="" alt="Featured Post" style="width:100%; border-radius:15px;">
+                    </a>
+                </div>
+            </div>
+            <div id="fb-results"></div>
+        </div>
 
 
         <div class="box featured-story" id="featured-story-box"
@@ -670,50 +673,55 @@
             </a>
         </div>
 
-        <div class="box ostomy-bob-box" id="bob-box" onclick="expandBob()">
-            <div class="bob-scroll-area">
-                <div class="bob-top">
-                    <img src="images/2.png" alt="OstomyBob">
-                    <div class="bob-greeting">
-                        <h2>Hi, I’m OstomyBob!</h2>
-                        <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('bob-box')" title="Maximize">
-    <i class="fas fa-expand"></i>
-  </button>
-                        <p>Ask me anything – I’m here 24/7.</p>
-                    </div>
+    <div class="box ostomy-bob-box" id="bob-box" onclick="expandBob()">
+    <div class="bob-scroll-area">
+        <div class="bob-top">
+            <img src="images/2.png" alt="OstomyBob">
+            <div class="bob-greeting">
+                <h2>Hi, I'm OstomyBob!</h2>
+                <div style="display:flex;flex-direction:row;gap:6px;position:absolute;top:12px;right:12px;">
+                    <button class="font-btn" onclick="event.stopPropagation(); adjustFontSize('bob-box', -1)" title="Decrease font size">A−</button>
+                    <button class="font-btn" onclick="event.stopPropagation(); adjustFontSize('bob-box', 1)" title="Increase font size">A+</button>
+                    <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('bob-box')" title="Maximize">
+                        <i class="fas fa-expand"></i>
+                    </button>
                 </div>
-                <div id="bob-chat-messages"></div>
-            </div>
-            <div class="input-area">
-                <input type="text" id="bob-user-input" placeholder="Ask OstomyBob anything..." autocomplete="off">
-                <button onclick="sendBobMessage()">Send</button>
+                <p>Ask me anything – I'm here 24/7.</p>
             </div>
         </div>
+        <div id="bob-chat-messages"></div>
+    </div>
+    <div class="input-area">
+        <input type="text" id="bob-user-input" placeholder="Ask OstomyBob anything..." autocomplete="off">
+        <button onclick="sendBobMessage()">Send</button>
+    </div>
+</div>
+
 
         <!-- COMMUNITY FORUM BOX -->
-        <div class="box full-chat-box" id="forum-box" onclick="expandForum()">
-            <h2>Community Forum</h2>
-     <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('forum-box')" title="Maximize">
-    <i class="fas fa-expand"></i>
-  </button>
-            <div class="forum-categories">
-                <button class="category-btn active"
-                    onclick="event.stopPropagation(); loadCategory('general')">General</button>
-                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('new')">New to
-                    Ostomy</button>
-                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('products')">Product
-                    Reviews</button>
-                <button class="category-btn" onclick="event.stopPropagation(); loadCategory('travel')">Travel
-                    Tips</button>
-            </div>
-            <div id="threadList" class="thread-list">
-                <p style="text-align:center;color:#666;margin-top:50px;">Loading threads...</p>
-            </div>
-            <button class="new-thread-btn" onclick="event.stopPropagation(); openNewThread()"
-                style="background:#fff8e1;color:#8B572A;padding:18px 40px;border:none;border-radius:50px;font-weight:bold;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.3);margin-top:20px;transition:0.3s;width:100%;">
-                + New Thread
-            </button>
-        </div>
+  <div class="box full-chat-box" id="forum-box" onclick="expandForum()">
+    <h2>Community Forum</h2>
+    <div style="display:flex;gap:6px;position:absolute;top:12px;right:12px;">
+        <button class="font-btn" onclick="event.stopPropagation(); adjustFontSize('forum-box', -1)" title="Decrease font size">A−</button>
+        <button class="font-btn" onclick="event.stopPropagation(); adjustFontSize('forum-box', 1)" title="Increase font size">A+</button>
+        <button class="maximize-btn" onclick="event.stopPropagation(); toggleMaximize('forum-box')" title="Maximize">
+            <i class="fas fa-expand"></i>
+        </button>
+    </div>
+    <div class="forum-categories">
+        <button class="category-btn active" onclick="event.stopPropagation(); loadCategory('general')">General</button>
+        <button class="category-btn" onclick="event.stopPropagation(); loadCategory('new')">New to Ostomy</button>
+        <button class="category-btn" onclick="event.stopPropagation(); loadCategory('products')">Product Reviews</button>
+        <button class="category-btn" onclick="event.stopPropagation(); loadCategory('travel')">Travel Tips</button>
+    </div>
+    <div id="threadList" class="thread-list">
+        <p style="text-align:center;color:#666;margin-top:50px;">Loading threads...</p>
+    </div>
+    <button class="new-thread-btn" onclick="event.stopPropagation(); openNewThread()"
+        style="background:#fff8e1;color:#8B572A;padding:18px 40px;border:none;border-radius:50px;font-weight:bold;font-size:1.4rem;cursor:pointer;box-shadow:0 8px 25px rgba(0,0,0,0.3);margin-top:20px;transition:0.3s;width:100%;">
+        + New Thread
+    </button>
+</div>
     </div>
 
     <!-- Resources page (hidden by default) -->
@@ -810,29 +818,63 @@
 
 
     <!-- <script src="backfill-add-participants.js"></script> -->
-<script>
-  function autoFitPage() {
-    if (document.fullscreenElement || document.body.classList.contains('header-hidden') || document.querySelector('.box.expanded')) return;  // Skip to avoid cutoff
+    <script>
+        function autoFitPage() {
+            if (document.fullscreenElement || document.body.classList.contains('header-hidden') || document.querySelector('.box.expanded')) return;  // Skip to avoid cutoff
 
-    const targetHeight = 900;
-    const availableHeight = window.innerHeight;
+            const targetHeight = 900;
+            const availableHeight = window.innerHeight;
 
-    if (availableHeight < targetHeight) {
-      const zoom = (availableHeight / targetHeight) * 0.845;
-      document.body.style.zoom = zoom;
-      document.body.style.transform = `scale(${zoom})`;
-      document.body.style.transformOrigin = 'top left';
-      document.body.style.width = `${100 / zoom}%`;
-      document.body.style.height = `${100 / zoom}%`;
-    } else {
-      document.body.style.zoom = '100%';
-      document.body.style.transform = 'none';
-      document.body.style.width = '100%';
-      document.body.style.height = '100%';
+            if (availableHeight < targetHeight) {
+                const zoom = (availableHeight / targetHeight) * 0.845;
+                document.body.style.zoom = zoom;
+                document.body.style.transform = `scale(${zoom})`;
+                document.body.style.transformOrigin = 'top left';
+                document.body.style.width = `${100 / zoom}%`;
+                document.body.style.height = `${100 / zoom}%`;
+            } else {
+                document.body.style.zoom = '100%';
+                document.body.style.transform = 'none';
+                document.body.style.width = '100%';
+                document.body.style.height = '100%';
+            }
+        }
+        window.addEventListener('load', autoFitPage);
+        window.addEventListener('resize', autoFitPage);
+    </script>
+    <script>
+// Font size adjustment helper
+function adjustFontSize(boxId, delta) {
+  const box = document.getElementById(boxId);
+  if (!box) return;
+  
+  const contentArea = boxId === 'bob-box' 
+    ? box.querySelector('#bob-chat-messages')
+    : box.querySelector('#threadList');
+  
+  if (!contentArea) return;
+  
+  const currentSize = parseFloat(window.getComputedStyle(contentArea).fontSize) || 16;
+  const newSize = Math.max(12, Math.min(24, currentSize + delta));
+  contentArea.style.fontSize = newSize + 'px';
+  
+  // Save preference
+  localStorage.setItem(`${boxId}-fontSize`, newSize);
+}
+
+// Restore saved font sizes on load
+document.addEventListener('DOMContentLoaded', () => {
+  ['bob-box', 'forum-box'].forEach(boxId => {
+    const saved = localStorage.getItem(`${boxId}-fontSize`);
+    if (saved) {
+      const box = document.getElementById(boxId);
+      const contentArea = boxId === 'bob-box' 
+        ? box?.querySelector('#bob-chat-messages')
+        : box?.querySelector('#threadList');
+      if (contentArea) contentArea.style.fontSize = saved + 'px';
     }
-  }
-  window.addEventListener('load', autoFitPage);
-  window.addEventListener('resize', autoFitPage);
+  });
+});
 </script>
 
 </body>

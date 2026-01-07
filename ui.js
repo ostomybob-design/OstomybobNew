@@ -804,3 +804,27 @@ setInterval(() => {
 // Initial load
 loadFeaturedPosts();
 updateFeatured();  // Immediate first image
+function changeFontSize(boxId, delta) {
+  const box = document.getElementById(boxId);
+  if (!box) return;
+
+  let currentSize = parseFloat(getComputedStyle(box).fontSize) || 16;
+  let newSize = currentSize + delta;  // +1 or -1 px
+  newSize = Math.max(12, Math.min(24, newSize));  // Limit 12-24px
+
+  box.style.fontSize = newSize + 'px';
+
+  // Save to localStorage (per box)
+  localStorage.setItem(`fontSize-${boxId}`, newSize);
+}
+
+// Load saved font size on page load
+window.addEventListener('load', () => {
+  ['bob-box', 'forum-box'].forEach(id => {
+    const box = document.getElementById(id);
+    const saved = localStorage.getItem(`fontSize-${id}`);
+    if (box && saved) {
+      box.style.fontSize = saved + 'px';
+    }
+  });
+});

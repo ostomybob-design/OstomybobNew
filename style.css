@@ -1492,3 +1492,27 @@ body.expanded-active.header-hidden #notificationBell {
   max-width: 100%;
   box-sizing: border-box;
 }
+/* Font size control buttons */
+.font-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(255,255,255,0.96);
+  color: #222;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.font-btn:hover {
+  background: rgba(255,255,255,1);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+.font-btn:focus {
+  outline: 2px solid #8B572A;
+}
