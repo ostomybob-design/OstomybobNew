@@ -322,7 +322,7 @@ h1 {
   flex: 1;
   display: flex;
   flex-direction: column;
-  width: 115%;  /* Full width */
+  width: 120%;  /* Full width */
   padding: 0 10px;  /* Small side padding for margins */
   box-sizing: border-box;
 }
