@@ -164,3 +164,13 @@
   .featured-story__excerpt { --excerpt-size: clamp(0.95rem, 4.5vw, 1.2rem); height: var(--excerpt-coverage); max-height: var(--excerpt-coverage); }
   .featured-story__cta { padding: 8px 10px; font-size: 16px; }
 }
+/* Image inside featured story - shrink to leave border/padding */
+.featured-story img,
+.featured-story .featured-story__overlay {
+  width: 100%;
+  height: auto;
+  max-width: calc(100% - 40px);  /* Leave space for padding/border */
+  margin: 20px auto;
+  display: block;
+  border-radius: 15px;
+}
