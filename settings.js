@@ -328,6 +328,7 @@ document.querySelectorAll('input[name="featuredMode"]').forEach(radio => {
     });
 });
 
+// Replace the applyFeaturedMode function (around line 340):
 function applyFeaturedMode(mode) {
     const box = document.getElementById('featured-story-box');
     if (!box) return;
@@ -347,30 +348,39 @@ function applyFeaturedMode(mode) {
         inboxContainer.style.display = 'none';
         inboxContainer.style.background = '#fff';
         
-        inboxContainer.innerHTML = `
-            <div style="display:flex;height:100%;width:100%;">
-                <div style="width:35%;background:#8B572A;color:#fff8e1;display:flex;flex-direction:column;border-right:2px solid rgba(0,0,0,0.1);">
-                    <h2 style="text-align:center;padding:20px;margin:0;border-bottom:2px solid rgba(255,255,255,0.2);font-size:1.5rem;">Your Messages</h2>
-                    <div id="settings-conversationList" style="flex:1;overflow-y:auto;"></div>
+     inboxContainer.innerHTML = `
+    <div style="display:flex;height:100%;width:100%;">
+        <div style="width:35%;background:#8B572A;color:#fff8e1;display:flex;flex-direction:column;border-right:2px solid rgba(0,0,0,0.1);">
+            <div style="padding:20px;border-bottom:2px solid rgba(255,255,255,0.2);">
+                <h2 style="margin:0;font-size:1.5rem;">Your Messages</h2>
+            </div>
+            <div id="settings-conversationList" style="flex:1;overflow-y:auto;"></div>
+        </div>
+        <div style="width:65%;display:flex;flex-direction:column;background:#f9f5f0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:20px;background:#8B572A;color:#fff8e1;border-bottom:2px solid rgba(0,0,0,0.1);">
+                <div id="settings-conversationHeader" style="font-size:1.3rem;font-weight:bold;">
+                    Select a conversation
                 </div>
-                <div style="width:65%;display:flex;flex-direction:column;background:#f9f5f0;">
-                    <div id="settings-conversationHeader" style="padding:20px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.3rem;font-weight:bold;border-bottom:2px solid rgba(0,0,0,0.1);">
-                        Select a conversation
-                    </div>
-                    <div id="settings-conversationMessages" style="flex:1;overflow-y:auto;padding:20px;"></div>
-                    <div style="padding:15px;background:#fff;border-top:2px solid #8B572A;">
-                        <div style="display:flex;gap:10px;">
-                            <input type="text" id="settings-messageInput" placeholder="Type a message..." 
-                                   style="flex:1;padding:12px;border-radius:25px;border:2px solid #8B572A;outline:none;font-size:1rem;">
-                            <button onclick="sendSettingsMessage()" 
-                                    style="background:#8B572A;color:#fff8e1;padding:12px 30px;border:none;border-radius:25px;font-weight:bold;cursor:pointer;font-size:1rem;">
-                                Send
-                            </button>
-                        </div>
-                    </div>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="adjustInboxFontSize('smaller')" style="background:rgba(255,255,255,0.2);color:#fff8e1;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;">A-</button>
+                    <button onclick="adjustInboxFontSize('larger')" style="background:rgba(255,255,255,0.2);color:#fff8e1;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;">A+</button>
+                    <button onclick="toggleInboxMaximize()" style="background:rgba(255,255,255,0.2);color:#fff8e1;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;">⛶</button>
                 </div>
             </div>
-        `;
+            <div id="settings-conversationMessages" style="flex:1;overflow-y:auto;padding:20px;"></div>
+            <div style="padding:15px;background:#fff;border-top:2px solid #8B572A;">
+                <div style="display:flex;gap:10px;">
+                    <input type="text" id="settings-messageInput" placeholder="Type a message..." 
+                           style="flex:1;padding:12px;border-radius:25px;border:2px solid #8B572A;outline:none;font-size:1rem;">
+                    <button onclick="sendSettingsMessage()" 
+                            style="background:#8B572A;color:#fff8e1;padding:12px 30px;border:none;border-radius:25px;font-weight:bold;cursor:pointer;font-size:1rem;">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+`;
         
         box.appendChild(inboxContainer);
         setTimeout(() => loadSettingsInboxConversations(), 100);
@@ -411,6 +421,62 @@ function applyFeaturedMode(mode) {
         box.style.padding = '12px';
     }
 }
+
+// Add these new functions at the end of the file:
+let inboxFontSize = 1; // Default size multiplier
+
+function adjustInboxFontSize(direction) {
+    if (direction === 'smaller' && inboxFontSize > 0.7) {
+        inboxFontSize -= 0.1;
+    } else if (direction === 'larger' && inboxFontSize < 1.5) {
+        inboxFontSize += 0.1;
+    }
+    
+    const container = document.getElementById('settings-inbox-container');
+    if (container) {
+        container.style.fontSize = inboxFontSize + 'rem';
+    }
+    
+    localStorage.setItem('inboxFontSize', inboxFontSize);
+}
+
+function toggleInboxMaximize() {
+    const box = document.getElementById('featured-story-box');
+    if (!box) return;
+    
+    if (box.classList.contains('maximized')) {
+        box.classList.remove('maximized');
+        box.style.position = 'relative';
+        box.style.width = '';
+        box.style.height = '';
+        box.style.top = '';
+        box.style.left = '';
+        box.style.zIndex = '';
+        box.style.margin = '';
+    } else {
+        box.classList.add('maximized');
+        box.style.position = 'fixed';
+        box.style.width = '95vw';
+        box.style.height = '95vh';
+        box.style.top = '50%';
+        box.style.left = '50%';
+        box.style.transform = 'translate(-50%, -50%)';
+        box.style.zIndex = '10000';
+        box.style.margin = '0';
+    }
+}
+
+// Load saved font size on startup
+window.addEventListener('load', () => {
+    const savedFontSize = localStorage.getItem('inboxFontSize');
+    if (savedFontSize) {
+        inboxFontSize = parseFloat(savedFontSize);
+        const container = document.getElementById('settings-inbox-container');
+        if (container) {
+            container.style.fontSize = inboxFontSize + 'rem';
+        }
+    }
+});
 
 // Replace loadSettingsInboxConversations function (around line 429):
 function loadSettingsInboxConversations() {
