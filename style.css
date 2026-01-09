@@ -283,12 +283,16 @@ h1 {
   background: rgba(255, 255, 255, 0.7);
 }
 
+/* Find the .post-search-box img rule and update it: */
 .post-search-box img {
-    border-radius: 15px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    flex: 1;
-    width: 100%
+    border-radius: 30px; /* Remove or set to 0 if you want sharp corners */
+    border: none; /* Remove border */
 }
+
+
 
 .featured-stories-box .story-content {
     flex: 1;
@@ -1391,16 +1395,18 @@ body.expanded-active.header-hidden #notificationBell {
 
 /* Wrapper for image to allow overlay */
 .post-search-box {
-  position: relative;  /* For absolute header */
-  overflow: hidden;    /* Clip if needed */
-  border-radius: 30px;
+    /* ...existing styles... */
+    overflow: hidden; /* This clips the image to the box's rounded corners */
+    padding: 0; /* Remove any padding so image touches edges */
 }
 
 .post-search-box img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 30px;  /* Full box roundness */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block; /* Removes any extra space below image */
+    border: none;
+    border-radius: inherit; /* Inherits the box's border-radius */
 }
 /* Thread view header title color to match Community Forum */
 #threadView h2,  /* or the element with the thread title */
