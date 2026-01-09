@@ -348,35 +348,34 @@ function applyFeaturedMode(mode) {
         inboxContainer.style.display = 'none';
         inboxContainer.style.background = '#fff';
 
-        inboxContainer.innerHTML = `
+inboxContainer.innerHTML = `
     <div style="display:flex;height:100%;width:100%;">
-        <div style="width:35%;background:#8B572A;color:#fff8e1;display:flex;flex-direction:column;border-right:2px solid rgba(0,0,0,0.1);">
-            <div style="padding:20px;border-bottom:2px solid rgba(255,255,255,0.2);">
-                <h2 style="margin:0;font-size:1.5rem;">Your Messages</h2>
+        <div style="width:35%;background:var(--box-bg, #fff8e1);color:var(--box-text, #8B572A);display:flex;flex-direction:column;border-right:2px solid rgba(139,87,42,0.2);">
+            <div style="padding:20px;border-bottom:2px solid rgba(139,87,42,0.2);">
+                <h2 style="margin:0;font-size:1.5rem;color:var(--box-text, #8B572A);">Your Messages</h2>
             </div>
             <div id="settings-conversationList" style="flex:1;overflow-y:auto;"></div>
         </div>
         <div style="width:65%;display:flex;flex-direction:column;background:#f9f5f0;">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:20px;background:#8B572A;color:#fff8e1;border-bottom:2px solid rgba(0,0,0,0.1);">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:20px;background:var(--box-bg, #fff8e1);color:var(--box-text, #8B572A);border-bottom:2px solid rgba(139,87,42,0.2);">
                 <div id="settings-conversationHeader" style="font-size:1.3rem;font-weight:bold;">
                     Select a conversation
                 </div>
-              <div style="display:flex;gap:6px;">
-    <button class="font-btn1" onclick="event.stopPropagation(); adjustInboxFontSize('smaller')" title="Decrease font size">A−</button>
-    <button class="font-btn2" onclick="event.stopPropagation(); adjustInboxFontSize('larger')" title="Increase font size">A+</button>
-    <button class="maximize-btn" onclick="event.stopPropagation(); toggleInboxMaximize()" title="Maximize">
-        <i class="fas fa-expand"></i>
-    </button>
-</div>
+                <div style="display:flex;gap:6px;">
+                    <button class="font-btn1" onclick="event.stopPropagation(); adjustInboxFontSize('smaller')" title="Decrease font size">A−</button>
+                    <button class="font-btn2" onclick="event.stopPropagation(); adjustInboxFontSize('larger')" title="Increase font size">A+</button>
+                    <button class="maximize-btn" onclick="event.stopPropagation(); toggleInboxMaximize()" title="Maximize">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
             </div>
-           
             <div id="settings-conversationMessages" style="flex:1;overflow-y:auto;padding:20px;"></div>
-            <div style="padding:15px;background:#fff;border-top:2px solid #8B572A;">
+            <div style="padding:15px;background:#fff;border-top:2px solid rgba(139,87,42,0.2);">
                 <div style="display:flex;gap:10px;">
                     <input type="text" id="settings-messageInput" placeholder="Type a message..." 
-                           style="flex:1;padding:12px;border-radius:25px;border:2px solid #8B572A;outline:none;font-size:1rem;">
+                           style="flex:1;padding:12px;border-radius:25px;border:2px solid var(--box-text, #8B572A);outline:none;font-size:1rem;">
                     <button onclick="sendSettingsMessage()" 
-                            style="background:#8B572A;color:#fff8e1;padding:12px 30px;border:none;border-radius:25px;font-weight:bold;cursor:pointer;font-size:1rem;">
+                            style="background:var(--box-text, #8B572A);color:var(--box-bg, #fff8e1);padding:12px 30px;border:none;border-radius:25px;font-weight:bold;cursor:pointer;font-size:1rem;">
                         Send
                     </button>
                 </div>
@@ -585,20 +584,21 @@ function loadSettingsInboxConversations() {
                     const displayName = userData.displayName || 'User';
                     const photoURL = userData.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conv.otherUserId}`;
 
-                    const conversationItem = document.createElement('div');
-                    conversationItem.style.cssText = 'padding:10px 15px;border-bottom:1px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.2s;';
-                    conversationItem.innerHTML = `
+        // In loadSettingsInboxConversations, replace the conversationItem section (around line 540):
+const conversationItem = document.createElement('div');
+conversationItem.style.cssText = 'padding:10px 15px;border-bottom:1px solid rgba(139,87,42,0.2);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.2s;';
+conversationItem.innerHTML = `
     <img src="${photoURL}" alt="${displayName}" 
-         style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #fff8e1;">
+         style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--box-text, #8B572A);">
     <div style="flex:1;min-width:0;">
-        <div style="font-weight:bold;font-size:1rem;margin-bottom:2px;color:#fff8e1;">${displayName}</div>
-        <div style="font-size:0.85rem;color:#ffecb3;opacity:0.8;">Click to chat</div>
+        <div style="font-weight:bold;font-size:1rem;margin-bottom:2px;color:var(--box-text, #8B572A);">${displayName}</div>
+        <div style="font-size:0.85rem;color:var(--box-text, #8B572A);opacity:0.7;">Click to chat</div>
     </div>
 `;
-                    conversationItem.onmouseover = () => conversationItem.style.background = 'rgba(255,255,255,0.1)';
-                    conversationItem.onmouseout = () => conversationItem.style.background = 'transparent';
-                    conversationItem.onclick = () => openSettingsConversation(conv.chatPath, displayName, conv.otherUserId);
-                    conversationList.appendChild(conversationItem);
+conversationItem.onmouseover = () => conversationItem.style.background = 'rgba(139,87,42,0.1)';
+conversationItem.onmouseout = () => conversationItem.style.background = 'transparent';ouseout = () => conversationItem.style.background = 'transparent';conversationItem.onclick = () => openSettingsConversation(conv.chatPath, displayName, conv.otherUserId);
+                    
+conversationList.appendChild(conversationItem);
                 });
             });
         }, err => {
