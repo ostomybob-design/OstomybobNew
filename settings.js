@@ -485,14 +485,14 @@ function loadSettingsInboxConversations() {
                     const displayName = userData.displayName || 'User';
                     const photoURL = userData.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conv.otherUserId}`;
                     
-                    const conversationItem = document.createElement('div');
-                    conversationItem.style.cssText = 'padding:15px;border-bottom:1px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;gap:12px;transition:background 0.2s;';
+const conversationItem = document.createElement('div');
+conversationItem.style.cssText = 'padding:10px 15px;border-bottom:1px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.2s;';
 conversationItem.innerHTML = `
     <img src="${photoURL}" alt="${displayName}" 
-         style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:3px solid #fff8e1;">
+         style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #fff8e1;">
     <div style="flex:1;min-width:0;">
-        <div style="font-weight:bold;font-size:1.1rem;margin-bottom:4px;color:#fff8e1;">${displayName}</div>
-        <div style="font-size:0.9rem;color:#ffecb3;opacity:0.8;">Click to chat</div>
+        <div style="font-weight:bold;font-size:1rem;margin-bottom:2px;color:#fff8e1;">${displayName}</div>
+        <div style="font-size:0.85rem;color:#ffecb3;opacity:0.8;">Click to chat</div>
     </div>
 `;
                     conversationItem.onmouseover = () => conversationItem.style.background = 'rgba(255,255,255,0.1)';
