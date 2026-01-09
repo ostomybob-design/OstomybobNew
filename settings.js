@@ -315,3 +315,135 @@ function openProfileModal() {
   document.getElementById('profileModal').classList.add('open');
   loadProfileVisibility();
 }
+// Save featured mode preference
+document.querySelectorAll('input[name="featuredMode"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    const mode = this.value;
+    localStorage.setItem('featuredMode', mode);
+    applyFeaturedMode(mode);
+  });
+});
+
+// Apply the mode (call this on page load and when setting changes)
+function applyFeaturedMode(mode) {
+  const storyBox = document.getElementById('featured-story-box');
+  if (!storyBox) return;
+
+  if (mode === 'inbox') {
+    storyBox.innerHTML = `
+      <h2 style="text-align:center;margin:20px 0;">Recent Messages</h2>
+      <div style="text-align:center;color:#666;">
+        <p>Click <strong>Messages</strong> in the menu to view full inbox</p>
+        <button onclick="openMessagesInbox()" style="margin-top:15px;padding:12px 24px;background:#8B572A;color:#fff;border:none;border-radius:30px;cursor:pointer;">
+          Open Messages
+        </button>
+      </div>
+    `;
+  } else {
+    // Restore original Featured Story content
+    storyBox.innerHTML = `
+      <a href="https://www.facebook.com/nagae.line/posts/pfbid0qurhYsYYwM9Gs4qacs5bhA7eisWVW78oykmFsJjaRPi6kYbKfUWri6CeKyxaAxSnl"
+         class="featured-story__link" target="_blank" rel="noopener noreferrer"
+         aria-label="Read Marie's story on Facebook">
+        <div class="featured-story__overlay">
+          <h3 class="featured-story__title">Marie’s Story</h3>
+          <p class="featured-story__excerpt">
+            Marie learned to manage her ostomy after a long journey of trial and error. She shares practical tips, emotional moments, and the one product that changed everything for her—helpful for anyone starting the same path. Her story covers the early recovery, adapting daily routines, and the supportive community that helped her regain confidence.
+          </p>
+          <span class="featured-story__cta">Read Marie's story</span>
+        </div>
+      </a>
+    `;
+  }
+}
+
+// Load saved preference on page load
+window.addEventListener('load', () => {
+  const savedMode = localStorage.getItem('featuredMode') || 'story';
+  document.querySelector(`input[name="featuredMode"][value="${savedMode}"]`).checked = true;
+  applyFeaturedMode(savedMode);
+});
+
+// Reset also clears the mode
+function resetAllColors() {
+  // ... your existing reset code ...
+  localStorage.removeItem('featuredMode');
+  applyFeaturedMode('story');
+  document.querySelector('input[name="featuredMode"][value="story"]').checked = true;
+}
+function applyFeaturedMode(mode) {
+  const box = document.getElementById('featured-story-box');
+  if (!box) return;
+
+  if (mode === 'inbox') {
+    // Replace with inline Messages Inbox
+    box.innerHTML = `
+      <div style="display:flex;height:100%;flex-direction:row;background:#fff8e1;border-radius:30px;overflow:hidden;">
+        <!-- Left: Conversation List -->
+        <div style="width:40%;background:#8B572A;color:#fff8e1;padding:15px;overflow-y:auto;">
+          <h2 style="text-align:center;margin-bottom:15px;font-size:1.8rem;">Your Messages</h2>
+          <div id="inboxConversationList" style="max-height:calc(100% - 60px);overflow-y:auto;">
+            <p style="text-align:center;color:#ffecb3;opacity:0.8;margin:40px 0;">Loading conversations...</p>
+          </div>
+        </div>
+
+        <!-- Right: Selected Chat -->
+        <div style="width:60%;display:flex;flex-direction:column;">
+          <div style="padding:40px 20px 10px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.4rem;font-weight:bold;" id="inboxSelectedHeader">
+            Select a conversation
+          </div>
+          <div id="inboxMessages" style="flex:1;overflow-y:auto;padding:15px 20px;background:#f9f5f0;font-size:1rem;line-height:1.5;">
+            <!-- Messages load here -->
+          </div>
+          <div id="inboxInputArea" style="padding:15px;background:#fff;border-top:2px solid #8B572A;">
+            <div style="display:flex;gap:10px;">
+              <input type="text" id="inboxMessageInput" placeholder="Type a message..." style="flex:1;padding:12px;border-radius:30px;border:2px solid #8B572A;outline:none;font-size:1rem;">
+              <button onclick="sendInboxMessage()" style="background:#8B572A;color:#fff8e1;padding:12px 24px;border:none;border-radius:30px;font-weight:bold;font-size:1rem;cursor:pointer;">Send</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    // Load conversations (call your existing load function)
+    loadConversationList();  // Assume this exists in chat.js or ui.js
+  } else {
+    // Restore Featured Story
+    box.innerHTML = `
+      <a href="https://www.facebook.com/nagae.line/posts/pfbid0qurhYsYYwM9Gs4qacs5bhA7eisWVW78oykmFsJjaRPi6kYbKfUWri6CeKyxaAxSnl"
+         class="featured-story__link" target="_blank" rel="noopener noreferrer"
+         aria-label="Read Marie's story on Facebook">
+        <div class="featured-story__overlay">
+          <h3 class="featured-story__title">Marie’s Story</h3>
+          <p class="featured-story__excerpt">
+            Marie learned to manage her ostomy after a long journey of trial and error. She shares practical tips, emotional moments, and the one product that changed everything for her—helpful for anyone starting the same path. Her story covers the early recovery, adapting daily routines, and the supportive community that helped her regain confidence.
+          </p>
+          <span class="featured-story__cta">Read Marie's story</span>
+        </div>
+      </a>
+    `;
+  }
+}
+
+// Load saved mode on page load
+window.addEventListener('load', () => {
+  const savedMode = localStorage.getItem('featuredMode') || 'story';
+  document.querySelector(`input[name="featuredMode"][value="${savedMode}"]`).checked = true;
+  applyFeaturedMode(savedMode);
+});
+
+// Save on radio change
+document.querySelectorAll('input[name="featuredMode"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    const mode = this.value;
+    localStorage.setItem('featuredMode', mode);
+    applyFeaturedMode(mode);
+  });
+});
+
+// Reset clears mode
+function resetAllColors() {
+  // ... your existing reset ...
+  localStorage.removeItem('featuredMode');
+  applyFeaturedMode('story');
+  document.querySelector('input[name="featuredMode"][value="story"]').checked = true;
+}

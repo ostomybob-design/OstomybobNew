@@ -427,6 +427,7 @@
     <!-- SETTINGS POPUP — LINK ALL COLORS WORKS + SAVES -->
     <!-- SETTINGS MODAL — CLEAN MINIMAL STYLE (YOUR FAVORITE) -->
     <div class="privateChatModal" id="settingsModal">
+        
         <div class="settings-box"
             style="width:90%;max-width:480px;background:rgba(139,87,42,0.95);backdrop-filter: blur(15px);padding:35px;border-radius:25px;color:#fff8e1;box-shadow:0 15px 40px rgba(0,0,0,0.5);position:relative;">
             <button onclick="document.getElementById('settingsModal').classList.remove('open')"
@@ -445,6 +446,19 @@
                         style="width:28px;height:28px;cursor:pointer;accent-color:#fff8e1;">
                 </div>
             </div>
+            <div class="settings-section" style="margin-top:30px;">
+  <h3 style="font-size:1.6rem;margin-bottom:20px;text-align:center;opacity:0.9;">Featured Content Display</h3>
+  
+  <div style="display:flex;align-items:center;justify-content:center;gap:30px;">
+    <label style="color:#fff8e1;font-size:1.2rem;">
+      <input type="radio" name="featuredMode" value="story" checked> Show Featured Story
+    </label>
+    
+    <label style="color:#fff8e1;font-size:1.2rem;">
+      <input type="radio" name="featuredMode" value="inbox"> Show Messages Inbox
+    </label>
+  </div>
+</div>
 
             <!-- Temperature Unit Toggle -->
             <div class="settings-section"
@@ -662,8 +676,8 @@
             
             <a href="https://www.facebook.com/photo/?fbid=122276974778016943&set=a.122122393778016943"
             
-                class="featured-story__link" target="_blank" rel="noopener noreferrer"
-                aria-label="Read Derek's story on Facebook">
+               class="featured-story__link" target="_blank" rel="noopener noreferrer"
+     aria-label="Read Derek's story">
                 <div class="featured-story__overlay">
                     <h3 class="featured-story__title">Featured Story</h3>
                     <p class="featured-story__excerpt" style="font-size: 3.5rem;">

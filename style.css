@@ -1601,3 +1601,69 @@ body.expanded-active.header-hidden #notificationBell {
 .font-btn2:focus {
   outline: 2px solid #fff8e1;
 }
+
+/* When inbox mode is active - fill full box, no padding/border */
+#featured-story-box.inbox-mode {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  overflow: hidden;
+  background: #fff8e1;  /* Keep your background color */
+  height: 100%;  /* Full height of grid cell */
+}
+
+/* Full-height flex container for inbox layout */
+.inbox-inline {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+/* Left panel (conversation list) */
+.inbox-left {
+  width: 40%;
+  background: #8B572A;
+  color: #fff8e1;
+  padding: 15px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+/* Right panel (chat + input) */
+.inbox-right {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Selected chat header */
+#inboxSelectedHeader {
+  padding: 20px 15px 10px;
+  background: #8B572A;
+  color: #fff8e1;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* Messages area */
+#inboxMessages {
+  flex: 1;
+  overflow-y: auto;
+  
+  background: #f9f5f0;
+}
+
+/* Input area */
+#inboxInputArea {
+  padding: 15px;
+  background: #fff;
+  border-top: 2px solid #8B572A;
+}
+
+/* Make sure everything fills the space */
+.inbox-left, .inbox-right, #inboxMessages, #inboxInputArea {
+  box-sizing: border-box;
+}
+
