@@ -198,7 +198,7 @@ window.addEventListener('load', () => {
     const savedMode = localStorage.getItem('featuredMode') || 'story';
     const modeRadio = document.querySelector(`input[name="featuredMode"][value="${savedMode}"]`);
     if (modeRadio) modeRadio.checked = true;
-    
+
     setTimeout(() => {
         applyFeaturedMode(savedMode);
     }, 100);
@@ -273,7 +273,7 @@ if (toggleSwitch && toggleInput) {
         toggleInput.click();
     });
 
-    toggleInput.addEventListener('change', function() {
+    toggleInput.addEventListener('change', function () {
         const newUnit = this.checked ? 'c' : 'f';
         updateToggleVisual(this.checked);
 
@@ -321,7 +321,7 @@ function openProfileModal() {
 }
 
 document.querySelectorAll('input[name="featuredMode"]').forEach(radio => {
-    radio.addEventListener('change', function() {
+    radio.addEventListener('change', function () {
         const mode = this.value;
         localStorage.setItem('featuredMode', mode);
         applyFeaturedMode(mode);
@@ -334,7 +334,7 @@ function applyFeaturedMode(mode) {
     if (!box) return;
 
     let inboxContainer = document.getElementById('settings-inbox-container');
-    
+
     if (!inboxContainer) {
         inboxContainer = document.createElement('div');
         inboxContainer.id = 'settings-inbox-container';
@@ -347,8 +347,8 @@ function applyFeaturedMode(mode) {
         inboxContainer.style.overflow = 'hidden';
         inboxContainer.style.display = 'none';
         inboxContainer.style.background = '#fff';
-        
-     inboxContainer.innerHTML = `
+
+        inboxContainer.innerHTML = `
     <div style="display:flex;height:100%;width:100%;">
         <div style="width:35%;background:#8B572A;color:#fff8e1;display:flex;flex-direction:column;border-right:2px solid rgba(0,0,0,0.1);">
             <div style="padding:20px;border-bottom:2px solid rgba(255,255,255,0.2);">
@@ -361,12 +361,15 @@ function applyFeaturedMode(mode) {
                 <div id="settings-conversationHeader" style="font-size:1.3rem;font-weight:bold;">
                     Select a conversation
                 </div>
-                <div style="display:flex;gap:8px;">
-                    <button onclick="adjustInboxFontSize('smaller')" style="background:rgba(255,255,255,0.2);color:#fff8e1;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;">A-</button>
-                    <button onclick="adjustInboxFontSize('larger')" style="background:rgba(255,255,255,0.2);color:#fff8e1;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;">A+</button>
-                    <button onclick="toggleInboxMaximize()" style="background:rgba(255,255,255,0.2);color:#fff8e1;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:0.9rem;">⛶</button>
-                </div>
+              <div style="display:flex;gap:6px;">
+    <button class="font-btn1" onclick="event.stopPropagation(); adjustInboxFontSize('smaller')" title="Decrease font size">A−</button>
+    <button class="font-btn2" onclick="event.stopPropagation(); adjustInboxFontSize('larger')" title="Increase font size">A+</button>
+    <button class="maximize-btn" onclick="event.stopPropagation(); toggleInboxMaximize()" title="Maximize">
+        <i class="fas fa-expand"></i>
+    </button>
+</div>
             </div>
+           
             <div id="settings-conversationMessages" style="flex:1;overflow-y:auto;padding:20px;"></div>
             <div style="padding:15px;background:#fff;border-top:2px solid #8B572A;">
                 <div style="display:flex;gap:10px;">
@@ -381,13 +384,13 @@ function applyFeaturedMode(mode) {
         </div>
     </div>
 `;
-        
+
         box.appendChild(inboxContainer);
         setTimeout(() => loadSettingsInboxConversations(), 100);
     }
-    
+
     let storyLink = box.querySelector('.featured-story__link');
-    
+
     if (!storyLink) {
         storyLink = document.createElement('a');
         storyLink.href = 'https://www.facebook.com/photo/?fbid=122276974778016943&set=a.122122393778016943';
@@ -406,7 +409,7 @@ function applyFeaturedMode(mode) {
         `;
         box.appendChild(storyLink);
     }
-    
+
     if (mode === 'inbox') {
         inboxContainer.style.display = 'block';
         storyLink.style.display = 'none';
@@ -431,19 +434,19 @@ function adjustInboxFontSize(direction) {
     } else if (direction === 'larger' && inboxFontSize < 1.5) {
         inboxFontSize += 0.1;
     }
-    
+
     const container = document.getElementById('settings-inbox-container');
     if (container) {
         container.style.fontSize = inboxFontSize + 'rem';
     }
-    
+
     localStorage.setItem('inboxFontSize', inboxFontSize);
 }
 
 function toggleInboxMaximize() {
     const box = document.getElementById('featured-story-box');
     if (!box) return;
-    
+
     if (box.classList.contains('maximized')) {
         box.classList.remove('maximized');
         box.style.position = 'relative';
@@ -482,7 +485,7 @@ window.addEventListener('load', () => {
 function loadSettingsInboxConversations() {
     const user = auth.currentUser;
     const conversationList = document.getElementById('settings-conversationList');
-    
+
     if (!user) {
         const unsubscribe = auth.onAuthStateChanged(authUser => {
             if (authUser) {
@@ -492,7 +495,7 @@ function loadSettingsInboxConversations() {
         });
         return;
     }
-    
+
     if (!conversationList) return;
 
     console.log('Loading settings inbox conversations for user:', user.uid);
@@ -502,20 +505,20 @@ function loadSettingsInboxConversations() {
         .where('participants', 'array-contains', user.uid)
         .onSnapshot(snapshot => {
             console.log('Settings inbox messages snapshot:', snapshot.size, 'total messages');
-            
+
             const conversations = new Map();
-            
+
             snapshot.forEach(doc => {
                 const data = doc.data();
                 const otherUserId = data.participants?.find(p => p !== user.uid);
-                
+
                 if (!otherUserId) return;
-                
-                const msgTime = data.timestamp?.toMillis?.() || data.createdAt?.toMillis?.() || 
-                               data.timestamp?.seconds * 1000 || data.createdAt?.seconds * 1000 || 0;
+
+                const msgTime = data.timestamp?.toMillis?.() || data.createdAt?.toMillis?.() ||
+                    data.timestamp?.seconds * 1000 || data.createdAt?.seconds * 1000 || 0;
                 const existing = conversations.get(otherUserId);
                 const existingTime = existing ? (existing.timestamp?.toMillis?.() || existing.timestamp?.seconds * 1000 || 0) : 0;
-                
+
                 // Keep only the most recent message per conversation
                 if (!existing || msgTime > existingTime) {
                     conversations.set(otherUserId, {
@@ -526,17 +529,17 @@ function loadSettingsInboxConversations() {
                     });
                 }
             });
-            
+
             console.log('Total unique conversations:', conversations.size);
-            
+
             // Display conversations
             conversationList.innerHTML = '';
-            
+
             if (conversations.size === 0) {
                 conversationList.innerHTML = '<p style="text-align:center;padding:40px;opacity:0.8;font-size:1rem;">No conversations yet</p>';
                 return;
             }
-            
+
             // Sort by most recent
             const conversationsArray = Array.from(conversations.values());
             conversationsArray.sort((a, b) => {
@@ -544,16 +547,16 @@ function loadSettingsInboxConversations() {
                 const timeB = b.timestamp?.toMillis?.() || b.timestamp?.seconds * 1000 || 0;
                 return timeB - timeA;
             });
-            
+
             conversationsArray.forEach(conv => {
                 db.collection('users').doc(conv.otherUserId).get().then(userDoc => {
                     const userData = userDoc.exists ? userDoc.data() : {};
                     const displayName = userData.displayName || 'User';
                     const photoURL = userData.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conv.otherUserId}`;
-                    
-const conversationItem = document.createElement('div');
-conversationItem.style.cssText = 'padding:10px 15px;border-bottom:1px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.2s;';
-conversationItem.innerHTML = `
+
+                    const conversationItem = document.createElement('div');
+                    conversationItem.style.cssText = 'padding:10px 15px;border-bottom:1px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background 0.2s;';
+                    conversationItem.innerHTML = `
     <img src="${photoURL}" alt="${displayName}" 
          style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #fff8e1;">
     <div style="flex:1;min-width:0;">
@@ -581,37 +584,37 @@ let currentSettingsListener = null;
 function openSettingsConversation(chatPath, otherName, otherUserId) {
     const header = document.getElementById('settings-conversationHeader');
     const messagesContainer = document.getElementById('settings-conversationMessages');
-    
+
     if (header) header.textContent = otherName;
     if (!messagesContainer) return;
-    
+
     // IMPORTANT: Detach previous listener first
     if (currentSettingsListener) {
         currentSettingsListener();
         currentSettingsListener = null;
     }
-    
+
     messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">Loading messages...</p>';
-    
+
     console.log('Opening settings conversation:', chatPath, otherName);
-    
+
     const messagesRef = db.doc(chatPath).collection('messages');
-    
+
     // Single listener - try createdAt first (most common)
     currentSettingsListener = messagesRef.orderBy('createdAt', 'asc').onSnapshot(snapshot => {
         console.log('Messages snapshot received:', snapshot.size, 'messages');
-        
+
         messagesContainer.innerHTML = '';
-        
+
         if (snapshot.empty) {
             messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">No messages yet. Start the conversation!</p>';
             return;
         }
-        
+
         snapshot.forEach(doc => {
             const msg = doc.data();
             const isMe = msg.senderId === auth.currentUser.uid;
-            
+
             const messageDiv = document.createElement('div');
             messageDiv.style.cssText = `margin:10px 0;text-align:${isMe ? 'right' : 'left'};`;
             messageDiv.innerHTML = `
@@ -624,24 +627,24 @@ function openSettingsConversation(chatPath, otherName, otherUserId) {
             `;
             messagesContainer.appendChild(messageDiv);
         });
-        
+
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }, err => {
         console.error('Error with createdAt, trying timestamp:', err);
-        
+
         // Fallback to timestamp if createdAt fails
         currentSettingsListener = messagesRef.orderBy('timestamp', 'asc').onSnapshot(snapshot => {
             messagesContainer.innerHTML = '';
-            
+
             if (snapshot.empty) {
                 messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">No messages yet. Start the conversation!</p>';
                 return;
             }
-            
+
             snapshot.forEach(doc => {
                 const msg = doc.data();
                 const isMe = msg.senderId === auth.currentUser.uid;
-                
+
                 const messageDiv = document.createElement('div');
                 messageDiv.style.cssText = `margin:10px 0;text-align:${isMe ? 'right' : 'left'};`;
                 messageDiv.innerHTML = `
@@ -654,11 +657,11 @@ function openSettingsConversation(chatPath, otherName, otherUserId) {
                 `;
                 messagesContainer.appendChild(messageDiv);
             });
-            
+
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
     });
-    
+
     window.currentSettingsChatPath = chatPath;
     window.currentSettingsPartnerId = otherUserId;
 }
@@ -667,18 +670,18 @@ function openSettingsConversation(chatPath, otherName, otherUserId) {
 function sendSettingsMessage() {
     const input = document.getElementById('settings-messageInput');
     const text = input?.value.trim();
-    
+
     if (!text || !window.currentSettingsPartnerId) return;
-    
+
     const user = auth.currentUser;
     if (!user) {
         alert('Please log in to send messages');
         return;
     }
-    
+
     // Use the SAME chatId structure as chat.js
     const chatId = [user.uid, window.currentSettingsPartnerId].sort().join('_');
-    
+
     const messageData = {
         text: text,
         senderId: user.uid,
@@ -686,7 +689,7 @@ function sendSettingsMessage() {
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         participants: [user.uid, window.currentSettingsPartnerId]
     };
-    
+
     // Send to the SAME path as chat.js
     db.collection('privateChats').doc(chatId).collection('messages').add(messageData)
         .then(() => {
