@@ -770,40 +770,9 @@ function toggleMaximize(boxId) {
 window.toggleMaximize = toggleMaximize;
 
 
-// Inside loadFeaturedPosts() after fetching data:
-featuredPosts = data.map(post => ({
-  image: post.main_image_url || 'images/FPost.png',
-  link: post.url || '#'
-}));
-
-// Show first image immediately
-if (featuredPosts.length > 0) {
-  currentIndex = 0;
-  updateFeatured();
-}
-
-// Rotation function
-function updateFeatured() {
-  if (featuredPosts.length === 0) return;
-  const img = document.getElementById('featuredImage');
-  const link = document.getElementById('featuredLink');
-  if (img && link) {
-    img.src = featuredPosts[currentIndex].image;
-    link.href = featuredPosts[currentIndex].link;
-  }
-}
 
 
 
-// Auto rotation
-setInterval(() => {
-  console.log('Auto-rotating featured post');
-  manualRotate(1);
-}, 20000);
-
-// Initial load
-loadFeaturedPosts();
-updateFeatured();  // Immediate first image
 function changeFontSize(boxId, delta) {
   const box = document.getElementById(boxId);
   if (!box) return;
