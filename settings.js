@@ -508,7 +508,10 @@ conversationItem.innerHTML = `
 }
 
 
-// Update openSettingsConversation to handle both timestamp and createdAt:
+// Add this variable at the TOP of the file (around line 1):
+let currentSettingsListener = null;
+
+// Replace openSettingsConversation function completely:
 function openSettingsConversation(chatPath, otherName, otherUserId) {
     const header = document.getElementById('settings-conversationHeader');
     const messagesContainer = document.getElementById('settings-conversationMessages');
@@ -516,45 +519,26 @@ function openSettingsConversation(chatPath, otherName, otherUserId) {
     if (header) header.textContent = otherName;
     if (!messagesContainer) return;
     
+    // IMPORTANT: Detach previous listener first
+    if (currentSettingsListener) {
+        currentSettingsListener();
+        currentSettingsListener = null;
+    }
+    
     messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">Loading messages...</p>';
     
     console.log('Opening settings conversation:', chatPath, otherName);
     
-    // Try ordering by timestamp first, fallback to createdAt
     const messagesRef = db.doc(chatPath).collection('messages');
     
-    messagesRef.orderBy('timestamp', 'asc').onSnapshot(snapshot => {
+    // Single listener - try createdAt first (most common)
+    currentSettingsListener = messagesRef.orderBy('createdAt', 'asc').onSnapshot(snapshot => {
         console.log('Messages snapshot received:', snapshot.size, 'messages');
         
         messagesContainer.innerHTML = '';
         
         if (snapshot.empty) {
-            // Try with createdAt if timestamp didn't work
-            messagesRef.orderBy('createdAt', 'asc').onSnapshot(snapshot2 => {
-                if (snapshot2.empty) {
-                    messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">No messages yet. Start the conversation!</p>';
-                    return;
-                }
-                
-                snapshot2.forEach(doc => {
-                    const msg = doc.data();
-                    const isMe = msg.senderId === auth.currentUser.uid;
-                    
-                    const messageDiv = document.createElement('div');
-                    messageDiv.style.cssText = `margin:10px 0;text-align:${isMe ? 'right' : 'left'};`;
-                    messageDiv.innerHTML = `
-                        <div style="display:inline-block;max-width:70%;padding:12px 16px;border-radius:18px;
-                                    background:${isMe ? '#8B572A' : '#e0e0e0'};
-                                    color:${isMe ? '#fff' : '#000'};
-                                    font-size:1rem;line-height:1.4;word-wrap:break-word;">
-                            ${msg.text}
-                        </div>
-                    `;
-                    messagesContainer.appendChild(messageDiv);
-                });
-                
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            });
+            messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">No messages yet. Start the conversation!</p>';
             return;
         }
         
@@ -577,21 +561,48 @@ function openSettingsConversation(chatPath, otherName, otherUserId) {
         
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }, err => {
-        console.error('Error loading messages:', err);
-        messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#ff6b6b;">Error loading messages</p>';
+        console.error('Error with createdAt, trying timestamp:', err);
+        
+        // Fallback to timestamp if createdAt fails
+        currentSettingsListener = messagesRef.orderBy('timestamp', 'asc').onSnapshot(snapshot => {
+            messagesContainer.innerHTML = '';
+            
+            if (snapshot.empty) {
+                messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">No messages yet. Start the conversation!</p>';
+                return;
+            }
+            
+            snapshot.forEach(doc => {
+                const msg = doc.data();
+                const isMe = msg.senderId === auth.currentUser.uid;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.style.cssText = `margin:10px 0;text-align:${isMe ? 'right' : 'left'};`;
+                messageDiv.innerHTML = `
+                    <div style="display:inline-block;max-width:70%;padding:12px 16px;border-radius:18px;
+                                background:${isMe ? '#8B572A' : '#e0e0e0'};
+                                color:${isMe ? '#fff' : '#000'};
+                                font-size:1rem;line-height:1.4;word-wrap:break-word;">
+                        ${msg.text}
+                    </div>
+                `;
+                messagesContainer.appendChild(messageDiv);
+            });
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        });
     });
     
     window.currentSettingsChatPath = chatPath;
     window.currentSettingsPartnerId = otherUserId;
 }
 
-// sendSettingsMessage stays the same...
-
+// Update sendSettingsMessage to match chat.js structure:
 function sendSettingsMessage() {
     const input = document.getElementById('settings-messageInput');
     const text = input?.value.trim();
     
-    if (!text || !window.currentSettingsChatPath) return;
+    if (!text || !window.currentSettingsPartnerId) return;
     
     const user = auth.currentUser;
     if (!user) {
@@ -599,16 +610,23 @@ function sendSettingsMessage() {
         return;
     }
     
+    // Use the SAME chatId structure as chat.js
+    const chatId = [user.uid, window.currentSettingsPartnerId].sort().join('_');
+    
     const messageData = {
         text: text,
         senderId: user.uid,
-        participants: [user.uid, window.currentSettingsPartnerId],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        senderName: currentUserProfile?.displayName || "Me",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        participants: [user.uid, window.currentSettingsPartnerId]
     };
     
-    db.doc(window.currentSettingsChatPath).collection('messages').add(messageData)
+    // Send to the SAME path as chat.js
+    db.collection('privateChats').doc(chatId).collection('messages').add(messageData)
         .then(() => {
             input.value = '';
         })
         .catch(err => console.error('Error sending message:', err));
 }
+// sendSettingsMessage stays the same...
+
