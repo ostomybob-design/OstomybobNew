@@ -428,6 +428,7 @@ function applyFeaturedMode(mode) {
 // Add these new functions at the end of the file:
 let inboxFontSize = 1; // Default size multiplier
 
+// Replace the adjustInboxFontSize function (around line 440):
 function adjustInboxFontSize(direction) {
     if (direction === 'smaller' && inboxFontSize > 0.7) {
         inboxFontSize -= 0.1;
@@ -435,25 +436,56 @@ function adjustInboxFontSize(direction) {
         inboxFontSize += 0.1;
     }
 
-    const container = document.getElementById('settings-inbox-container');
-    if (container) {
-        container.style.fontSize = inboxFontSize + 'rem';
+    // Apply to conversation list items
+    const conversationList = document.getElementById('settings-conversationList');
+    if (conversationList) {
+        conversationList.style.fontSize = inboxFontSize + 'rem';
+    }
+
+    // Apply to messages container
+    const messagesContainer = document.getElementById('settings-conversationMessages');
+    if (messagesContainer) {
+        messagesContainer.style.fontSize = inboxFontSize + 'rem';
+    }
+
+    // Apply to header
+    const header = document.getElementById('settings-conversationHeader');
+    if (header) {
+        header.style.fontSize = (1.3 * inboxFontSize) + 'rem';
+    }
+
+    // Apply to input
+    const input = document.getElementById('settings-messageInput');
+    if (input) {
+        input.style.fontSize = (1 * inboxFontSize) + 'rem';
     }
 
     localStorage.setItem('inboxFontSize', inboxFontSize);
 }
 
+// Also update the window load event to apply saved font size to all elements:
+window.addEventListener('load', () => {
+    const savedFontSize = localStorage.getItem('inboxFontSize');
+    if (savedFontSize) {
+        inboxFontSize = parseFloat(savedFontSize);
+        setTimeout(() => {
+            adjustInboxFontSize(null); // This will apply to all elements
+        }, 500);
+    }
+});
+// Replace the toggleInboxMaximize function (around line 480):
 function toggleInboxMaximize() {
     const box = document.getElementById('featured-story-box');
     if (!box) return;
 
     if (box.classList.contains('maximized')) {
         box.classList.remove('maximized');
-        box.style.position = 'relative';
+        box.style.position = '';
         box.style.width = '';
         box.style.height = '';
         box.style.top = '';
         box.style.left = '';
+        box.style.transform = '';
         box.style.zIndex = '';
         box.style.margin = '';
     } else {
@@ -468,7 +500,6 @@ function toggleInboxMaximize() {
         box.style.margin = '0';
     }
 }
-
 // Load saved font size on startup
 window.addEventListener('load', () => {
     const savedFontSize = localStorage.getItem('inboxFontSize');
@@ -581,6 +612,7 @@ function loadSettingsInboxConversations() {
 let currentSettingsListener = null;
 
 // Replace openSettingsConversation function completely:
+// Replace openSettingsConversation function (around line 540):
 function openSettingsConversation(chatPath, otherName, otherUserId) {
     const header = document.getElementById('settings-conversationHeader');
     const messagesContainer = document.getElementById('settings-conversationMessages');
@@ -621,7 +653,7 @@ function openSettingsConversation(chatPath, otherName, otherUserId) {
                 <div style="display:inline-block;max-width:70%;padding:12px 16px;border-radius:18px;
                             background:${isMe ? '#8B572A' : '#e0e0e0'};
                             color:${isMe ? '#fff' : '#000'};
-                            font-size:1rem;line-height:1.4;word-wrap:break-word;">
+                            line-height:1.4;word-wrap:break-word;">
                     ${msg.text}
                 </div>
             `;
@@ -651,7 +683,7 @@ function openSettingsConversation(chatPath, otherName, otherUserId) {
                     <div style="display:inline-block;max-width:70%;padding:12px 16px;border-radius:18px;
                                 background:${isMe ? '#8B572A' : '#e0e0e0'};
                                 color:${isMe ? '#fff' : '#000'};
-                                font-size:1rem;line-height:1.4;word-wrap:break-word;">
+                                line-height:1.4;word-wrap:break-word;">
                         ${msg.text}
                     </div>
                 `;
