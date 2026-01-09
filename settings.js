@@ -350,25 +350,27 @@ function applyFeaturedMode(mode) {
 
 inboxContainer.innerHTML = `
     <div style="display:flex;height:100%;width:100%;">
-        <div style="width:35%;background:var(--box-bg, #fff8e1);color:var(--box-text, #8B572A);display:flex;flex-direction:column;border-right:2px solid rgba(139,87,42,0.2);">
+        <div style="width:25%;background:var(--box-bg, #fff8e1);color:var(--box-text, #8B572A);display:flex;flex-direction:column;border-right:2px solid rgba(139,87,42,0.2);">
             <div style="padding:20px;border-bottom:2px solid rgba(139,87,42,0.2);">
                 <h2 style="margin:0;font-size:1.5rem;color:var(--box-text, #8B572A);">Your Messages</h2>
             </div>
             <div id="settings-conversationList" style="flex:1;overflow-y:auto;"></div>
         </div>
-        <div style="width:65%;display:flex;flex-direction:column;background:#f9f5f0;">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:20px;background:var(--box-bg, #fff8e1);color:var(--box-text, #8B572A);border-bottom:2px solid rgba(139,87,42,0.2);">
-                <div id="settings-conversationHeader" style="font-size:1.3rem;font-weight:bold;">
-                    Select a conversation
-                </div>
-                <div style="display:flex;gap:6px;">
-                    <button class="font-btn1" onclick="event.stopPropagation(); adjustInboxFontSize('smaller')" title="Decrease font size">A−</button>
-                    <button class="font-btn2" onclick="event.stopPropagation(); adjustInboxFontSize('larger')" title="Increase font size">A+</button>
-                    <button class="maximize-btn" onclick="event.stopPropagation(); toggleInboxMaximize()" title="Maximize">
-                        <i class="fas fa-expand"></i>
-                    </button>
-                </div>
-            </div>
+        <div style="width:75%;display:flex;flex-direction:column;background:#f9f5f0;">
+    
+<div style="display:flex;justify-content:space-between;align-items:center;padding:20px;background:var(--box-bg, #fff8e1);color:var(--box-text, #8B572A);border-bottom:2px solid rgba(139,87,42,0.2);">
+    <div style="flex:1;"></div>
+    <div id="settings-conversationHeader" style="font-size:1.3rem;font-weight:bold;flex:1;text-align:center;">
+        Select a conversation
+    </div>
+    <div style="display:flex;gap:6px;flex:1;justify-content:flex-end;">
+        <button class="font-btn1" onclick="event.stopPropagation(); adjustInboxFontSize('smaller')" title="Decrease font size">A−</button>
+        <button class="font-btn2" onclick="event.stopPropagation(); adjustInboxFontSize('larger')" title="Increase font size">A+</button>
+        <button class="maximize-btn" onclick="event.stopPropagation(); toggleInboxMaximize()" title="Maximize">
+            <i class="fas fa-expand"></i>
+        </button>
+    </div>
+</div>
             <div id="settings-conversationMessages" style="flex:1;overflow-y:auto;padding:20px;"></div>
             <div style="padding:15px;background:#fff;border-top:2px solid rgba(139,87,42,0.2);">
                 <div style="display:flex;gap:10px;">
