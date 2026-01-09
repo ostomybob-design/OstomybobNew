@@ -158,7 +158,6 @@ function resetAllColors() {
     if (storyRadio) storyRadio.checked = true;
 }
 
-// Load saved colors and background on page load
 window.addEventListener('load', () => {
     const savedHeader = localStorage.getItem('headerColor');
     const savedTicker = localStorage.getItem('tickerColor');
@@ -196,11 +195,13 @@ window.addEventListener('load', () => {
 
     loadBgOpacity();
 
-    // Load featured mode preference
     const savedMode = localStorage.getItem('featuredMode') || 'story';
     const modeRadio = document.querySelector(`input[name="featuredMode"][value="${savedMode}"]`);
     if (modeRadio) modeRadio.checked = true;
-    applyFeaturedMode(savedMode);
+    
+    setTimeout(() => {
+        applyFeaturedMode(savedMode);
+    }, 100);
 });
 
 function saveProfile() {
@@ -240,7 +241,6 @@ function saveProfile() {
     }
 }
 
-// === TEMPERATURE TOGGLE ===
 const toggleInput = document.getElementById('tempUnitToggle');
 const toggleSwitch = document.getElementById('tempToggleSwitch');
 const toggleKnob = document.getElementById('tempToggleKnob');
@@ -298,7 +298,6 @@ if (toggleSwitch && toggleInput) {
     }
 }
 
-// Load visibility checkboxes when modal opens
 function loadProfileVisibility() {
     const user = auth.currentUser;
     if (!user) return;
@@ -316,13 +315,11 @@ function loadProfileVisibility() {
     });
 }
 
-// Call when opening the modal
 function openProfileModal() {
     document.getElementById('profileModal').classList.add('open');
     loadProfileVisibility();
 }
 
-// === FEATURED MODE TOGGLE (Story vs Inbox) ===
 document.querySelectorAll('input[name="featuredMode"]').forEach(radio => {
     radio.addEventListener('change', function() {
         const mode = this.value;
@@ -331,40 +328,42 @@ document.querySelectorAll('input[name="featuredMode"]').forEach(radio => {
     });
 });
 
-// Apply featured mode
 function applyFeaturedMode(mode) {
     const box = document.getElementById('featured-story-box');
     if (!box) return;
 
-    box.classList.remove('inbox-mode');
-
-    if (mode === 'inbox') {
-        box.classList.add('inbox-mode');
-        box.style.backgroundImage = 'none';
-        box.style.background = 'linear-gradient(135deg, rgba(139,87,42,0.08) 0%, rgba(166,124,82,0.04) 100%)';
-        box.style.padding = '0';
+    let inboxContainer = document.getElementById('settings-inbox-container');
+    
+    if (!inboxContainer) {
+        inboxContainer = document.createElement('div');
+        inboxContainer.id = 'settings-inbox-container';
+        inboxContainer.style.position = 'absolute';
+        inboxContainer.style.top = '0';
+        inboxContainer.style.left = '0';
+        inboxContainer.style.width = '100%';
+        inboxContainer.style.height = '100%';
+        inboxContainer.style.borderRadius = '30px';
+        inboxContainer.style.overflow = 'hidden';
+        inboxContainer.style.display = 'none';
+        inboxContainer.style.background = '#fff';
         
-        box.innerHTML = `
-            <div class="inbox-inline" style="display:flex;height:100%;flex-direction:row;border-radius:30px;overflow:hidden;">
-                <div class="inbox-left" style="width:40%;background:#8B572A;color:#fff8e1;padding:15px;overflow-y:auto;">
-                    <h2 style="text-align:center;margin-bottom:15px;font-size:1.8rem;">Your Messages</h2>
-                    <div id="inboxConversationList" style="max-height:calc(100% - 60px);overflow-y:auto;">
-                        <p style="text-align:center;color:#ffecb3;opacity:0.8;margin:40px 0;">Loading conversations...</p>
-                    </div>
+        inboxContainer.innerHTML = `
+            <div style="display:flex;height:100%;width:100%;">
+                <div style="width:35%;background:#8B572A;color:#fff8e1;display:flex;flex-direction:column;border-right:2px solid rgba(0,0,0,0.1);">
+                    <h2 style="text-align:center;padding:20px;margin:0;border-bottom:2px solid rgba(255,255,255,0.2);font-size:1.5rem;">Your Messages</h2>
+                    <div id="settings-conversationList" style="flex:1;overflow-y:auto;"></div>
                 </div>
-
-                <div class="inbox-right" style="width:60%;display:flex;flex-direction:column;background:#f9f5f0;">
-                    <div id="inboxSelectedHeader" style="padding:20px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.4rem;font-weight:bold;">
+                <div style="width:65%;display:flex;flex-direction:column;background:#f9f5f0;">
+                    <div id="settings-conversationHeader" style="padding:20px;background:#8B572A;color:#fff8e1;text-align:center;font-size:1.3rem;font-weight:bold;border-bottom:2px solid rgba(0,0,0,0.1);">
                         Select a conversation
                     </div>
-                    <div id="inboxMessages" style="flex:1;overflow-y:auto;padding:15px 20px;font-size:1rem;line-height:1.5;">
-                    </div>
-                    <div id="inboxInputArea" style="padding:15px;background:#fff;border-top:2px solid #8B572A;">
+                    <div id="settings-conversationMessages" style="flex:1;overflow-y:auto;padding:20px;"></div>
+                    <div style="padding:15px;background:#fff;border-top:2px solid #8B572A;">
                         <div style="display:flex;gap:10px;">
-                            <input type="text" id="inboxMessageInput" placeholder="Type a message..." 
-                                   style="flex:1;padding:12px;border-radius:30px;border:2px solid #8B572A;outline:none;font-size:1rem;">
-                            <button onclick="sendInboxMessage()" 
-                                    style="background:#8B572A;color:#fff8e1;padding:12px 24px;border:none;border-radius:30px;font-weight:bold;font-size:1rem;cursor:pointer;">
+                            <input type="text" id="settings-messageInput" placeholder="Type a message..." 
+                                   style="flex:1;padding:12px;border-radius:25px;border:2px solid #8B572A;outline:none;font-size:1rem;">
+                            <button onclick="sendSettingsMessage()" 
+                                    style="background:#8B572A;color:#fff8e1;padding:12px 30px;border:none;border-radius:25px;font-weight:bold;cursor:pointer;font-size:1rem;">
                                 Send
                             </button>
                         </div>
@@ -373,216 +372,243 @@ function applyFeaturedMode(mode) {
             </div>
         `;
         
-        // Load conversations
-        const loadInboxConversations = () => {
-            const user = auth.currentUser;
-            const list = document.getElementById('inboxConversationList');
-            
-            if (!user) {
-                const unsubscribe = auth.onAuthStateChanged(authUser => {
-                    if (authUser) {
-                        unsubscribe();
-                        loadInboxConversations();
-                    } else if (list) {
-                        list.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;margin:40px 0;">Please log in to view messages</p>';
-                    }
-                });
-                return;
-            }
-
-            if (!list) return;
-
-            const privateChatsPromise = db.collection('privateChats').where('participants', 'array-contains', user.uid).get();
-            const messagesPromise = db.collection('messages').get();
-
-            Promise.all([privateChatsPromise, messagesPromise])
-                .then(([privateChatsSnap, messagesSnap]) => {
-                    list.innerHTML = '';
-                    const allChats = new Map();
-                    
-                    // From privateChats
-                    privateChatsSnap.forEach(doc => {
-                        allChats.set(doc.id, {
-                            id: doc.id,
-                            source: 'privateChats',
-                            ...doc.data()
-                        });
-                    });
-                    
-                    // From messages - group by conversation
-                    const userMessages = new Map();
-                    messagesSnap.forEach(doc => {
-                        const data = doc.data();
-                        if (data.senderId === user.uid || data.receiverId === user.uid) {
-                            const otherUserId = data.senderId === user.uid ? data.receiverId : data.senderId;
-                            const chatKey = [user.uid, otherUserId].sort().join('_');
-                            
-                            if (!userMessages.has(chatKey) || 
-                                (data.createdAt?.toMillis() || 0) > (userMessages.get(chatKey).lastMessageTime?.toMillis() || 0)) {
-                                userMessages.set(chatKey, {
-                                    id: chatKey,
-                                    source: 'messages',
-                                    participants: [user.uid, otherUserId],
-                                    lastMessage: data.text || data.message,
-                                    lastMessageTime: data.createdAt || data.timestamp,
-                                    otherUserId: otherUserId
-                                });
-                            }
-                        }
-                    });
-                    
-                    userMessages.forEach((chat, id) => {
-                        if (!allChats.has(id)) {
-                            allChats.set(id, chat);
-                        }
-                    });
-                    
-                    if (allChats.size === 0) {
-                        list.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;margin:40px 0;">No conversations yet</p>';
-                        return;
-                    }
-                    
-                    const chatsArray = Array.from(allChats.values());
-                    chatsArray.sort((a, b) => {
-                        const timeA = a.lastMessageTime?.toMillis?.() || a.createdAt?.toMillis?.() || 0;
-                        const timeB = b.lastMessageTime?.toMillis?.() || b.createdAt?.toMillis?.() || 0;
-                        return timeB - timeA;
-                    });
-                    
-                    chatsArray.forEach(chat => {
-                        const otherUserId = chat.participants?.find(p => p !== user.uid) || chat.otherUserId;
-                        
-                        if (!otherUserId) {
-                            console.warn('No otherUserId for chat:', chat);
-                            return;
-                        }
-                        
-                        db.collection('users').doc(otherUserId).get().then(userDoc => {
-                            const userData = userDoc.exists ? userDoc.data() : {};
-                            const otherName = userData.displayName || 'User';
-                            
-                            const div = document.createElement('div');
-                            div.style = 'padding:12px;border-bottom:1px solid rgba(255,255,255,0.2);cursor:pointer;transition:background 0.2s;';
-                            div.innerHTML = `
-                                <strong>${otherName}</strong>
-                                <p style="font-size:0.9rem;opacity:0.8;margin:4px 0 0 0;">
-                                    ${chat.lastMessage || 'Click to view'}
-                                </p>
-                            `;
-                            div.onmouseover = () => div.style.background = 'rgba(255,255,255,0.1)';
-                            div.onmouseout = () => div.style.background = 'transparent';
-                            div.onclick = () => openInboxConversation(chat.id, otherName, otherUserId, chat.source);
-                            list.appendChild(div);
-                        }).catch(err => console.error('Error fetching user:', otherUserId, err));
-                    });
-                })
-                .catch(err => {
-                    console.error('Error loading conversations:', err);
-                    list.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;margin:40px 0;">Error loading</p>';
-                });
-        };
-        
-        setTimeout(loadInboxConversations, 200);
-        
-    } else {
-        box.style.padding = '12px';
-        box.innerHTML = `
-            <a href="https://www.facebook.com/photo/?fbid=122276974778016943&set=a.122122393778016943"
-               class="featured-story__link" target="_blank" rel="noopener noreferrer">
-                <div class="featured-story__image" style="background-image: url('images/derek.jpg');"></div>
-                <div class="featured-story__overlay">
-                    <h3 class="featured-story__title">Featured Story</h3>
-                    <p class="featured-story__excerpt" style="font-size: 3.5rem;">
-                       Military veteran Derek Rutherford faced a life-changing moment when diagnosed with colorectal cancer in 2019...
-                    </p>
-                    <span class="featured-story__cta">Read Derek's story</span>
-                </div>
-            </a>
+        box.appendChild(inboxContainer);
+        setTimeout(() => loadSettingsInboxConversations(), 100);
+    }
+    
+    let storyLink = box.querySelector('.featured-story__link');
+    
+    if (!storyLink) {
+        storyLink = document.createElement('a');
+        storyLink.href = 'https://www.facebook.com/photo/?fbid=122276974778016943&set=a.122122393778016943';
+        storyLink.className = 'featured-story__link';
+        storyLink.target = '_blank';
+        storyLink.rel = 'noopener noreferrer';
+        storyLink.innerHTML = `
+            <div class="featured-story__image" style="background-image: url('images/derek.jpg');"></div>
+            <div class="featured-story__overlay">
+                <h3 class="featured-story__title">Featured Story</h3>
+                <p class="featured-story__excerpt" style="font-size: 3.5rem;">
+                   Military veteran Derek Rutherford faced a life-changing moment when diagnosed with colorectal cancer in 2019...
+                </p>
+                <span class="featured-story__cta">Read Derek's story</span>
+            </div>
         `;
+        box.appendChild(storyLink);
     }
-}
-
-// Open conversation
-function openInboxConversation(convId, otherName, otherUserId, source) {
-    const header = document.getElementById('inboxSelectedHeader');
-    const messages = document.getElementById('inboxMessages');
     
-    if (header) header.textContent = otherName;
-    if (!messages) return;
-    
-    messages.innerHTML = '<p style="text-align:center;color:#666;margin:40px 0;">Loading messages...</p>';
-    
-    if (source === 'privateChats') {
-        db.collection('privateChats').doc(convId).collection('messages')
-            .orderBy('createdAt', 'asc')
-            .onSnapshot(snapshot => {
-                displayMessages(snapshot, messages);
-            });
+    if (mode === 'inbox') {
+        inboxContainer.style.display = 'block';
+        storyLink.style.display = 'none';
+        box.classList.add('inbox-mode');
+        box.style.backgroundImage = 'none';
+        box.style.background = 'transparent';
+        box.style.padding = '0';
     } else {
-        db.collection('messages')
-            .orderBy('createdAt', 'asc')
-            .onSnapshot(snapshot => {
-                const filtered = [];
-                snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    if ((msg.senderId === auth.currentUser.uid && msg.receiverId === otherUserId) ||
-                        (msg.senderId === otherUserId && msg.receiverId === auth.currentUser.uid)) {
-                        filtered.push(msg);
-                    }
-                });
-                displayMessages({ docs: filtered.map(m => ({ data: () => m })) }, messages);
-            });
+        inboxContainer.style.display = 'none';
+        storyLink.style.display = 'block';
+        box.classList.remove('inbox-mode');
+        box.style.padding = '12px';
     }
-    
-    window.currentInboxConversation = convId;
-    window.currentInboxPartnerId = otherUserId;
-    window.currentInboxSource = source;
 }
 
-function displayMessages(snapshot, container) {
-    container.innerHTML = '';
-    if (!snapshot.docs || snapshot.docs.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:#666;margin:40px 0;">No messages yet</p>';
+// Replace loadSettingsInboxConversations function (around line 429):
+function loadSettingsInboxConversations() {
+    const user = auth.currentUser;
+    const conversationList = document.getElementById('settings-conversationList');
+    
+    if (!user) {
+        const unsubscribe = auth.onAuthStateChanged(authUser => {
+            if (authUser) {
+                unsubscribe();
+                loadSettingsInboxConversations();
+            }
+        });
         return;
     }
     
-    snapshot.docs.forEach(doc => {
-        const msg = typeof doc.data === 'function' ? doc.data() : doc;
-        const isMe = msg.senderId === auth.currentUser.uid;
-        const div = document.createElement('div');
-        div.style = `margin:8px 0;text-align:${isMe ? 'right' : 'left'};`;
-        div.innerHTML = `
-            <div style="display:inline-block;max-width:70%;padding:10px 14px;border-radius:18px;background:${isMe ? '#8B572A' : '#e0e0e0'};color:${isMe ? '#fff' : '#000'};">
-                ${msg.text || msg.message || ''}
-            </div>
-        `;
-        container.appendChild(div);
-    });
-    container.scrollTop = container.scrollHeight;
+    if (!conversationList) return;
+
+    console.log('Loading settings inbox conversations for user:', user.uid);
+
+    // Query the messages subcollection (where actual data lives)
+    db.collectionGroup('messages')
+        .where('participants', 'array-contains', user.uid)
+        .onSnapshot(snapshot => {
+            console.log('Settings inbox messages snapshot:', snapshot.size, 'total messages');
+            
+            const conversations = new Map();
+            
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const otherUserId = data.participants?.find(p => p !== user.uid);
+                
+                if (!otherUserId) return;
+                
+                const msgTime = data.timestamp?.toMillis?.() || data.createdAt?.toMillis?.() || 
+                               data.timestamp?.seconds * 1000 || data.createdAt?.seconds * 1000 || 0;
+                const existing = conversations.get(otherUserId);
+                const existingTime = existing ? (existing.timestamp?.toMillis?.() || existing.timestamp?.seconds * 1000 || 0) : 0;
+                
+                // Keep only the most recent message per conversation
+                if (!existing || msgTime > existingTime) {
+                    conversations.set(otherUserId, {
+                        otherUserId: otherUserId,
+                        lastMessage: data.text,
+                        timestamp: data.timestamp || data.createdAt,
+                        chatPath: doc.ref.parent.parent.path
+                    });
+                }
+            });
+            
+            console.log('Total unique conversations:', conversations.size);
+            
+            // Display conversations
+            conversationList.innerHTML = '';
+            
+            if (conversations.size === 0) {
+                conversationList.innerHTML = '<p style="text-align:center;padding:40px;opacity:0.8;font-size:1rem;">No conversations yet</p>';
+                return;
+            }
+            
+            // Sort by most recent
+            const conversationsArray = Array.from(conversations.values());
+            conversationsArray.sort((a, b) => {
+                const timeA = a.timestamp?.toMillis?.() || a.timestamp?.seconds * 1000 || 0;
+                const timeB = b.timestamp?.toMillis?.() || b.timestamp?.seconds * 1000 || 0;
+                return timeB - timeA;
+            });
+            
+            conversationsArray.forEach(conv => {
+                db.collection('users').doc(conv.otherUserId).get().then(userDoc => {
+                    const userData = userDoc.exists ? userDoc.data() : {};
+                    const displayName = userData.displayName || 'User';
+                    const photoURL = userData.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${conv.otherUserId}`;
+                    
+                    const conversationItem = document.createElement('div');
+                    conversationItem.style.cssText = 'padding:15px;border-bottom:1px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;gap:12px;transition:background 0.2s;';
+conversationItem.innerHTML = `
+    <img src="${photoURL}" alt="${displayName}" 
+         style="width:50px;height:50px;border-radius:50%;object-fit:cover;border:3px solid #fff8e1;">
+    <div style="flex:1;min-width:0;">
+        <div style="font-weight:bold;font-size:1.1rem;margin-bottom:4px;color:#fff8e1;">${displayName}</div>
+        <div style="font-size:0.9rem;color:#ffecb3;opacity:0.8;">Click to chat</div>
+    </div>
+`;
+                    conversationItem.onmouseover = () => conversationItem.style.background = 'rgba(255,255,255,0.1)';
+                    conversationItem.onmouseout = () => conversationItem.style.background = 'transparent';
+                    conversationItem.onclick = () => openSettingsConversation(conv.chatPath, displayName, conv.otherUserId);
+                    conversationList.appendChild(conversationItem);
+                });
+            });
+        }, err => {
+            console.error('Error loading settings inbox:', err);
+            conversationList.innerHTML = `<p style="text-align:center;padding:40px;color:#ff6b6b;">Error: ${err.message}</p>`;
+        });
 }
 
-// Send message
-function sendInboxMessage() {
-    const input = document.getElementById('inboxMessageInput');
+
+// Update openSettingsConversation to handle both timestamp and createdAt:
+function openSettingsConversation(chatPath, otherName, otherUserId) {
+    const header = document.getElementById('settings-conversationHeader');
+    const messagesContainer = document.getElementById('settings-conversationMessages');
+    
+    if (header) header.textContent = otherName;
+    if (!messagesContainer) return;
+    
+    messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">Loading messages...</p>';
+    
+    console.log('Opening settings conversation:', chatPath, otherName);
+    
+    // Try ordering by timestamp first, fallback to createdAt
+    const messagesRef = db.doc(chatPath).collection('messages');
+    
+    messagesRef.orderBy('timestamp', 'asc').onSnapshot(snapshot => {
+        console.log('Messages snapshot received:', snapshot.size, 'messages');
+        
+        messagesContainer.innerHTML = '';
+        
+        if (snapshot.empty) {
+            // Try with createdAt if timestamp didn't work
+            messagesRef.orderBy('createdAt', 'asc').onSnapshot(snapshot2 => {
+                if (snapshot2.empty) {
+                    messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#999;">No messages yet. Start the conversation!</p>';
+                    return;
+                }
+                
+                snapshot2.forEach(doc => {
+                    const msg = doc.data();
+                    const isMe = msg.senderId === auth.currentUser.uid;
+                    
+                    const messageDiv = document.createElement('div');
+                    messageDiv.style.cssText = `margin:10px 0;text-align:${isMe ? 'right' : 'left'};`;
+                    messageDiv.innerHTML = `
+                        <div style="display:inline-block;max-width:70%;padding:12px 16px;border-radius:18px;
+                                    background:${isMe ? '#8B572A' : '#e0e0e0'};
+                                    color:${isMe ? '#fff' : '#000'};
+                                    font-size:1rem;line-height:1.4;word-wrap:break-word;">
+                            ${msg.text}
+                        </div>
+                    `;
+                    messagesContainer.appendChild(messageDiv);
+                });
+                
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            });
+            return;
+        }
+        
+        snapshot.forEach(doc => {
+            const msg = doc.data();
+            const isMe = msg.senderId === auth.currentUser.uid;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.style.cssText = `margin:10px 0;text-align:${isMe ? 'right' : 'left'};`;
+            messageDiv.innerHTML = `
+                <div style="display:inline-block;max-width:70%;padding:12px 16px;border-radius:18px;
+                            background:${isMe ? '#8B572A' : '#e0e0e0'};
+                            color:${isMe ? '#fff' : '#000'};
+                            font-size:1rem;line-height:1.4;word-wrap:break-word;">
+                    ${msg.text}
+                </div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+        });
+        
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, err => {
+        console.error('Error loading messages:', err);
+        messagesContainer.innerHTML = '<p style="text-align:center;padding:40px;color:#ff6b6b;">Error loading messages</p>';
+    });
+    
+    window.currentSettingsChatPath = chatPath;
+    window.currentSettingsPartnerId = otherUserId;
+}
+
+// sendSettingsMessage stays the same...
+
+function sendSettingsMessage() {
+    const input = document.getElementById('settings-messageInput');
     const text = input?.value.trim();
     
-    if (!text || !window.currentInboxConversation) return;
+    if (!text || !window.currentSettingsChatPath) return;
     
     const user = auth.currentUser;
-    if (!user) return alert('Please log in');
+    if (!user) {
+        alert('Please log in to send messages');
+        return;
+    }
     
     const messageData = {
         text: text,
         senderId: user.uid,
-        receiverId: window.currentInboxPartnerId,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        participants: [user.uid, window.currentSettingsPartnerId],
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
     };
     
-    if (window.currentInboxSource === 'privateChats') {
-        db.collection('privateChats').doc(window.currentInboxConversation).collection('messages').add(messageData);
-    } else {
-        db.collection('messages').add(messageData);
-    }
-    
-    input.value = '';
+    db.doc(window.currentSettingsChatPath).collection('messages').add(messageData)
+        .then(() => {
+            input.value = '';
+        })
+        .catch(err => console.error('Error sending message:', err));
 }
