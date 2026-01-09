@@ -170,7 +170,7 @@
   width: 100%;
   height: auto;
   max-width: calc(100% - 40px);  /* Leave space for padding/border */
-  margin: 20px auto;
+
   display: block;
-  border-radius: 15px;
+ 
 }
