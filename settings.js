@@ -476,30 +476,8 @@ window.addEventListener('load', () => {
 });
 // Replace the toggleInboxMaximize function (around line 480):
 function toggleInboxMaximize() {
-    const box = document.getElementById('featured-story-box');
-    if (!box) return;
-
-    if (box.classList.contains('maximized')) {
-        box.classList.remove('maximized');
-        box.style.position = '';
-        box.style.width = '';
-        box.style.height = '';
-        box.style.top = '';
-        box.style.left = '';
-        box.style.transform = '';
-        box.style.zIndex = '';
-        box.style.margin = '';
-    } else {
-        box.classList.add('maximized');
-        box.style.position = 'fixed';
-        box.style.width = '95vw';
-        box.style.height = '95vh';
-        box.style.top = '50%';
-        box.style.left = '50%';
-        box.style.transform = 'translate(-50%, -50%)';
-        box.style.zIndex = '10000';
-        box.style.margin = '0';
-    }
+    // Just use the same function as Bob Search and Forum
+    toggleMaximize('featured-story-box');
 }
 // Load saved font size on startup
 window.addEventListener('load', () => {
