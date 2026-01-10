@@ -1175,7 +1175,7 @@ body.expanded-active #notificationBell {
 #bob-box.expanded,
 #forum-box.expanded {
 
-  height: calc(135vh - (var(--header-height, 150px) + var(--ticker-height, 56px) + 36px)) !important;
+  height: calc(145vh - (var(--header-height, 150px) + var(--ticker-height, 56px) + 36px)) !important;
 }
 
 /* keep interactive controls reachable inside expanded box */
@@ -1260,7 +1260,7 @@ body.expanded-active.header-hidden #notificationBell {
   margin: auto;
   width: 100vw !important;
   max-width: 2500px;
-  height: calc(100vh - 140px) !important;  /* Fill remaining viewport height */
+  height: calc(130vh - 140px) !important;  /* Fill remaining viewport height */
   z-index: 10000;
   padding: 40px;
   border-radius: 20px;
