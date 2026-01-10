@@ -377,7 +377,7 @@
         </div>
 
         <div id="userMenu" style="display:none;">
-            <div id="menuProfileButton" closeMenu()" style="text-align:center;margin:50px 0;cursor:pointer;">
+            <div id="menuProfileButton" onclick="openProfileModal();closeMenu()" style="text-align:center;margin:50px 0;cursor:pointer;">
                 <img src="" id="menuAvatar"
                     style="width:110px;height:110px;border-radius:50%;border:6px solid #fff8e1;">
                 <p style="margin:15px 0;font-size:2rem;color:#fff8e1;" id="menuName">Loading...</p>
@@ -387,12 +387,12 @@
 
             <div style="margin:60px 0;">
 
-                <button id="hideHeaderBtn" onclick="toggleHeader(hideHeaderBtn)"
+                <button id="hideHeaderBtn" onclick="toggleHeader(hideHeaderBtn);closeMenu()"
                     style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
                     Hide Header
                 </button>
 
-                <button id="fullscreenToggle" onclick="toggleFullScreen()"
+                <button id="fullscreenToggle" onclick="toggleFullScreen();closeMenu()"
                     style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">
                     Full Screen
                 </button>
@@ -409,13 +409,13 @@
                 </button>
 
 
-                <button onclick="openMessagesInbox(); closeMenu()"
+                <button onclick="openMessagesInbox();closeMenu()"
                     style="display:block;width:85%;margin:18px auto;padding:18px;color:#fff8e1;background:rgba(255,255,255,0.12);border:none;border-radius:20px;font-size:1.6rem;cursor:pointer;">Messages</button>
 
             </div>
 
             <div style="margin-top:auto;padding-bottom:50px;text-align:center;">
-                <button onclick="auth.signOut().then(()=>location.reload())"
+                <button onclick="auth.signOut().then(()=>location.reload());closeMenu()"
                     style="background:#fff8e1;color:#8B572A;border:none;padding:22px 70px;border-radius:50px;font-weight:bold;font-size:1.8rem;">
                     Logout
                 </button>
@@ -585,7 +585,7 @@
             <div class="center-title">
                 <h1>Ostomy Friends Hub</h1>
                 <div class="weekly-quote-under-title">
-                    “Your bag doesn’t define you — your courage does.”<br>
+                    "Your bag doesn't define you — your courage does."<br>
                     <em>– An ostomate warrior</em>
                 </div>
             </div>

@@ -1175,7 +1175,7 @@ body.expanded-active #notificationBell {
 #bob-box.expanded,
 #forum-box.expanded {
 
-  height: calc(125vh - (var(--header-height, 150px) + var(--ticker-height, 56px) + 36px)) !important;
+  height: calc(135vh - (var(--header-height, 150px) + var(--ticker-height, 56px) + 36px)) !important;
 }
 
 /* keep interactive controls reachable inside expanded box */
@@ -1256,17 +1256,15 @@ body.expanded-active.header-hidden #notificationBell {
 /* Expanded box to cover full grid area (4 boxes space) */
 .box.maximized {
   position: fixed !important;
-  inset: 140px 0 0 0;  /* Top offset for header + ticker, full width/height below */
-  margin: auto;  /* Center horizontally and vertically in the remaining space */
-  width: 100vw !important;  /* Slightly less than full for breathing room */
-  max-width: 2500px;  /* Match your grid max-width */
-  height: 70% !important;
-  z-index: 10000;
- 
+  inset: 140px 0 0 0;
+  margin: auto;
+  width: 100vw !important;
+  max-width: 2500px;
+  height: calc(100vh - 140px) !important;  /* Fill remaining viewport height */
   z-index: 10000;
   padding: 40px;
-  border-radius: 20px;  /* Keep rounded corners */
-  overflow: auto;
+  border-radius: 20px;
+  overflow: visible !important;  /* Changed from auto to visible */
   box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
@@ -1274,6 +1272,16 @@ body.expanded-active.header-hidden #notificationBell {
 /* Hide other boxes when one is maximized */
 .grid-container:has(.maximized) .box:not(.maximized) {
   display: none !important;
+}
+/* Make the scrollable content area inside the box */
+.box.maximized .bob-scroll-area,
+.box.maximized .thread-list,
+.box.maximized #threadList,
+.box.maximized #threadView {
+  flex: 1;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  min-height: 0;
 }
 
 .maximize-btn {
@@ -1673,4 +1681,8 @@ body.expanded-active.header-hidden #notificationBell {
 .inbox-left, .inbox-right, #inboxMessages, #inboxInputArea {
   box-sizing: border-box;
 }
-
+.box.maximized #bob-chat-messages {
+  flex: 1;
+  overflow-y: auto !important;
+  min-height: 0;
+}
