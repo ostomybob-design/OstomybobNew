@@ -1258,9 +1258,9 @@ body.expanded-active.header-hidden #notificationBell {
   position: fixed !important;
   inset: 140px 0 0 0;
   margin: auto;
-  width: 115vw !important;  /* 95% of viewport width */
-  height: 115vh !important;  /* 95% of viewport height */
-  max-width: none !important;  /* Remove any max-width constraints */
+  width: 100vw !important;
+  max-width: 2500px;
+  height: calc(130vh - 140px) !important;  /* Fill remaining viewport height */
   z-index: 10000;
   padding: 40px;
   border-radius: 20px;
@@ -1269,8 +1269,6 @@ body.expanded-active.header-hidden #notificationBell {
   display: flex;
   flex-direction: column;
 }
-
-
 /* Hide other boxes when one is maximized */
 .grid-container:has(.maximized) .box:not(.maximized) {
   display: none !important;
