@@ -12,6 +12,12 @@ let unreadCount = 0;
 let lastSeenTimestamp = parseInt(localStorage.getItem('notificationLastSeen') || '0', 10) || 0;
 let currentInboxPartner = null;
 
+// Utility: Create a loading spinner
+function createLoadingSpinner(message, textColor) {
+  const color = textColor || '#888';
+  return `<div style="text-align:center;padding:40px;"><div style="display:inline-block;width:40px;height:40px;border:4px solid #f3f3f3;border-top:4px solid #8B572A;border-radius:50%;animation:spin 1s linear infinite;"></div><p style="color:${color};margin-top:20px;">${message || 'Loading...'}</p></div><style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>`;
+}
+
 // Helpers
 function normalizeTimestamp(createdAt) {
     if (!createdAt) return Date.now();
@@ -218,17 +224,33 @@ function sendPrivateMessage() {
 // Load live private messages into modal
 function loadPrivateMessages(partnerId) {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+        console.warn('loadPrivateMessages: No user signed in');
+        return;
+    }
 
     const chatId = [user.uid, partnerId].sort().join('_');
     const messagesDiv = document.getElementById('privateMessages');
-    if (!messagesDiv) return;
+    if (!messagesDiv) {
+        console.warn('loadPrivateMessages: privateMessages element not found');
+        return;
+    }
+
+    // Show loading spinner with better styling
+    messagesDiv.innerHTML = createLoadingSpinner('Loading messages...');
 
     // Detach any previous listener by reading from a unique ref? In this simple implementation we reattach each call.
     db.collection('privateChats').doc(chatId).collection('messages')
         .orderBy('createdAt')
         .onSnapshot(snapshot => {
             messagesDiv.innerHTML = '';
+            
+            // Check if there are any messages
+            if (snapshot.empty) {
+                messagesDiv.innerHTML = '<p style="text-align:center;color:#888;margin:30px 0;">No messages yet. Start a conversation!</p>';
+                return;
+            }
+            
             snapshot.forEach(doc => {
                 const msg = doc.data();
                 const isMe = msg.senderId === user.uid;
@@ -240,7 +262,7 @@ function loadPrivateMessages(partnerId) {
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }, err => {
             console.error('loadPrivateMessages snapshot error', err);
-            messagesDiv.innerHTML = '<p style="text-align:center;color:#c66;">Failed to load messages</p>';
+            messagesDiv.innerHTML = '<p style="text-align:center;color:#c66;margin:30px 0;">Failed to load messages. Please try again.</p>';
         });
 }
 
@@ -255,7 +277,12 @@ function openMessagesInbox() {
 }
 
 function closeMessagesInbox() {
-    document.getElementById('messagesInboxModal')?.classList.remove('open');
+    const modal = document.getElementById('messagesInboxModal');
+    if (modal) {
+        modal.classList.remove('open');
+    }
+    // Reset the current inbox partner to prevent stale data
+    currentInboxPartner = null;
     // Optionally stop realtime listener — but keep messageListenerUnsubscribe for incoming notification listening.
 }
 
@@ -332,16 +359,32 @@ function openChatInInbox(uid, name, photo) {
 // Load messages for inbox right panel
 function loadInboxMessages(partnerId) {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) {
+        console.warn('loadInboxMessages: No user signed in');
+        return;
+    }
 
     const chatId = [user.uid, partnerId].sort().join('_');
     const messagesDiv = document.getElementById('inboxMessages');
-    if (!messagesDiv) return;
+    if (!messagesDiv) {
+        console.warn('loadInboxMessages: inboxMessages element not found');
+        return;
+    }
+
+    // Show loading spinner
+    messagesDiv.innerHTML = createLoadingSpinner('Loading messages...', '#ffecb3');
 
     db.collection('privateChats').doc(chatId).collection('messages')
         .orderBy('createdAt')
         .onSnapshot(snapshot => {
             messagesDiv.innerHTML = '';
+            
+            // Check if there are any messages
+            if (snapshot.empty) {
+                messagesDiv.innerHTML = '<p style="text-align:center;color:#ffecb3;opacity:0.8;margin:30px 0;">No messages yet. Start a conversation!</p>';
+                return;
+            }
+            
             snapshot.forEach(doc => {
                 const msg = doc.data();
                 const isMe = msg.senderId === user.uid;
@@ -353,7 +396,7 @@ function loadInboxMessages(partnerId) {
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }, err => {
             console.error('loadInboxMessages snapshot error', err);
-            messagesDiv.innerHTML = '<p style="text-align:center;color:#c66;">Failed to load messages</p>';
+            messagesDiv.innerHTML = '<p style="text-align:center;color:#c66;margin:30px 0;">Failed to load messages. Please try again.</p>';
         });
 }
 
